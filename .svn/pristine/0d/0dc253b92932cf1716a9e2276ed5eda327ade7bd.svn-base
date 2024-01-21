@@ -1,0 +1,141 @@
+let alarmList = [];
+let socket = null;
+
+$(function() {
+  connectWS();
+});
+
+// 소켓
+connectWS = function() {
+  let ws = new SockJS("http://localhost/echo");
+  socket = ws;
+  
+  ws.onopen = function(userCd) {
+    console.log("연결 완료");
+    sendMessageToServer("로그인사용자");
+  }
+  
+  ws.onmessage = function(event) {
+    
+    alarmList = JSON.parse(event.data);
+    console.log("alarmList ==>", alarmList);
+    
+    // 수강신청 실시간 수강인원 업데이트
+    if (alarmList.lecCd != null && alarmList.lecCd != undefined) {
+      $(".lecHcnt"+alarmList.lecCd).text(alarmList.lecHcnt);
+    }
+    
+    // 빨간점..ㅎ
+    if (alarmList.length > 0) {
+      $(".alarm").append(`<div class="new_alarm_down"></div>`);
+    }
+    
+  };
+  
+  ws.onclose = function() {
+    console.log("소켓 연결 종료");
+  };
+};
+
+const functionMap = {
+  "ALAM01": function(alarm) {
+    // console.log("강의시험등록알림", alarm);
+  },
+  "ALAM02": function(alarm) {
+    // console.log("상담신청알림", alarm);
+  },
+  "ALAM03": function(alarm) {
+    console.log("메일알림", alarm);
+    return `
+      <li class="d-flex">
+        <div style="padding:10px;">
+          <div>
+            <a href="#none" onclick="checkAlarm('${alarm.ntfCd}', '${alarm.ntfUrl}')"><span style="font-size:14px; font-weight:600;">${alarm.ntfCon}</span><span style="font-size:14px; color:#888888;">님으로부터 </span> 
+            <span style="font-size:14px;"><svg xmlns="http://www.w3.org/2000/svg" height="14" width="14" margin="2 0 0 0" viewBox="0 0 512 512"><path fill="#333333" d="M64 112c-8.8 0-16 7.2-16 16v22.1L220.5 291.7c20.7 17 50.4 17 71.1 0L464 150.1V128c0-8.8-7.2-16-16-16H64zM48 212.2V384c0 8.8 7.2 16 16 16H448c8.8 0 16-7.2 16-16V212.2L322 328.8c-38.4 31.5-93.7 31.5-132 0L48 212.2zM0 128C0 92.7 28.7 64 64 64H448c35.3 0 64 28.7 64 64V384c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128z"/></svg>${alarm.commonDetailVO.comdDesc}</span></a>
+          </div>
+          <div style="font-size:13px; color:#888888; margin-top:5px;">${getPattern(alarm.ntfReg)}</div>
+        </div>
+      </li>
+    `
+  },
+  "ALAM04": function(alarm) {
+    // console.log("게시글댓글알림", alarm);
+  },
+  "ALAM05": function(alarm) {
+    // console.log("대댓글알림", alarm);
+  },
+  "ALAM06": function(alarm) {
+    // console.log("강의공지사항등록알림", alarm);
+  },
+  "ALAM07": function(alarm) {
+    // console.log("강의과제등록알림", alarm);
+  },
+  "ALAM08": function(alarm) {
+    // console.log("학사일정등록알림", alarm);
+  },
+  "ALAM09": function(alarm) {
+    // console.log("상담승인알림", alarm);
+  },
+  "ALAM10": function(alarm) {
+    // console.log("상담반려알림", alarm);
+  },
+  "ALAM11": function(alarm) {
+    // console.log("강의계획신청알림", alarm);
+  },
+  "ALAM12": function(alarm) {
+    // console.log("강의개설알림", alarm);
+  },
+  "ALAM13": function(alarm) {
+    // console.log("성적이의신청알림", alarm);
+  }
+};
+
+
+$(".alarm_btn, #allAlarm").on("click", function() {
+  alarmList.forEach(alarm => {
+    const txt = functionMap[alarm.comdCd](alarm);
+    console.log(txt);
+    $("#notificationList").append(txt);
+  });
+});
+
+
+function getPattern(dateNo) {
+  const date = new Date(dateNo);
+  return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2,'0')}:${date.getMinutes().toString().padStart(2,'0')}`;
+}
+
+function checkAlarm(ntfCd, url) {
+  
+  console.log(ntfCd, url);
+  
+  $.ajax({
+    url: "/notification/check?ntfCd="+ntfCd,
+    type: "get",
+    success: res => {
+      if (res == 1 && url != undefined) location.href=url;
+    }
+  })
+  
+}
+
+function  getCounselDetail(pk) {
+  $.ajax({
+    url: "/common/getCounselByCnslCd?cnslCd=" + pk,
+    type: "get",
+    dataType: "json",
+    async: false,
+    success: res => {
+      console.log(res);
+      return res;
+    },
+  })
+}
+
+function sendMessageToServer(message) {
+  socket.send(message);
+};
+
+function sendEnrolmentToServer(message) {
+  socket.send(message);
+};

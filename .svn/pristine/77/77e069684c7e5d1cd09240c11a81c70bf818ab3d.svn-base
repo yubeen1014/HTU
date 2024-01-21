@@ -1,0 +1,51 @@
+package kr.or.ddit.service.professor.impl;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import kr.or.ddit.mapper.LectureApplyMapper;
+import kr.or.ddit.service.professor.LectureApplyService;
+import kr.or.ddit.vo.ApprovalVO;
+import kr.or.ddit.vo.LectureApplyVO;
+import kr.or.ddit.vo.ProfessorVO;
+import kr.or.ddit.vo.UserVO;
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
+@Service
+public class LectureApplyServiceImpl implements LectureApplyService{
+	
+	@Autowired
+	LectureApplyMapper lectureApplyMapper;
+	
+	
+	@Transactional
+	@Override
+	public int createLectureApplyApproval(LectureApplyVO lectureApplyVO) {
+		UserVO userVO = new UserVO();
+		ProfessorVO professorVO = new ProfessorVO();
+		ApprovalVO approvalVO = lectureApplyVO.getApprovalVO();
+		// 승인데이터 생성
+		int result = this.lectureApplyMapper.createLectureApplyConsent(approvalVO);
+		
+		userVO.setUserCd(approvalVO.getUserCd());
+		professorVO.setUserVO(userVO);
+		professorVO.setProCd(professorVO.getUserVO().getUserCd());
+		
+		
+		// 강의신청테이블 교번에 세팅된 교번세팅
+		lectureApplyVO.setApprovalVO(approvalVO);
+		lectureApplyVO.setProfessorVO(professorVO);
+		
+		lectureApplyVO.setProCd(professorVO.getProCd());
+		lectureApplyVO.setAppCd(approvalVO.getAppCd());
+		
+	
+		// 강의신청계획 데이터 생성
+		result += this.lectureApplyMapper.createLectureApply(lectureApplyVO);
+		
+		return result;
+	}
+
+}

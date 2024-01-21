@@ -1,0 +1,27 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.vo.EnrolmentVO;
+import kr.or.ddit.vo.LectureVO;
+import kr.or.ddit.vo.StudentVO;
+import kr.or.ddit.vo.WishLectureVO;
+
+public interface EnrolmentMapper {
+
+	public List<LectureVO> list(StudentVO studentVO);
+
+	public String getColNm(String userCd);
+
+	public int addWishLecture(WishLectureVO wishLectureVO);
+
+	public int removeWishLecture(WishLectureVO wishLectureVO);
+
+	public List<LectureVO> searchLecture(Map<String, Object> paramMap);
+	
+	public List<EnrolmentVO> getEnrolmentLecture(String stuCd);
+
+	public LectureVO enrolmentLectureDetail(String lecCd);
+
+}

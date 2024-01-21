@@ -1,0 +1,130 @@
+package kr.or.ddit.service.counsel.impl;
+
+import java.text.SimpleDateFormat;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import freemarker.template.SimpleDate;
+import kr.or.ddit.mapper.ApprovalMapper;
+import kr.or.ddit.mapper.CounselMapper;
+import kr.or.ddit.mapper.NotificationMapper;
+import kr.or.ddit.mapper.ProfessorMapper;
+import kr.or.ddit.mapper.UserMapper;
+import kr.or.ddit.service.counsel.CounselService;
+import kr.or.ddit.vo.ApprovalVO;
+import kr.or.ddit.vo.CounselVO;
+import kr.or.ddit.vo.NotificationVO;
+import kr.or.ddit.vo.ProfessorVO;
+import kr.or.ddit.vo.UserVO;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class CounselServiceImpl implements CounselService {
+
+	private final CounselMapper counselMapper;
+	
+	private final NotificationMapper ntfMapper;
+	
+	private final ProfessorMapper proMapper;
+	
+	private final ApprovalMapper approvalMapper;
+	
+	private final UserMapper userMapper;
+	
+	@Override
+	public List<CounselVO> counselList(String userCd) {
+		return this.counselMapper.counselList(userCd);
+	}
+
+	@Override
+	public int counselCreatePost(CounselVO counselVO) {
+		
+		int result = 0;
+		
+		ProfessorVO proVO = this.proMapper.getProfessor(counselVO.getProCd());
+		
+		log.info("ㅋㅋㅋㅋㅋㅋㅋㅋㅋ ==> {}", counselVO);
+		
+		ApprovalVO appVO = new ApprovalVO();
+		appVO.setUserCd(counselVO.getStuCd());
+		appVO.setAppTarget(counselVO.getProCd());
+		appVO.setComdCd("APPR01");
+		
+		result += this.approvalMapper.insert(appVO);
+		counselVO.setAppCd(appVO.getAppCd());
+		
+		result += this.counselMapper.counselCreatePost(counselVO);
+		
+		NotificationVO ntfVO = new NotificationVO();
+		ntfVO.setUserCd(proVO.getProCd());
+		ntfVO.setComdCd("ALAM02");
+		ntfVO.setNtfUrl("/pro/counsel/counseldetail?cnslCd="+counselVO.getCnslCd());
+		
+		result += this.ntfMapper.insert(ntfVO);
+		
+		return result;
+	}
+
+	@Override
+	public CounselVO counseldetail(String cnslCd) {
+		return this.counselMapper.counseldetail(cnslCd);
+	}
+
+	@Override
+	public int counselUpdatePost(CounselVO counselVO) {
+		return this.counselMapper.counselUpdatePost(counselVO);
+	}
+
+	@Override
+	public int counselDelete(String cnslCd) {
+		return this.counselMapper.counselDelete(cnslCd);
+	}
+
+	@Override
+	public List<CounselVO> counselProList() {
+		return this.counselMapper.counselProList();
+	}
+
+	@Override
+	public int counselAppUpdate(CounselVO counselVO) {
+		int cnt = this.counselMapper.counselAppUpdate(counselVO);
+		
+		NotificationVO ntfVO = new NotificationVO("ALAM09", counselVO.getStuCd(), "/student/counsel/counselList?cnslCd="+counselVO.getCnslCd());
+		
+		cnt += this.ntfMapper.insert(ntfVO);
+		
+		return cnt;
+	}
+
+	@Override
+	public int counselCancleUpdate(CounselVO counselVO) {
+		int cnt = this.counselMapper.counselCancleUpdate(counselVO);
+		
+		NotificationVO ntfVO = new NotificationVO("ALAM10", counselVO.getStuCd(), "/student/counsel/counselList?cnslCd="+counselVO.getCnslCd());
+		
+		cnt += this.ntfMapper.insert(ntfVO);
+		
+		return cnt;
+	}
+
+	@Override
+	public CounselVO getDetailCounsel(String cnslCd) {
+		CounselVO counselVO = this.counselMapper.getDetailCounsel(cnslCd);
+		counselVO.setCnslCon(new SimpleDateFormat("yy-MM-dd").format(counselVO.getCnslDt()));
+		
+		UserVO userVO = this.userMapper.getProfessorInfo(counselVO.getProCd());
+		
+		counselVO.getProfessorVO().setUserVO(userVO);
+		
+		return counselVO;
+	}
+
+	
+
+}

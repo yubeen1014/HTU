@@ -1,0 +1,37 @@
+package kr.or.ddit.service.common.impl;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.AcademicCalendarMapper;
+import kr.or.ddit.mapper.CalendarMapper;
+import kr.or.ddit.mapper.LectureScheduleMapper;
+import kr.or.ddit.mapper.RoomMapper;
+import kr.or.ddit.service.common.AcademicCalendarService;
+import kr.or.ddit.vo.AcademicCalendarVO;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class AcademicCalendarServiceImp implements AcademicCalendarService {
+
+	private final AcademicCalendarMapper academicCalendarMapper;
+
+	private final LectureScheduleMapper lectureMapper;
+	
+	private final CalendarMapper calendarMapper;
+	
+	@Override
+	public List<AcademicCalendarVO> getListByUserCd(String userCd) {
+		return this.academicCalendarMapper.getListByUserCd(userCd);
+	}
+
+	@Override
+	public List<AcademicCalendarVO> getAcademicCalendarList() {
+		return this.academicCalendarMapper.getAcademicCalendarList();
+	}
+  	
+}

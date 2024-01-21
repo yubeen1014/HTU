@@ -1,0 +1,74 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+
+<!------ header시작 ------>
+<section class="header">
+  <div class="top_box">
+    <div id="weather">
+      <span></span>
+      <span></span>
+    </div> 
+    <div class="time">
+      <!-- timer -->
+      <div id="timer">로그아웃까지 <span id="minutes"> 60</span> : <span id="seconds">00</span></div>
+      <button onclick="addExtraTime()" class="time_btn">시간연장</button>
+    </div> 
+  </div>
+  <div class="top_box2">
+    <a href="main.html" class="logo">
+      <img src="/resources/images/logo.png" alt="logo">
+      <div class="title"> | 형택대학교 포털</div>
+    </a>
+        <nav class="menu">
+      <ul>
+        <li><a href="#none">등록/장학</a></li>
+        <li><a href="#none">수강</a></li>
+        <li><a href="#none">학적</a></li>
+        <li><a href="#none">학사행정</a></li>
+        <li><a href="/student/counsel/counselList">상담</a></li>
+        <li><a href="/sub/community">커뮤니티</a></li>
+        <li><a href="#none">마이페이지</a></li>
+      </ul>
+      <div class="sub_menu">
+        <ul>
+          <li><a href="#none">등록금고지서</a></li>
+          <li><a href="#none">납입증명서</a></li>
+          <li><a href="#none">장학금수혜내역</a></li>
+        </ul>
+        <ul>
+          <li><a href="#none">수강신청</a></li>
+          <li><a href="#none">내 강의실</a></li>
+          <li><a href="#none">출결현황</a></li>
+        </ul>
+        <ul>
+          <li><a href="#none">휴학신청</a></li>
+          <li><a href="#none">복학신청</a>
+          <li><a href="#none">졸업</a>
+          <li><a href="#none">자퇴</a>
+        </ul>
+        <ul>
+          <li><a href="#none">학사일정조회</a></li>
+          <li><a href="#none">강의계획서</a></li>
+          <li><a href="#none">시설예약</a></li>
+          <li><a href="#none">증명서발급</a></li>
+        </ul>
+        <ul>
+          <li><a href="#none">상담신청</a></li>
+          <li><a href="#none">이력조회</a></li>
+        </ul>
+        <ul>
+          <li><a href="/common/board/notice/list">공지사항</a></li>
+          <li><a href="/common/board/publicize/list">홍보게시판</a></li>
+          <li><a href="#none">자유게시판</a></li>
+          <li><a href="/common/board/anonymous/list">익명게시판</a></li>
+        </ul>
+        <ul>
+          <li><a href="#none"></a></li>
+          <img src="/resources/images/logo_circle.png" alt="logo" class="submenu_logo">
+        </ul>
+        
+      </div>
+    </nav>
+    <a href="#none" class="portlet">포틀릿설정<img src="/resources/images/portlet.png" alt="portlet"> </a> 
+  </div>
+</section>
+<!------ header끝 ------>

@@ -1,0 +1,65 @@
+package kr.or.ddit.service.employee.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.StuAdminMapper;
+import kr.or.ddit.service.employee.StuAdminService;
+import kr.or.ddit.util.EtcUtil;
+import kr.or.ddit.vo.OrganizationChartVO;
+import kr.or.ddit.vo.StudentVO;
+import kr.or.ddit.vo.UserVO;
+
+@Service
+public class StuAdminServiceImpl implements StuAdminService {
+
+	@Autowired
+	StuAdminMapper stuAdminMapper;
+	
+	@Override
+	public List<StudentVO> stuinfolist() {
+		return this.stuAdminMapper.stuinfolist();
+	}
+
+	@Override
+	public StudentVO stuinfodetail(String stuCd) {
+		return this.stuAdminMapper.stuinfodetail(stuCd);
+	}
+
+	@Override
+	public List<OrganizationChartVO> chartList() {
+		return this.stuAdminMapper.chartList();
+	}
+
+	@Override
+	public List<StudentVO> coldetail(String organizationCode) {
+		List<StudentVO> stuList = this.stuAdminMapper.coldetail(organizationCode);
+		for (StudentVO stu : stuList) {
+			stu.setFormAddt(EtcUtil.formDate(stu.getStuAddt()));
+			if (stu.getStuGrdt() != null) stu.setFormGrdt(EtcUtil.formDate(stu.getStuGrdt()));
+		}
+		return stuList;
+	}
+
+	@Override
+	public List<StudentVO> deptdetail(String organizationCode) {
+		List<StudentVO> stuList = this.stuAdminMapper.deptdetail(organizationCode);
+		for (StudentVO stu : stuList) {
+			stu.setFormAddt(EtcUtil.formDate(stu.getStuAddt()));
+			if (stu.getStuGrdt() != null) stu.setFormGrdt(EtcUtil.formDate(stu.getStuGrdt()));
+		}
+		return stuList;
+	}
+
+	@Override
+	public int update(UserVO userVO) {
+		int cnt = this.stuAdminMapper.update(userVO);
+		 cnt += this.stuAdminMapper.update(userVO.getStudentVO());
+		 
+		 return cnt;
+	}
+
+
+}

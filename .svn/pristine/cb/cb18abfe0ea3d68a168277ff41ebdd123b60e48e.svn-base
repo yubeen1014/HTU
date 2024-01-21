@@ -1,0 +1,77 @@
+package kr.or.ddit.controller.student;
+
+import java.security.Principal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import kr.or.ddit.mapper.StudentMapper;
+import kr.or.ddit.service.student.EnrolmentService;
+import kr.or.ddit.util.EtcUtil;
+import kr.or.ddit.vo.CreditVO;
+import kr.or.ddit.vo.LectureVO;
+import kr.or.ddit.vo.StudentVO;
+import kr.or.ddit.vo.UserVO;
+import kr.or.ddit.vo.WishLectureVO;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@RequiredArgsConstructor
+@Slf4j
+@RequestMapping("/student/enrolment")
+public class EnrolmentController {
+	
+	private final EnrolmentService enrolmentService;
+	
+	private final EtcUtil etcUtil;
+	
+	@GetMapping("/list")
+	public String list(Model model) {
+		
+		UserVO userVO = etcUtil.getUserVO();
+		// login 사용자 id
+		String userCd = userVO.getUserCd();
+		
+		log.info("login userVO ==> {}", userVO);
+		
+		CreditVO creditVO = new CreditVO(userVO.getStudentVO().getDepartmentVO().getCollegeVO());
+		
+		String colNm = enrolmentService.getColNm(userCd);
+		
+		creditVO.setColNm(colNm);
+		
+		// 해당 사용자의 신청 가능 강의 조회
+		List<LectureVO> lectureList = this.enrolmentService.list(userVO.getStudentVO());
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		
+		String jsonLecture = "";
+		try {
+			jsonLecture = objectMapper.writeValueAsString(lectureList);
+		} catch (JsonProcessingException e) {
+			log.error(e.getMessage());
+		}
+		
+		log.info("lectureList ==> {}", lectureList);
+		
+		model.addAttribute("creditVO", creditVO);
+		
+		model.addAttribute("lectureList", lectureList);
+		
+		model.addAttribute("jsonLecture", jsonLecture);
+		
+		return "student/enrolment/enlist";
+	}
+	
+	
+	
+}

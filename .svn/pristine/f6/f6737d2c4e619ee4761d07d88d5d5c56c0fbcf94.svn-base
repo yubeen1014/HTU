@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.CrewMapper">
+	
+	<resultMap type="approvalVO" id="approvalMap">
+		<result property="appCd" column="APP_CD"/>
+		<result property="userCd" column="USER_CD"/>
+		<result property="comdCd" column="COMD_CD"/>
+		<result property="appTarget" column="APP_TARGET"/>
+		<result property="appYn" column="APP_YN"/>
+		<result property="appReg" column="APP_REG"/>
+		<result property="appProdt" column="APP_PRODT"/>
+		<result property="appRet" column="APP_RET"/>
+		<result property="appPcd" column="APP_PCD"/>
+		<association property="userVO" resultMap="userMap"></association>
+	</resultMap>
+	
+	<resultMap type="professorVO" id="professorMap">
+		<result property="proCd" column="PRO_CD"/>
+		<result property="depCd" column="DEP_CD"/>
+		<result property="roomCd" column="ROOM_CD"/>
+		<result property="proJoin" column="PRO_JOIN"/>
+		<result property="proRet" column="PRO_RET"/>
+		<result property="proPos" column="PRO_POS"/>
+		<association property="userVO" resultMap="userMap"></association>
+	</resultMap>
+	
+	<resultMap type="studentVO" id="studentMap">
+		<result property="stuCd" column="STU_CD"/>
+		<result property="depCd" column="DEP_CD"/>
+		<result property="comdCd" column="COMD_CD"/>
+		<result property="stuYear" column="STU_YEAR"/>
+		<result property="stuSem" column="STU_SEM"/>
+		<result property="stuMrc" column="STU_MRC"/>
+		<result property="stuMoc" column="STU_MOC"/>
+		<result property="stuCrc" column="STU_CRC"/>
+		<result property="stuCoc" column="STU_COC"/>
+		<result property="stuAddt" column="STU_ADDT"/>
+		<result property="stuGrdt" column="STU_GRDT"/>
+		<association property="userVO" resultMap="userMap"></association>
+	</resultMap>
+	
+	<resultMap type="userVO" id="userMap">
+		<result property="userCd" column="USER_CD"/>
+		<result property="fileCd" column="FILE_CD"/>
+		<result property="userNm" column="USER_NM"/>
+		<result property="userNme" column="USER_NME"/>
+		<result property="userTel" column="USER_TEL"/>
+		<result property="userZip" column="USER_ZIP"/>
+		<result property="userAddr1" column="USER_ADDR1"/>
+		<result property="userAddr2" column="USER_ADDR2"/>
+		<result property="userReg1" column="USER_REG1"/>
+		<result property="userReg2" column="USER_REG2"/>
+		<result property="userMail" column="USER_MAIL"/>
+		<result property="userPass" column="USER_PASS"/>
+		<result property="userBank" column="USER_BANK"/>
+		<result property="userDepo" column="USER_DEPO"/>
+		<result property="userAcc" column="USER_ACC"/>
+		<result property="comdCd" column="COMD_CD"/>
+	</resultMap>
+	
+	<resultMap type="crewVO" id="crewMap">
+		<result property="crCd" column="CR_CD"/>
+		<result property="roomCd" column="ROOM_CD"/>
+		<result property="appCd" column="APP_CD"/>
+		<result property="stuCd" column="STU_CD"/>
+		<result property="proCd" column="PRO_CD"/>
+		<result property="fileCd" column="FILE_CD"/>
+		<result property="crLeader" column="CR_LEADER"/>
+		<result property="crNm" column="CR_NM"/>
+		<result property="stuNm" column="STU_NM"/>
+		<result property="proNm" column="PRO_NM"/>
+		<association property="approvalVO" resultMap="approvalMap"></association>
+		<association property="professorVO" resultMap="professorMap"></association>
+		<association property="studentVO" resultMap="studentMap"></association>
+	</resultMap>
+	
+	<select id="crewList" resultMap="crewMap">
+<!-- 		SELECT CR_CD, ROOM_CD, APP_CD, STU_CD, PRO_CD, FILE_CD, CR_LEADER, CR_NM -->
+<!-- 		FROM CREW -->
+		SELECT A.ROOM_CD, A.APP_CD, A.CR_NM
+		       , B.USER_NM  STU_NM, C.USER_NM PRO_NM
+		FROM   CREW A, USERS B, USERS C
+		WHERE  A.STU_CD = B.USER_CD
+		AND    A.PRO_CD = C.USER_CD
+	</select>
+	
+	<insert id="crewApply" parameterType="crewVO">
+		<selectKey resultType="String" order="BEFORE" keyProperty="crCd">
+			SELECT 'CREW' || TRIM(CREW_SEQ.NEXTVAL)
+			FROM  DUAL;
+		</selectKey>
+		INSERT INTO CREW(CR_CD, ROOM_CD, APP_CD, STU_CD, PRO_CD, FILE_CD, CR_LEADER, CR_NM)
+		VALUES(#{crCd}, #{roomCd}, #{appCd}, #{stuCd}, #{proCd}, #{fileCd}, #{crLeader}, #{crNm});
+	</insert>
+</mapper>

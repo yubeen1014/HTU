@@ -1,0 +1,52 @@
+package kr.or.ddit.service.professor.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import kr.or.ddit.mapper.LectureMapper;
+import kr.or.ddit.mapper.WeekplanMapper;
+import kr.or.ddit.service.professor.WeekplanService;
+import kr.or.ddit.vo.LectureVO;
+import kr.or.ddit.vo.WeekplanVO;
+
+@Service
+public class WeekplanServiceImpl implements WeekplanService{
+	@Autowired
+	LectureMapper lectureMapper;
+	@Autowired
+	WeekplanMapper weekplanMapper;
+	
+	@Override
+	/** 강의목록 */
+	public List<LectureVO> lectureList() {
+		return this.lectureMapper.lectureList();
+	}
+
+	@Override
+	/** 강의상세 */
+	public LectureVO lectureDetail(String lecCd) {
+		return this.lectureMapper.lectureDetail(lecCd);
+	}
+	
+	@Transactional
+	@Override
+	/** 주차별계획 작성 */
+	public int weekplanCreatePost(List<WeekplanVO> weekplanVOList) {
+		int result = 0;
+		LectureVO lectureVO = new LectureVO();
+		
+		for(WeekplanVO weekplanVO : weekplanVOList) {
+			
+			weekplanVO.setLectureVO(lectureVO);
+			result += this.weekplanMapper.weekplanCreatePost(weekplanVO);
+			
+		}
+		
+		return result;
+	}
+
+}

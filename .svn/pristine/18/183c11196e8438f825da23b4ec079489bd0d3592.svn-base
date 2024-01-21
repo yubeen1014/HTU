@@ -1,0 +1,22 @@
+package kr.or.ddit.service.common;
+
+import java.util.List;
+
+import kr.or.ddit.vo.BoardVO;
+
+public interface FreeBoardService {
+
+	//전체행의 수 (검색 포함)
+	public int getTotal();
+	
+	//자유게시판 목록
+	public List<BoardVO> list();
+
+	//자유게시판 등록
+	public int createPost(BoardVO boardVO);
+	
+	//자유게시판 상세
+	public BoardVO detail(String bdCd);
+
+	
+}

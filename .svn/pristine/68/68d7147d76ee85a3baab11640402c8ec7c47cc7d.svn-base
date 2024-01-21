@@ -1,0 +1,40 @@
+package kr.or.ddit.controller.student;
+
+import java.util.List;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import kr.or.ddit.service.student.AcademicAdminService;
+import kr.or.ddit.service.student.EnrolmentService;
+import kr.or.ddit.util.EtcUtil;
+import kr.or.ddit.vo.CreditVO;
+import kr.or.ddit.vo.LectureGradeVO;
+import kr.or.ddit.vo.UserVO;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@RequestMapping("/student/academicAdmin")
+@RequiredArgsConstructor
+@Slf4j
+public class AcademicAdminController {
+	
+	private final AcademicAdminService academicAdminService;
+	
+	private final EnrolmentService enrolmentService;
+	
+	private final EtcUtil etcUtil;
+	
+	@GetMapping("/recordList")
+	public String recordList(Model model) {
+		return "student/academicAdmin/recordList";
+	}
+	
+	
+}

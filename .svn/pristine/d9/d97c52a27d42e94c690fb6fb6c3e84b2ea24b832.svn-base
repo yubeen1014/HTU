@@ -1,0 +1,176 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="/resources/js/jquery.min.js"></script>
+<style>
+/* 	.crewDetail { */
+/* 	  width: 100%; */
+/* 	  height: 100%; */
+/* 	} */
+	.crewHeaderTitle {
+	  font-size: 40px; 
+	  padding-bottom: 30px;
+	  position: relative;
+	}
+	#deleteBtn {
+	  float: right;
+	}
+	.crewDivBox {
+	  width: 100%;
+	  height: 80%; 
+	}
+	.crewInfo {
+	  border-radius : 5px;
+	  height: 200px;
+	  padding: 20px 25px 0px 25px ;
+	  margin: 30px 0;
+	  background-color: #ffffff;
+	}
+	.crewInfoHeader {
+	  font-size: 24px; 
+      padding-bottom: 20px;
+	}
+	.crewInfoTbl {
+	  width: 100%;
+	  text-align: center;
+	  line-height: 3rem;
+	}
+	.crewInfoTbl th {
+	  background-color : #eaeaea;
+	  font-weight: bold;
+	}
+	.crewInfoTbl tr {
+	  padding: 30px 0;
+	}
+	.crewPerson {
+	  border-radius : 5px;
+	  height: 80%;
+	  padding: 15px 25px;
+	  margin-bottom: 10px;
+	  background-color: #ffffff;
+	}
+	.crewPersonHeader {
+	  font-size: 24px; 
+      padding-bottom: 10px;
+	}
+	.crTb{
+	  height: 80%;
+	  overflow: auto;
+	}
+	.crewPersonTbl {
+	  width: 100%;
+	  text-align: center;
+	  border-spacing: 30px;
+	  line-height: 3rem;
+	}
+	.crewPerson-tr {
+	  border-bottom: 1px solid #eaeaea;
+	  padding: 30px 0;
+	}
+	.crewPersonTbl tr:last-child {
+	  border:none;
+	}
+	.crewPersonTbl th {
+      position: sticky;
+      font-weight: bold;
+      top: 0px;
+      background-color : #eaeaea;
+	}
+</style>
+<sec:authentication property="principal.userVO" var="userVO"/>
+<input id="crCd" value="${crewVO.crCd}" hidden />
+	<div class="crewHeader">
+		<div class="crewHeaderTitle">
+			<p>${crewVO.crNm}
+				<c:if test="${crewVO.crYn eq 0}">
+					(운영)
+				</c:if>
+				<c:if test="${crewVO.crYn eq 1}">
+					(폐쇄)
+				</c:if>
+			</p>
+			<button type="button" id="deleteBtn" class="btn-two mini sky">동아리 폐쇄</button>
+		</div>
+	</div>
+	<div class="crewDivBox">
+		<div class="crewInfo">
+			<div class="crewInfoHeader">
+				<p>동아리 정보</p>
+			</div>
+			<table class="crewInfoTbl">
+				<tr>
+					<c:if test="${crewVO.crYn eq 0}">
+						<th>개설날짜</th>
+					</c:if>
+					<th>동아리 목적</th>
+					<th>동아리실</th>
+					<th>회장</th>
+					<th>인원</th>
+				</tr>
+				<tr>
+					<c:if test="${crewVO.crYn eq 0}">
+						<td><fmt:formatDate value="${crewVO.approvalVO.appProdt}" pattern="yyyy-MM-dd"/></td>
+					</c:if>
+					<td>${crewVO.crCon}</td>
+					<td>학생회관 ${crewVO.roomNm}</td>
+					<td>${crewVO.ldrNm}</td>
+					<td>${crewVO.crPs}</td>
+				</tr>
+			</table>
+		</div>
+		<div class="crewPerson">
+			<div class="crewPersonHeader">
+				<p>동아리원</p>
+			</div>
+			<div class="crTb">
+				<table class="crewPersonTbl">
+					<tr>
+						<th style="width: 10%">번호</th>
+						<th style="width: 30%">이름</th>
+						<th style="width: 40%">학과</th>
+						<th style="width: 10%">학번</th>
+					</tr>
+					<c:forEach var="crewPerson" items="${crewPersonnelList}" varStatus="stat">
+						<tr class="crewPerson-tr">
+							<td>${stat.count}</td>
+							<td>${crewPerson.stuNm}</td>
+							<td>${crewPerson.depNm}</td>
+							<td>${crewPerson.stuCd}</td>
+						</tr>
+					</c:forEach>
+				</table>
+			</div>
+		</div>
+	</div>
+<script>
+$(function(){
+	
+	$("#deleteBtn").on("click", function(){
+		let crCd = $("#crCd").val();
+		
+		console.log("crCd : " + crCd);
+		
+		if(confirm("동아리를 폐쇄하시겠습니까?")){
+			
+			if("${crewVO.crPs}" > 1){
+				alertError('활동 중인 동아리원이 존재하므로 폐쇄할 수 없습니다.');
+			}else {
+				$.ajax({
+					url:"/employee/crew/deleteCrew",
+					contentType:"application/json;charset=utf-8",
+		 			data:crCd,
+					type:"post",
+					beforeSend:function(xhr){
+						xhr.setRequestHeader("${_csrf.headerName}","${_csrf.token}");
+					},
+					success:function(res){
+						alertSuccess('동아리가 폐쇄되었습니다.', '/employee/crew/crewList');
+					}
+				});
+			}
+		}
+	});
+});
+</script>

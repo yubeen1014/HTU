@@ -1,0 +1,77 @@
+package kr.or.ddit.service.professor.impl;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import kr.or.ddit.mapper.LectureApplyMapper;
+import kr.or.ddit.service.professor.LectureApplyService;
+import kr.or.ddit.vo.ConsentDetailVO;
+import kr.or.ddit.vo.ConsentVO;
+import kr.or.ddit.vo.LectureApplyVO;
+import kr.or.ddit.vo.ProfessorVO;
+import kr.or.ddit.vo.UserVO;
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
+@Service
+public class LectureApplyServiceImpl implements LectureApplyService{
+	
+	@Autowired
+	LectureApplyMapper lectureApplyMapper;
+	
+	@Transactional
+	@Override
+	public int createLectureApply(LectureApplyVO lectureApplyVO) {
+		
+		
+		
+//		// 교수번호 세팅
+//		lectureApplyVO.setProCd(lectureApplyVO.getProfessorVO().getProCd());
+//		// 승인코드 세팅
+//		lectureApplyVO.setConCd(lectureApplyVO.getConsentVO().getConCd());
+//		// 강의대상학과 세팅
+//		lectureApplyVO.setDepCd(lectureApplyVO.getDepartmentVO().getDepCd());
+//		// 전공구문코드 세팅
+		return 0;
+	}
+	
+	@Transactional
+	@Override
+	public int createLectureApplyConsent(LectureApplyVO lectureApplyVO) {
+		UserVO userVO = new UserVO();
+		ProfessorVO professorVO = new ProfessorVO();
+		ConsentVO consentVO = lectureApplyVO.getConsentVO();
+		// 승인데이터 생성
+		int result = this.lectureApplyMapper.createLectureApplyConsent(consentVO);
+		
+		ConsentDetailVO consentDetailVO = new ConsentDetailVO();
+		// 승인디테일테이블의 승인코드에 승인VO의 승인코드 세팅
+		consentDetailVO.setConCd(consentVO.getConCd());
+		// 승인디테일데이터 생성
+		result += this.lectureApplyMapper.createConsentDetail(consentDetailVO);
+		
+		userVO.setUserCd(consentVO.getUserCd());
+		professorVO.setUserVO(userVO);
+		professorVO.setProCd(professorVO.getUserVO().getUserCd());
+		
+		
+		// 강의신청테이블 교번에 세팅된 교번세팅
+		lectureApplyVO.setProCd(professorVO.getProCd());
+		lectureApplyVO.setConCd(consentVO.getConCd());
+		
+	
+		// 강의신청계획 데이터 생성
+		result += this.lectureApplyMapper.createLectureApply(lectureApplyVO);
+		
+//		if(lectureApplyVO.getLecaTemp() == 0) {
+//			// 저장유형이 전송완료일때만 승인코드 세팅(임시저장일때는 세팅안됨)
+//			
+//			lectureApplyVO.setConCd(consentVO.getConCd());
+//			result += this.lectureApplyMapper.updateLectureApplyConCd(lectureApplyVO);
+//		}
+		
+		return result;
+	}
+
+}

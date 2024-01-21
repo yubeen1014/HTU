@@ -1,0 +1,39 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+
+
+
+<sec:authentication property="principal.userVO" var="vo"/>
+
+
+<div class="flex-shrink-0 p-3 bg-white sub_menu">
+  <a href="/student/lecture/list" class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom" style="margin-top:65px; margin-left:5px;">
+      <span class="fs-5">내 강의실</span>
+   </a>
+  <div class="submenu_menu" style="margin-top:25px;">
+
+	<sec:authorize access="isAuthenticated()">
+		<sec:authentication property="principal.userVO" var="userVO" />
+	</sec:authorize>
+	<c:forEach items="${enrolmentVOList}" var="enrolmentVO" varStatus="stat">
+	    <a class="sub_menu_a" href="/student/lecture/detail?lecCd=${enrolmentVO.lectureVO.lecCd}">
+	    	${enrolmentVO.lectureVO.lectureApplyVO.lecaNm}
+		</a>
+	</c:forEach>
+  </div>
+</div>
+<script>
+  $.ajax({
+    url: "/common/getLectureName?lecCd=${param.lecCd}",
+    type: "get",
+    contentType: "application/json; charset=UTF-8",
+    async: false,
+    success: res => {
+      $(".sub_title").text(res);
+    },
+    error: xhr => {
+      console.log(xhr);
+    }
+  })
+</script>

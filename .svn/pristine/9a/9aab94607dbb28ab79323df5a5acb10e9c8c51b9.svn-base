@@ -1,0 +1,55 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="/resources/js/jquery.min.js"></script>
+<script type="text/javascript" src="/resources/ckeditor/ckeditor.js"></script>
+<div>
+	<p>${univMailVO.umlTitle}</p>
+</div>
+<div>
+    <p>보낸 사람</p>
+    <p>${univMailVO.senderNm}</p>
+</div>
+<div>
+    <p><fmt:formatDate pattern="yyyy년 MM월 dd일 HH:mm" value="${univMailVO.umlReg}"/></p>
+</div>
+<div>
+    <p>첨부파일</p>
+    <c:forEach var="fileDetail" items="${univMailVO.filesDetailVOList}">
+        <a href="/resources/upload/${fileDetail.fileSvnm}" download="${fileDetail.fileOrnm}">${fileDetail.fileOrnm}</a><br>
+    </c:forEach>
+</div>
+<div>
+    <p>${univMailVO.umlCon}</p>
+</div>
+<div>
+	<a href="/mail/inbox" class="btn-two gray mini">목록</a>
+	<a id="deleteMail" href="/mail/inbox" data-uml-cd="${univMailVO.umlCd}" class="btn-two red mini">삭제</a>
+</div>
+
+<script>
+$(function(){
+	$("#deleteMail").on("click", function(){
+		if(confirm("삭제하시겠습니까?")){
+			let umlCd = $(this).data("umlCd");
+			console.log("umlCd : " + umlCd);
+			
+			$.ajax({
+				url:"/mail/deleteReceiveMail?umlCd="+umlCd,
+				data:umlCd,
+				type:"post",
+				beforeSend:function(xhr){
+					xhr.setRequestHeader("${_csrf.headerName}","${_csrf.token}");
+				},
+				success:function(res){
+					alert("삭제 완료");
+					location.reload();
+				}
+			});
+		}
+	});
+});
+</script>
+<sec:csrfInput />

@@ -1,0 +1,62 @@
+package kr.or.ddit.service.common.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.PublicizeBoardMapper;
+import kr.or.ddit.service.common.PublicizeBoardService;
+import kr.or.ddit.vo.BoardVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Service
+public class PublicizeBoardServiceImpl implements PublicizeBoardService {
+
+   @Autowired
+   PublicizeBoardMapper publicizeBoardMapper;
+   
+      
+   //자유게시판 목록
+   @Override
+   public List<BoardVO> list(Map<String, Object> map) {
+      return this.publicizeBoardMapper.list(map);
+   }
+
+
+	@Override
+	public BoardVO detail(String bdCd) {
+		return this.publicizeBoardMapper.detail(bdCd);
+	}
+
+	@Override
+	public int count(String bdCd) {
+		BoardVO boardVO = new BoardVO();
+		boardVO.setBdCd(bdCd);
+		return this.publicizeBoardMapper.count(boardVO);
+	}
+
+	//전체행의 수 (검색 포함)
+	@Override
+	public int getTotal(Map<String, Object> map) {
+		return this.publicizeBoardMapper.getTotal(map);
+	}
+
+	@Override
+	public int create(BoardVO boardVO) {
+		return this.publicizeBoardMapper.create(boardVO);
+	}
+
+	@Override
+	public int updatePost(BoardVO boardVO) {
+		return this.publicizeBoardMapper.updatePost(boardVO);
+	}
+
+	@Override
+	public int deletePost(Map<String, String> map) {
+		return this.publicizeBoardMapper.deletePost(map);
+	}
+
+}

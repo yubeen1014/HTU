@@ -1,0 +1,91 @@
+package kr.or.ddit.service.student.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.ApprovalMapper;
+import kr.or.ddit.mapper.CrewMapper;
+import kr.or.ddit.service.student.CrewService;
+import kr.or.ddit.util.FileUtil;
+import kr.or.ddit.vo.ApprovalVO;
+import kr.or.ddit.vo.CrewPersonnelVO;
+import kr.or.ddit.vo.CrewVO;
+
+@Service
+public class CrewServiceImpl implements CrewService{
+
+	@Autowired
+	CrewMapper crewMapper;
+	
+	@Autowired
+	ApprovalMapper approvalMapper;
+	
+	@Autowired
+	FileUtil fileUtil;
+	
+	@Override
+	public List<CrewVO> crewList() {
+		return this.crewMapper.crewList();
+	}
+
+	@Override
+	public int crewApply(CrewVO crewVO) {
+		
+		ApprovalVO appVO = new ApprovalVO();
+		appVO.setUserCd(crewVO.getStuCd());
+		appVO.setAppTarget("1001");
+		appVO.setComdCd("APPR03");
+		
+		int result = this.approvalMapper.insert(appVO);
+		crewVO.setAppCd(appVO.getAppCd());
+		
+		result += this.crewMapper.crewApply(crewVO);
+		
+		result += this.fileUtil.uploadFile(crewVO.getUploadFiles(), crewVO.getCrCd());
+		
+		return result;
+	}
+
+	@Override
+	public List<CrewVO> myCrew(String stuCd) {
+		return this.crewMapper.myCrew(stuCd);
+	}
+
+	@Override
+	public int crewJoin(CrewPersonnelVO crewPersonnelVO) {
+		
+//		ApprovalVO appVO = new ApprovalVO();
+//		appVO.setUserCd(crewPersonnelVO.getStuCd());
+//		appVO.setAppTarget("1001");
+//		appVO.setComdCd("APPR03");
+//		
+//		int result = this.approvalMapper.insert(appVO);
+//		crewPersonnelVO.setAppCd(appVO.getAppCd());
+		
+		int result = this.crewMapper.crewJoin(crewPersonnelVO);
+		return result;
+	}
+
+	@Override
+	public CrewVO crewDetail(String crCd) {
+		return this.crewMapper.crewDetail(crCd);
+	}
+
+	@Override
+	public int crewUpdate(CrewVO crewVO) {
+		return this.crewMapper.crewUpdate(crewVO);
+	}
+
+	@Override
+	public List<CrewVO> crewPersonnel(String crCd) {
+		return this.crewMapper.crewPersonnel(crCd);
+	}
+
+	@Override
+	public int crewQuit(String stuCd, String crCd) {
+		return this.crewMapper.crewQuit(stuCd, crCd);
+	}
+
+}

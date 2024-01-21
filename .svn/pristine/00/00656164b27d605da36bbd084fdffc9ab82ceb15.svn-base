@@ -1,0 +1,62 @@
+package kr.or.ddit.service.common.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.NoticeBoardMapper;
+import kr.or.ddit.service.common.NoticeBoardService;
+import kr.or.ddit.vo.NoticeBoardVO;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+@Service
+public class NoticeBoardServiceImpl implements NoticeBoardService{
+	
+	private final NoticeBoardMapper noticeBoardMapper;
+	
+	@Override
+	public int createNoticeBoard(NoticeBoardVO noticeBoardVO) {
+		return this.noticeBoardMapper.createNoticeBoard(noticeBoardVO);
+	}
+
+	@Override
+	public int getTotal() {
+		return this.noticeBoardMapper.getTotal();
+	}
+
+	@Override
+	public List<NoticeBoardVO> list() {
+		return this.noticeBoardMapper.list();
+	}
+
+	@Override
+	public NoticeBoardVO detail(String nbCd) {
+		return this.noticeBoardMapper.detail(nbCd);
+	}
+
+	@Override
+	public int count(String nbCd) {
+		NoticeBoardVO noticeBoardVO = new NoticeBoardVO();
+		noticeBoardVO.setNbCd(nbCd);
+		return this.noticeBoardMapper.count(noticeBoardVO);
+	}
+
+	@Override
+	public int create(NoticeBoardVO noticeBoardVO) {
+		return this.noticeBoardMapper.create(noticeBoardVO);
+	}
+
+	@Override
+	public int updatePost(NoticeBoardVO noticeBoardVO) {
+		return this.noticeBoardMapper.updatePost(noticeBoardVO);
+	}
+	
+	@Override
+	public int deletePost(Map<String, String> map) {
+		return this.noticeBoardMapper.deletePost(map);
+	}
+
+	
+}

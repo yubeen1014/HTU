@@ -1,0 +1,46 @@
+package kr.or.ddit.controller.common;
+
+import java.util.Map;
+
+import org.apache.commons.collections4.map.HashedMap;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.service.common.LoginFindService;
+import kr.or.ddit.vo.UserVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+public class LoginFindController {
+	
+	@Autowired
+	LoginFindService loginFindService; 
+	
+	@ResponseBody
+	@PostMapping("/loginSearch")
+	public Map<String, Object> findId(@RequestBody UserVO userVO) {
+		
+		Map<String, String> map = new HashedMap<String, String>();
+		map.put("USER_NM", userVO.getUserNm());
+		map.put("USER_REG1", userVO.getUserReg1());
+		map.put("USER_REG2", userVO.getUserReg2());
+		UserVO userVO2 =  this.loginFindService.findId(map);
+		log.info("userNm : " + userVO.getUserNm());
+		log.info("userReg1 : " + userVO.getUserReg1());
+		log.info("userReg2 : " + userVO.getUserReg2());
+		
+		Map<String, Object> resultMap = new HashedMap<String, Object>();
+		resultMap.put("result", userVO2);
+		
+		return resultMap;
+		
+		
+	}
+	
+}

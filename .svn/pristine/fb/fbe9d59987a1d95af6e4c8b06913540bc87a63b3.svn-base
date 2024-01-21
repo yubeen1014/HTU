@@ -1,0 +1,27 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.vo.NoticeBoardVO;
+
+public interface NoticeBoardMapper {
+	
+	public List<NoticeBoardVO> list();
+	
+	// 공지사항 추가
+	public int createNoticeBoard(NoticeBoardVO noticeBoardVO);
+
+	public int getTotal();
+
+	public NoticeBoardVO detail(String nbCd);
+
+	public int count(NoticeBoardVO noticeBoardVO);
+
+	public int create(NoticeBoardVO noticeBoardVO);
+
+	public int updatePost(NoticeBoardVO noticeBoardVO);
+
+	public int deletePost(Map<String, String> map);
+	
+}

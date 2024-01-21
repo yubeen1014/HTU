@@ -1,0 +1,77 @@
+package kr.or.ddit.controller.professor;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import kr.or.ddit.service.professor.TestService;
+import kr.or.ddit.vo.TestQuestionVO;
+import kr.or.ddit.vo.TestVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@Slf4j
+@RequestMapping("/professor/test")
+public class TestController {
+
+	@Autowired
+	TestService testService;
+	
+	@GetMapping("/testList")
+	public String testList(Model model, @RequestParam String lecCd) {
+		
+		List<TestVO> testVOList = this.testService.testList(lecCd);
+		log.info("testList->testVOList : {}", testVOList);
+		
+		
+		model.addAttribute("testVOList", testVOList);
+		
+		return "professor/lecture/detail/testlist";
+	}
+	
+	@GetMapping("/testCreate")
+	public String testCreate() {
+		
+		return "professor/lecture/detail/testcreate";
+	}
+	
+	@PostMapping("/testCreate")
+	public String testCreatePost(TestVO testVO) {
+		
+		log.info("testCreatePost->testVO : {}", testVO);
+		
+		int result = this.testService.testCreatePost(testVO);
+		
+		return "";
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}

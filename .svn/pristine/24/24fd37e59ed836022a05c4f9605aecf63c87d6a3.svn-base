@@ -1,0 +1,12 @@
+package kr.or.ddit.service.professor;
+
+import kr.or.ddit.vo.ApprovalVO;
+import kr.or.ddit.vo.LectureApplyVO;
+
+public interface LectureApplyService {
+	/**결재 데이터 생성 -> 강의계획신청데이터생성*/
+	int createLectureApplyApproval(LectureApplyVO lectureApplyVO);
+
+	
+
+}

@@ -1,0 +1,92 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="/resources/js/jquery.min.js"></script>
+<style>
+	.testWrap {
+		background-color: #ffffff;
+		height: 100%;
+	    border-radius: 15px;
+    	box-shadow: 0 0 15px #bcbfc5ed;
+    	margin: 30px;
+    	padding: 50px;
+	}
+	.testHeader {
+		font-size: 20px;
+	    padding: 20px 0;
+	    font-weight: 800;
+	}
+	.testInfo {
+		background-color: #fbfbfb;
+		padding: 20px;
+		height: 400px;
+	    margin-bottom: 20px;
+	}
+	.testTbl {
+		text-align: center;
+		font-size: 14px;
+		width: 100%;
+	}
+	.testTbl th {
+		font-weight: bold;
+		background-color: #eaeaea;
+	}
+</style>
+${testVOList}
+
+<div class="testWrap">
+	<div class="testHeader">
+		시험
+	</div>
+	
+	<div class="testBody">
+		<div class="testInfo">
+			<div class="testInfoHeader">
+				시험 등록 안내 사항			
+			</div>
+			<div class="testInfoBody">
+				1. 시험 어쩌구
+			</div>
+		</div>
+		<div class="testBar">
+			<a href="/professor/test/testCreate?lecCd=${param.lecCd}" class="testBtn btn-two mini sky">등록</a>
+		</div>
+		<div class="testContents">
+			<table class="testTbl">
+				<tr>
+					<th>NO</th>
+					<th>제목</th>
+					<th>시험일자</th>
+					<th>제한시간</th>
+					<th>등록일</th>
+					<th>제출현황</th>
+				</tr>
+				<c:forEach var="test" items="${testVOList}" varStatus="stat">
+					<tr>
+						<td>${stat.count}</td>
+						<td>
+							<a class="testTitle"
+							href="/professor/test/testDetail?testCd=${test.testCd}">${test.testNm}</a>
+						</td>
+						<td>
+							<fmt:formatDate value="${test.testDt}" pattern="MM.dd HH:mm"/>
+						</td>
+						<td>${test.testLmt}분</td>
+						<td>
+							<fmt:formatDate value="${test.testReg}" pattern="yyyy.MM.dd"/>
+						</td>
+						<td>
+							<button class="testBtn btn-two mini gray">보기</button>
+						</td>
+					</tr>
+				</c:forEach>
+			</table>
+			
+		</div>
+	</div>
+	
+	
+</div>
+

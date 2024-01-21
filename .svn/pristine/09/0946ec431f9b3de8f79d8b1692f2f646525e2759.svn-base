@@ -1,0 +1,111 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="/resources/js/jquery.min.js"></script>
+<sec:authentication property="principal.userVO" var="userVO"/>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/resources/test/fonts/icomoon/style.css">
+
+    <link rel="stylesheet" href="/resources/test/css/owl.carousel.min.css">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/resources/test/css/bootstrap.min.css">
+    
+    <!-- Style -->
+    <link rel="stylesheet" href="/resources/test/css/style.css">
+
+</head>
+<body>
+  
+
+  <div class="content" style="border: 2px solid blue; overflow-y: scroll; height: 100%">
+    <div class="containerMail" style="border: 2px solid red;">
+
+<!--       <div class="table" style="border: 2px solid blue;"> -->
+
+        <table class="table custom-table" style="border: 2px solid pink;">
+          <thead>
+            <tr>
+              <th scope="col">
+                <label class="control control--checkbox">
+                  <input type="checkbox" class="js-check-all"/>
+                  <div class="control__indicator"></div>
+                </label>
+              </th>
+              <th scope="col"></th>
+<!--               <th scope="col">삭제</th> -->
+<!--               <th scope="col">Description</th> -->
+<!--               <th scope="col">Support</th> -->
+            </tr>
+          </thead>
+          <tbody>
+          	<c:forEach var="univMailVO" items="${data}">
+	            <tr>
+	              <th scope="row">
+	                <label class="control control--checkbox">
+	                  <input type="checkbox"/>
+	                  <div class="control__indicator"></div>
+	                </label>
+	              </th>
+	              <td>
+<%-- 	              <c:if test="${univMailVO.umlTemp eq 0}"> --%>
+<!-- 	              	<img alt="" class="mailRead" src="/resources/images/mail2.png" style="width: 30px; height: 30px;"> -->
+<%-- 	              </c:if> --%>
+<%-- 	              <c:if test="${univMailVO.umlTemp eq 1}"> --%>
+<!-- 	              	<img alt="" class="mailRead" src="/resources/images/readmail.png" style="width: 30px; height: 30px;"> -->
+<%-- 	              </c:if> --%>
+	              </td>
+	              <td>
+	                ${univMailVO.userVO.userNm}
+	              </td>
+	              <td>
+	              	<a class="mailTitle" href="/mail/tempMail?umlCd=${univMailVO.umlCd}" style="color: #333333">${univMailVO.umlTitle}</a>
+	              </td>
+	              <td><fmt:formatDate pattern="MM월 dd일 HH:mm" value="${univMailVO.umlReg}"/> </td>
+   	              <td><img src="/resources/images/x.png" style="width: 10px; height: 10px;" class="deleteMail" data-uml-cd="${univMailVO.umlCd}"></td>
+	            </tr>
+            </c:forEach>
+          </tbody>
+        </table>
+<!--       </div> -->
+
+    </div>
+
+  </div>
+    
+    <script src="/resources/test/js/jquery-3.3.1.min.js"></script>
+    <script src="/resources/test/js/popper.min.js"></script>
+    <script src="/resources/test/js/bootstrap.min.js"></script>
+    <script src="/resources/test/js/main.js"></script>
+</body>
+<script type="text/javascript">
+$(function(){
+	$(".deleteMail").on("click", function(){
+		if(confirm("삭제하시겠습니까?")){
+			let umlCd = $(this).data("umlCd");
+			console.log("umlCd : " + umlCd);
+			
+			$.ajax({
+				url:"/mail/deleteReceiveMail?umlCd="+umlCd,
+				data:umlCd,
+				type:"post",
+				beforeSend:function(xhr){
+					xhr.setRequestHeader("${_csrf.headerName}","${_csrf.token}");
+				},
+				success:function(res){
+					alert("삭제 완료");
+					location.reload();
+				}
+			});
+		}
+	});
+});
+</script>
+</html>

@@ -1,0 +1,13 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="/resources/js/jquery.min.js"></script>
+${myCrew}
+<div>
+	<p>동아리명</p>
+	<c:forEach var="crewVO" items="${myCrew}">
+		<p>${crewVO.crNm}</p>
+	</c:forEach>
+</div>

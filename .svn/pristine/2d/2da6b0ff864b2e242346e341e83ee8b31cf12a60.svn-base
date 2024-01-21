@@ -1,0 +1,23 @@
+package kr.or.ddit.service.common.impl;
+
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.LoginFindMapper;
+import kr.or.ddit.service.common.LoginFindService;
+import kr.or.ddit.vo.UserVO;
+
+@Service
+public class LoginFindServiceImpl implements LoginFindService {
+
+	@Autowired
+	LoginFindMapper loginFindMapper; 
+	
+	@Override
+	public UserVO findId(Map<String, String> map) {
+		return this.loginFindMapper.findId(map);
+	}
+
+}

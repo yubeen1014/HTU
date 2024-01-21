@@ -1,0 +1,11 @@
+package kr.or.ddit.mapper;
+
+import java.util.Map;
+
+import kr.or.ddit.vo.TaskSubmitVO;
+
+public interface TaskSubmitMapper {
+
+	TaskSubmitVO submitTask(Map<String, Object> map);
+
+}

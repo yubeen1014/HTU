@@ -1,0 +1,17 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.vo.UnivMailVO;
+
+public interface UnivMailMapper {
+
+	public List<UnivMailVO> inbox(String userCd);
+
+	public UnivMailVO mailDetail(String umlCd);
+
+	public int sendMail(UnivMailVO univMailVO);
+
+	public List<UnivMailVO> sentbox(String userCd);
+
+}

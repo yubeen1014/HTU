@@ -1,0 +1,66 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="/resources/js/jquery.min.js"></script>
+<sec:authentication property="principal.userVO" var="userVO"/>
+<input id="crCd" value="${crewVO.crCd}" hidden />
+<div>
+	<table>
+		<tr>
+			<td>동아리명</td>
+			<td>${crewVO.crNm}</td>
+		</tr>
+		<tr>
+			<td>동아리장</td>
+			<td>${crewVO.stuNm}</td>
+		</tr>
+		<tr>
+			<td>동아리실 위치</td>
+			<td>${crewVO.roomCd}</td>
+		</tr>
+		<tr>
+			<td>담당교수</td>
+			<td>${crewVO.proNm}</td>
+		</tr>
+		<tr>
+			<td>첨부파일</td>
+			<td>
+				<c:forEach var="fileDetail" items="${crewVO.filesDetailVOList}">
+	        		<a href="/resources/upload/${fileDetail.fileSvnm}" download="${fileDetail.fileOrnm}">${fileDetail.fileOrnm}</a><br>
+	    		</c:forEach>
+	    	</td>
+		</tr>
+	</table>
+	<div>
+		<button type="button" id="btnApply" data-stu-cd="${crewVO.stuCd}" class="btn-two red mini">가입</button>
+	</div>
+</div>
+<script>
+$(function(){
+	//수정!!!!
+	$("#btnApply").on("click", function(){
+		console.log("ff");
+			let stuCd = "${userVO.userCd}";
+			let crCd = $("#crCd").val();
+			
+			console.log("stuCd : " + stuCd);
+			console.log("crCd : " + crCd);
+		if(confirm("가입하시겠습니까?")){
+			
+			$.ajax({
+				url:"/mail/crewJoin?stuCd="+stuCd,
+				data:stuCd,
+				type:"post",
+				beforeSend:function(xhr){
+					xhr.setRequestHeader("${_csrf.headerName}","${_csrf.token}");
+				},
+				success:function(res){
+					console.log("성공!!");
+				}
+			});
+		}
+	});
+});
+</script>

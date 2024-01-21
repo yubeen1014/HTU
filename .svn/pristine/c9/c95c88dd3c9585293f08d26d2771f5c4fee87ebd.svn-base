@@ -1,0 +1,29 @@
+package kr.or.ddit.service.employee;
+
+import java.util.List;
+
+import kr.or.ddit.vo.DepartmentVO;
+import kr.or.ddit.vo.OrganizationChartVO;
+import kr.or.ddit.vo.StudentVO;
+import kr.or.ddit.vo.UserVO;
+
+public interface StuAdminService {
+
+	public List<StudentVO> stuinfolist();
+
+	public StudentVO stuinfodetail(String stuCd);
+
+	public List<OrganizationChartVO> chartList();
+
+	public List<StudentVO> coldetail(String organizationCode);
+
+	public List<StudentVO> deptdetail(String organizationCode);
+
+	public int update(UserVO userVO);
+
+	public List<DepartmentVO> deptList();
+
+	public int upload(UserVO userVO);
+
+
+}

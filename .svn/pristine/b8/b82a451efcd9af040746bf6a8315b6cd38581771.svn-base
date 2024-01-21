@@ -1,0 +1,299 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<style>
+.content {
+	background-color: #ffffff;
+}
+
+.profile_wrap {
+	width: 55%;
+	margin: 20px;
+	padding: 20px;
+	border: 1px solid #dddddd;
+	border-radius: 10px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	margin: 20px;
+}
+
+.table_topic {
+	font-size: 24px;
+	font-weight: bold;
+	padding-bottom: 20px;
+	display: flex;
+	margin-left: 10px;
+	position: relative;
+}
+
+.info-icon {
+	font-size: 24px;
+	position: absolute;
+	left: 9.5%;
+}
+
+.profile_photo_wrap {
+	display: flex;
+	align-items: center;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.profile_photo {
+	width: 170px;
+	height: 160px;
+	overflow: hidden;
+	margin-right: 20px;
+	border: 2px solid #000000;
+}
+
+.profile_photo img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.upload_form {
+	display: flex;
+	flex-direction: column;
+	margin-top: 20px;
+}
+
+.upload_form input {
+	margin-bottom: 10px;
+	width: 100%;
+}
+
+.upload_form button {
+	padding: 10px;
+	background-color: #4caf50;
+	color: #ffffff;
+	border: none;
+	cursor: pointer;
+}
+
+.profile_wrap table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 20px;
+	border-radius: 10px; /* 모서리를 곡선으로 만듭니다. */
+	overflow: hidden;
+}
+
+.profile_wrap th, .profile_wrap td {
+	border: 1px solid #dddddd;
+	padding: 10px;
+	text-align: left;
+}
+
+.profile_wrap th {
+	width: 170px;
+	font-size: 14px;
+	font-weight: bold;
+	background-color: #f2f2f2; /* th 배경색 추가 */
+}
+
+.profile_wrap td {
+	padding: 15px;
+	font-weight: bold;
+}
+
+/* 수정 가능한 입력 폼 스타일 추가 */
+.edit_form {
+	border: 1px solid #ddd; /* 테두리 추가 */
+	background-color: #f9f9f9; /* 배경색 추가 */
+	/* 	border-radius: 5px; */
+	padding: 5px;
+}
+
+.logo {
+	width: 19%;
+	height: 28%;
+	position: absolute;
+	left: 37%;
+	top: 3%;
+}
+
+.edit-icon {
+	cursor: pointer;
+	color: #800020; /* Burgundy color */
+	margin-left: 5px;
+}
+
+.editable {
+	display: inline-block;
+	margin-right: 5px;
+}
+
+.editable-input {
+	font-size: 15px;
+	font-family: sans-serif;
+	font-weight: bold;
+	width: 95%;
+	background-color: #e0f7fa;
+}
+
+#profileForm {
+  width: 300px;
+  margin: 0 auto;
+  padding: 10px;
+  border: 1px solid #dddddd;
+  border-radius: 5px;
+  background-color: #ffffff;
+}
+
+#profileForm label {
+  display: block;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+#profileForm input {
+  display: block;
+  width: 100%;
+  height: 40px;
+  padding: 10px;
+  border: 1px solid #dddddd;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+#profileForm img {
+  width: 100%;
+  height: 200px;
+  border-radius: 5px;
+}
+    
+</style>
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<sec:authentication property="principal.userVO" var="userVO" />
+
+<!-- 프로필 사진 등록폼 시작 -->
+<div class="profile_wrap">
+	<div class="table_topic">
+		</br>정보수정 <i class="fa-solid fa-circle-info" style="margin-left: 6px; margin-top: 24px;"></i>
+	</div>
+
+	<div class="profile_photo_wrap">
+    <!-- 프로필 사진 표시 영역 -->
+    <div class="profile_photo">
+        <img src="/resources/upload/2023/12/02/보나.jpg" alt="Profile Photo">
+<%--    <img src="/resources/upload/${data[0].filesDetailVO.fileSvnm}" alt="Profile Photo" id="profileImage"> --%>
+    </div>
+    <!-- 로고 이미지 -->
+    <img src="/resources/images/logo_circle.png" alt="Logo" class="logo">
+    
+<!--     프로필 사진 등록 폼 시작 -->
+<%--    <form id="profileForm" action="/common/mypage/create?${_csrf.parameterName}=${_csrf.token}" method="post" enctype="multipart/form-data" style="margin-left: 179px; position: absolute;top: 229px;"> --%>
+<!--         <input type="file" id="uploadFiles" name="uploadFiles" accept="image/*"> -->
+<!--    </form> -->
+<!--    	프로필 사진 등록 폼 끝 -->
+</div>
+
+	<form id="profileEditForm" action="/common/mypage/profileEditPost" method="post">
+		<input type="text" id="userCd" name="userCd" value="${userVO.userCd}" style="display: none;">
+		<table>
+			<tr>
+				<th>학번</th>
+				<td>${userVO.userCd}</td>
+			</tr>
+			<tr>
+				<th>이름(영문)</th>
+				<td>${userVO.userNm}(${userVO.userNme})</td>
+			</tr>
+			<tr>
+				<th>주민등록번호</th>
+				<td>${userVO.userReg1}-${userVO.userReg2}</td>
+			</tr>
+			<tr>
+				<th>전화번호</th>
+				<td>
+					<div class="edit_form">
+						<span class="editable" id="userTelDisplay">${userVO.userTel}</span>
+						<input type="text" id="userTel" name="userTel" class="editable-input" style="display: none;" value="${userVO.userTel}"> 
+						<i class="fas fa-pencil-alt edit-icon" data-target="userTel"></i>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th>주소</th>
+				<td>
+					<div class="edit_form">
+						<span class="editable" id="userAddr1Display">${userVO.userAddr1}</span>
+						<input type="text" id="userAddr1" name="userAddr1" class="editable-input" value="${userVO.userAddr1}" style="display: none;">
+						<i  class="fas fa-pencil-alt edit-icon" data-target="userAddr1"></i> 
+						<span class="editable" id="userAddr2Display">${userVO.userAddr2}</span>
+						<input type="text" id="userAddr2" name="userAddr2" class="editable-input" value="${userVO.userAddr2}" style="display: none;"> 
+						<i  class="fas fa-pencil-alt edit-icon" data-target="userAddr2"></i>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th>이메일</th>
+				<td>
+					<div class="edit_form">
+						<span class="editable" id="userMailDisplay">${userVO.userMail}</span>
+						<input type="text" id="userMail" name="userMail" class="editable-input" style="display: none;" value="${userVO.userMail}"> 
+						<i class="fas fa-pencil-alt edit-icon" data-target="userMail"></i>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th>계좌</th>
+				<td>
+					<div class="edit_form">
+						<span class="editable" id="userBankDisplay">${userVO.userBank}</span>
+						<input type="text" id="userBank" name="userBank" class="editable-input" value="${userVO.userBank}" style="display: none;">
+						<i class="fas fa-pencil-alt edit-icon" data-target="userBank"></i> 
+						<span class="editable" id="userAccDisplay">${userVO.userAcc}</span>
+						<input type="text" id="userAcc" name="userAcc" class="editable-input" value="${userVO.userAcc}"	style="display: none;"> 
+						<i class="fas fa-pencil-alt edit-icon" data-target="userAcc"></i>
+					</div>
+				</td>
+			</tr>
+		</table>
+		<button type="button" id="profileEditSubmit" class="btn-two mini blue"
+			style="position: relative; left: 92%; top: 9px;">수정</button>
+	</form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+<script>
+	$(document).ready(function() {
+		$(".edit-icon").click(function() {
+			var targetId = $(this).data("target");
+
+			$("#" + targetId + "Display").toggle();
+			$("#" + targetId).toggle().focus();
+		});
+
+		$("#profileEditSubmit").click(function() {
+			var csrfToken = $("meta[name='_csrf']").attr("content");
+			var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+			var userCd = $("#userCd").val();
+
+			var confirmEdit = confirm("정보를 수정하시겠습니까?");
+
+			if (confirmEdit) {
+				$.ajax({
+					type : "POST",
+					url : "/common/mypage/profileEditPost",
+					data : $("#profileEditForm").serialize(),
+					beforeSend : function(xhr) {
+						xhr.setRequestHeader(csrfHeader, csrfToken);
+					},
+					success : function(data) {
+						console.log("Success:", data);
+						alert("수정이 완료되었습니다.");
+						location.href = "/common/mypage/profile";
+					},
+				});
+			} else {
+				location.href = "/common/mypage/profileEdit";
+			}
+		});
+	});
+</script>
+

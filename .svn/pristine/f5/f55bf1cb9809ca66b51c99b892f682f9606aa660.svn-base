@@ -1,0 +1,95 @@
+package kr.or.ddit.service.student.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.ApprovalMapper;
+import kr.or.ddit.mapper.CrewMapper;
+import kr.or.ddit.service.student.CrewService;
+import kr.or.ddit.util.FileUtil;
+import kr.or.ddit.vo.ApprovalVO;
+import kr.or.ddit.vo.CrewPersonnelVO;
+import kr.or.ddit.vo.CrewVO;
+import kr.or.ddit.vo.NotificationVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Service
+public class CrewServiceImpl implements CrewService{
+
+	@Autowired
+	CrewMapper crewMapper;
+	
+	@Autowired
+	ApprovalMapper approvalMapper;
+	
+	@Autowired
+	FileUtil fileUtil;
+	
+	//동아리 조회
+	@Override
+	public List<CrewVO> crewList() {
+		return this.crewMapper.crewList();
+	}
+
+	//나의 동아리
+	@Override
+	public List<CrewVO> myCrew(String stuCd) {
+		return this.crewMapper.myCrew(stuCd);
+	}
+	
+	//동아리 개설 신청
+	@Override
+	public int crewApply(CrewVO crewVO) {
+		int result = this.crewMapper.crewApply(crewVO);
+		
+		result += this.fileUtil.uploadFile(crewVO.getUploadFiles(), crewVO.getCrCd());
+		log.info("crewApply->crewVO : " + crewVO);
+		
+		return result;
+	}
+	
+	//동아리 상세
+	@Override
+	public CrewVO crewDetail(String crCd) {
+		return this.crewMapper.crewDetail(crCd);
+	}
+	
+	//동아리원 조회
+	@Override
+	public List<CrewVO> crewPersonnel(String crCd) {
+		return this.crewMapper.crewPersonnel(crCd);
+	}
+	
+	//동아리 가입 승인
+	@Override
+	public int crewJoinApp(CrewPersonnelVO crewPersonnelVO) {
+		return this.crewMapper.crewJoinApp(crewPersonnelVO);
+	}
+
+	//동아리 수정
+	@Override
+	public int crewUpdate(CrewVO crewVO) {
+		int result = this.crewMapper.crewUpdate(crewVO);
+		
+		result += this.fileUtil.uploadFile(crewVO.getUploadFiles(), crewVO.getCrCd());
+		log.info("crewUpdate->crewVO : " + crewVO);
+		
+		return result;
+	}
+
+	//동아리 탈퇴
+	@Override
+	public int crewQuit(String stuCd, String crCd) {
+		return this.crewMapper.crewQuit(stuCd, crCd);
+	}
+
+	@Override
+	public CrewPersonnelVO crewJoinYn(String crCd, String userCd) {
+		return this.crewMapper.crewJoinYn(crCd, userCd);
+	}
+
+
+}

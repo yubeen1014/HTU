@@ -1,0 +1,32 @@
+package kr.or.ddit.vo;
+
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@ToString
+/**
+ * 강의테이블VO
+ * @author PC-20
+ *
+ */
+public class LectureVO {
+	private String lecCd;
+	private int lecHcnt;
+	private int lecStat;
+	
+	// 강의계획 정보를 가져오기 위한 필드
+	private LectureApplyVO lectureApplyVO;
+	
+	//private LectureScheduleVO lectureScheduleVO;
+	
+// resultMap
+// <result property="lecCd" column="LEC_CD"/>
+// <result property="lecHcnt" column="LEC_HCNT"/>
+// <result property="lecStat" column="LEC_STAT"/>
+}

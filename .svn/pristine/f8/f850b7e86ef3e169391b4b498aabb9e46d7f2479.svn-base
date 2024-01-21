@@ -1,0 +1,56 @@
+package kr.or.ddit.service.common.impl;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import kr.or.ddit.mapper.CommentMapper;
+import kr.or.ddit.service.common.CommentService;
+import kr.or.ddit.vo.CommentVO;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class CommentServiceImpl implements CommentService{
+	
+	private final CommentMapper commentMapper;
+	
+	@Override
+	public int insert(CommentVO commentVO) {
+		
+		// 익명게시판일떄
+		if (commentVO.getBdCd().substring(0,3).equals("ANO")) {
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("bdCd", commentVO.getBdCd());
+			paramMap.put("userCd", commentVO.getUserCd());
+			
+			// 작성자의 익명댓글 작성여부 확인
+			int cnt = this.commentMapper.serchAnomyComment(paramMap);
+			
+			// 해당 게시글의 작성이 처음일 경우
+			if (cnt == 0) {
+				int result = this.commentMapper.getAnonyNumber(commentVO.getBdCd());
+				commentVO.setCmtAnony(result);
+			} else {
+				commentVO.setCmtAnony(cnt);
+			}
+//			commentVO.setCmtPcd("asdf");
+		}
+		
+		log.info("commentVO ==> {}", commentVO);
+		
+		return this.commentMapper.insert(commentVO);
+	}
+
+	@Override
+	public int delete(String cmtCd) {
+		return this.commentMapper.delete(cmtCd);
+	}
+	
+	
+	
+}

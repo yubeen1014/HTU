@@ -1,0 +1,24 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+
+<style>
+	.sub_menu b:hover{color:#333333;}
+	.sub_menu_b{display:block; font-size:16px; padding:15px 0 10px 10px;}
+	.sub_menu_c{display:block; font-size:14px; padding:10px 0 5px 10px;}
+	.submenu_menu ul{border-bottom:1px solid #ebebeb;}
+	.submenu_menu ul:last-child{border-bottom:none;}
+	.sub_title2{font-size:18px; color:#333333; margin-bottom:5px;}
+	
+	.confirmButton{position:absolute; right:10px; bottom:10px; height:25px; font-size:12px; background-color:#333333!important;}
+</style>
+
+<sec:authentication property="principal.userVO" var="vo"/>
+<div class="sub_menu">
+  <div class="sub_title"><a href="/student/certificate/payment">증명서발급</a></div>
+
+	<a href="/student/certificate/payment" class="sub_menu_a">재학증명서</a>
+	<a class="sub_menu_a" href="/student/certificate/paymentGraduation" >졸업증명서</a>
+
+</div>

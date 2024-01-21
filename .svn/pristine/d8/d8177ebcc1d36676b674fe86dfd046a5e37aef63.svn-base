@@ -1,0 +1,25 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+
+
+${param.lecCd}
+<c:forEach var="lectureNoticeVO" items="${data.content}">
+	<c:if test="${lectureNoticeVO.lecCd eq param.lecCd}">
+        ${lectureNoticeVO.lecCd}
+	</c:if>
+</c:forEach>
+
+
+
+<script>
+$(function(){
+	var lecCD = localStorage.getItem("lecCD");
+	console.log("lecCD", lecCD);
+	document.getElementById("lecCDInput").value = lecCD;
+
+});
+</script>
+<button type="button" class="btn btn-primary" onclick="location.href='/common/board/publicize/create'" style=" display: inline-block; padding: 10px 20px; background-color: #800020; color: #fff; text-decoration: none; font-weight: 300; border-radius: 5px; position: absolute; right: 30px;">등록</button>

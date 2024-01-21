@@ -1,0 +1,31 @@
+package kr.or.ddit.controller.student;
+
+import java.security.Principal;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.service.student.StudentService;
+import kr.or.ddit.vo.StudentVO;
+import lombok.RequiredArgsConstructor;
+
+@Controller
+@RequestMapping("/student/dormitory")
+@RequiredArgsConstructor
+public class DormitoryController {
+	
+	private final StudentService studentServic;
+	
+	
+	@GetMapping("/home")
+	public String myPage(Model model, Principal principal) {
+		
+		
+		
+		return "/student/dormitory/home";
+	}
+	
+	
+}

@@ -1,0 +1,28 @@
+package kr.or.ddit.service.professor.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.TestMapper;
+import kr.or.ddit.service.professor.TestService;
+import kr.or.ddit.vo.TestVO;
+
+@Service
+public class TestServiceImpl implements TestService {
+
+	@Autowired
+	TestMapper testMapper;
+	
+	@Override
+	public List<TestVO> testList(String lecCd) {
+		return this.testMapper.testList(lecCd);
+	}
+
+	@Override
+	public int testCreatePost(TestVO testVO) {
+		return this.testMapper.testCreatePost(testVO);
+	}
+
+}

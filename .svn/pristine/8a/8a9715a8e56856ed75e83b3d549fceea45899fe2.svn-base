@@ -1,0 +1,50 @@
+package kr.or.ddit.service.common.impl;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.AcademicCalendarMapper;
+import kr.or.ddit.mapper.CalendarMapper;
+import kr.or.ddit.mapper.LectureScheduleMapper;
+import kr.or.ddit.mapper.RoomMapper;
+import kr.or.ddit.service.common.AcademicCalendarService;
+import kr.or.ddit.vo.AcademicCalendarVO;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class AcademicCalendarServiceImpl implements AcademicCalendarService {
+
+	private final AcademicCalendarMapper academicCalendarMapper;
+
+	private final CalendarMapper calendarMapper;
+
+	//학사일정 조회
+	@Override
+	public List<AcademicCalendarVO> getCalendar() {
+		return this.academicCalendarMapper.getCalendar();
+	}
+
+	//학사일정 등록 - 관리자만 가능
+	@Override
+	public int insertCalendar(AcademicCalendarVO acCalendarVO) {
+		return this.academicCalendarMapper.insertCalendar(acCalendarVO);
+	}
+
+	//학사일정 삭제 - 관리자만 가능
+	@Override
+	public int deleteCalendar(String acCd) {
+		return this.academicCalendarMapper.deleteCalendar(acCd);
+	}
+
+	//학사일정 수정 - 관리자만 가능
+	@Override
+	public int updateCalendar(AcademicCalendarVO acCalendarVO) {
+		return this.academicCalendarMapper.updateCalendar(acCalendarVO);
+	}
+	
+  	
+}

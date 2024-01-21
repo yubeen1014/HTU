@@ -1,0 +1,53 @@
+package kr.or.ddit.service.professor.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.ScholarshipRecommendMapper;
+import kr.or.ddit.service.professor.ScholarshipRecommendService;
+import kr.or.ddit.vo.ApprovalVO;
+import kr.or.ddit.vo.ProfessorVO;
+import kr.or.ddit.vo.ScholarshipRecommendVO;
+import kr.or.ddit.vo.UserVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Service
+public class ScholarshipRecommendServiceImpl implements ScholarshipRecommendService {
+
+	@Autowired
+	ScholarshipRecommendMapper scholarshipRecommendMapper;
+
+	@Override
+	public List<UserVO> getEmployee() {
+		return this.scholarshipRecommendMapper.getEmployee();
+	}
+
+	@Override
+	public int createScholarshipRecommendApproval(ScholarshipRecommendVO scholarshipRecommendVO) {
+		UserVO userVO = new UserVO();
+		ProfessorVO professorVO = new ProfessorVO();
+		ApprovalVO approvalVO = scholarshipRecommendVO.getApprovalVO();
+		// 승인데이터 생성
+		int result = this.scholarshipRecommendMapper.createScholarshipRecommendApproval(approvalVO);
+
+		userVO.setUserCd(approvalVO.getUserCd());
+		professorVO.setUserVO(userVO);
+		professorVO.setProCd(professorVO.getUserVO().getUserCd());
+
+		// 장학생추천테이블 교번에 세팅된 교번세팅
+		scholarshipRecommendVO.setApprovalVO(approvalVO);
+		scholarshipRecommendVO.setProfessorVO(professorVO);
+
+		scholarshipRecommendVO.setProCd(professorVO.getProCd());
+		scholarshipRecommendVO.setAppCd(approvalVO.getAppCd());
+
+		// 장학생추천 데이터 생성
+		result += this.scholarshipRecommendMapper.createScholarshipRecommendApply(scholarshipRecommendVO);
+
+		return result;
+	}
+
+}

@@ -1,0 +1,58 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+<link rel="stylesheet" href="/resources/css/bootstrap.min.css">
+<script src="/resources/js/jquery.min.js"></script>
+<link rel="stylesheet" href="/resources/css/reset.css">                                  
+<link rel="stylesheet" href="/resources/css/main.css">
+<sec:authorize access="isAuthenticated()">
+	<sec:authentication property="principal.userVO" var="userVO" />
+</sec:authorize>
+<p>${userVO.userCd}</p>
+<c:forEach var="lectureVO" items="${lectureVOList}">
+	<c:if test="${userVO.userCd eq lectureVO.lectureApplyVO.proCd}">
+		<p>${lectureVO.lectureApplyVO.proCd}</p>
+	</c:if>  
+</c:forEach>
+
+<div class="tab-content">
+	<div role="tabpanel" id="react-aria-97-tabpane-design"
+		aria-labelledby="react-aria-97-tab-design"
+		class="fade pb-4 p-4 tab-pane active show">
+		<table class="text-nowrap table">
+			<thead>
+				<tr>
+					<th scope="col">번호</th>
+					<th scope="col">강의명</th>
+					<th scope="col">개강상태</th>
+					
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach items="${lectureVOList}" var="lectureVO" varStatus="stat">
+						<c:if test="${userVO.userCd eq lectureVO.lectureApplyVO.proCd}">
+							<p>${lectureVO.lectureApplyVO.proCd}</p>
+					<tr>
+						<th scope="row">${stat.count}</th>
+						<td><a class="detail" href="/professor/lecture/detail?lecCd=${lectureVO.lecCd}" 
+							 data-lecapp-code="${lectureVO.lectureApplyVO.lecaCd}">${lectureVO.lectureApplyVO.lecaNm}</a></td>
+<%-- 						<td>${lectureVO.lectureApplyVO.professorVO.userVO.userNm}</td>  --%>
+						<c:if test="${lectureVO.lecStat == 0}"><td>개강</td></c:if> 
+						<c:if test="${lectureVO.lecStat == 1}"><td>종강</td></c:if> 
+						<c:if test="${lectureVO.lecStat == 2}"><td>폐강</td></c:if> 
+<%--                   		<td><fmt:formatDate value="${lectureVO.lectureApplyVO.approvalVO.appReg}" pattern="yyyy-MM-dd"/></td> --%>
+               		</tr>
+						</c:if>
+            	</c:forEach>
+         	</tbody>
+      </table>
+   </div>
+<%--    <div>${data.getPagingArea()}</div> --%>
+</div>
+
+<script>
+
+</script>
+

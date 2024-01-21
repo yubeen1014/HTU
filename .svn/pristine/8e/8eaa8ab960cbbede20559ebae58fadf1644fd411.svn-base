@@ -1,0 +1,11 @@
+package kr.or.ddit.service.common;
+
+import kr.or.ddit.vo.CommentVO;
+
+public interface CommentService {
+
+	public int insert(CommentVO commentVO);
+
+	public int delete(String cmtCd);
+
+}

@@ -1,0 +1,165 @@
+package kr.or.ddit.controller.common;
+
+import java.security.Principal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.service.common.PublicizeBoardService;
+import kr.or.ddit.util.ArticlePage;
+import kr.or.ddit.vo.BoardVO;
+import kr.or.ddit.vo.EmployeeVO;
+import kr.or.ddit.vo.NoticeBoardVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@RequestMapping("/common/board/publicize")
+@Slf4j
+public class PublicizeBoardController {
+
+	@Autowired
+	PublicizeBoardService publicizeBoardService;
+
+	// 요청URI : /instrs/list
+	// 요청방식 : get
+	// 강사 목록
+//	@GetMapping("/list")
+//	public String list(Model model) {
+//
+//		List<BoardVO> data = this.publicizeBoardService.list();
+//		log.info("data : " + data);
+//
+//		model.addAttribute("data", data);
+//
+//		// forwarding
+//		return "board/publicize/list";
+//	}
+	
+	@GetMapping("/list")
+	public String list(Model model,
+	                   @RequestParam(value = "keyword", required = false) String keyword,
+	                   @RequestParam(value = "currentPage", required = false, defaultValue = "1") int currentPage) {
+
+	    // 검색어와 현재 페이지 번호를 맵에 담기
+	    Map<String, Object> map = new HashMap<String, Object>();
+	    map.put("keyword", keyword);
+	    map.put("currentPage", currentPage);
+
+	    // 게시글 목록을 검색어와 페이징에 따라 가져오기
+	    List<BoardVO> data = this.publicizeBoardService.list(map);
+	    log.info("data : " + data);
+
+	    // 전체 게시글 수 가져오기
+	    int total = this.publicizeBoardService.getTotal(map);
+
+	    // 페이징 처리를 위한 ArticlePage 객체 생성
+	    ArticlePage<BoardVO> articlePage = new ArticlePage<>(total, currentPage, 10, data);
+
+	    // 페이지 링크를 위한 URL 설정
+	    articlePage.setUrl("/common/board/publicize/list");
+
+	    // Model에 데이터와 페이징 정보 추가
+	    model.addAttribute("data", articlePage);
+
+	    // forwarding
+	    return "board/publicize/list";
+	}
+
+	@GetMapping("/detail")
+	public String detail(Model model, String bdCd) {
+		log.info("bdCode ==> {}", bdCd);
+		BoardVO boardVO = this.publicizeBoardService.detail(bdCd);
+		
+		log.info("boardVO ==> {}", boardVO);
+		model.addAttribute("boardVO", boardVO);
+		return "board/publicize/detail";
+	}
+	
+	@ResponseBody
+	@GetMapping("/count")
+	public int count(String bdCd) {
+		
+		int cnt = this.publicizeBoardService.count(bdCd);
+		
+		return cnt;
+	}
+	
+	@GetMapping("/create")
+	public String create() {
+		//forwarding : jsp
+		return "board/publicize/create";
+	}
+	
+	@ResponseBody
+	@PostMapping("/createPost")
+	public BoardVO createPost(@RequestBody BoardVO boardVO,
+			Principal principal) {
+		String userCd = principal.getName();
+		boardVO.setUserCd(userCd);
+		
+	    log.info("create->boardVO : " + boardVO);
+	    
+	    int result = this.publicizeBoardService.create(boardVO);
+	    log.info("result :" + result );
+
+//	    if (result > 0) {
+//	        // 게시물 생성 성공, 리다이렉트 URL을 반환
+//	        return "redirect:/board/publicize/list";
+//	    } else {
+//	        // 게시물 생성 실패 처리
+//	        return "error"; // 실패했을 경우에 대한 처리를 추가하세요
+//	    }
+	    
+	    return boardVO;
+	}
+	
+	@ResponseBody
+	@PostMapping("/deletePost")
+	public Map<String, String> deletePost(@RequestBody Map<String, String> map) {
+	    int result = this.publicizeBoardService.deletePost(map);
+	    
+	    Map<String, String> response = new HashMap<>();
+	    response.put("result", (result > 0) ? "success" : "failure");
+	    
+	    return response;
+	}
+	
+	// ../update?nbCd=2
+		@GetMapping("/update")
+		public String update(Model model, String bdCd) {
+			log.info("nbCd : " + bdCd);
+			
+			BoardVO boardVO = this.publicizeBoardService.detail(bdCd);
+			log.info("boardVO : "+ boardVO);
+			
+			model.addAttribute("boardVO", boardVO);
+			
+			return "board/publicize/update";
+		}
+		
+		@ResponseBody
+		@PostMapping("/updatePost")
+		public BoardVO updatePost(@RequestBody BoardVO boardVO,
+				Principal principal) {
+			String userCd = principal.getName();
+			boardVO.setUserCd(userCd);
+			
+		    log.info("updatePost->BoardVO : " + boardVO);
+		    
+		    int result = this.publicizeBoardService.updatePost(boardVO);
+		    log.info("result :" + result );
+
+		    return boardVO;
+		}
+
+}

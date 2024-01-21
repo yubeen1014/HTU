@@ -1,0 +1,28 @@
+package kr.or.ddit.vo;
+
+import lombok.Data;
+
+@Data
+public class CrewVO {
+
+	private String crCd;		//동아리코드
+	private String roomCd;		//희망호실코드
+	private String appCd;		//결재승인코드
+	private String stuCd;		//신청인학번
+	private String proCd;		//담당교수
+	private String fileCd;		//첨부파일코드
+	private String crLeader;	//동아리장
+	private String crNm;		//동아리명
+	
+	private StudentVO studentVO;
+	
+	private ProfessorVO professorVO;
+	
+	private ApprovalVO approvalVO;
+	
+	private UserVO userVO;
+	
+	private String stuNm;
+	private String proNm;
+	
+}

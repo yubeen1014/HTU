@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.AcademicAdminMapper">
+	
+	<resultMap type="studentVO" id="studentMap">
+		<result property="stuCd" column="STU_CD"/>
+		<result property="depCd" column="DEP_CD"/>
+		<result property="comdCd" column="COMD_CD"/>
+		<result property="stuYear" column="STU_YEAR"/>
+		<result property="stuSem" column="STU_SEM"/>
+		<result property="stuMrc" column="STU_MRC"/>
+		<result property="stuMoc" column="STU_MOC"/>
+		<result property="stuCrc" column="STU_CRC"/>
+		<result property="stuCoc" column="STU_COC"/>
+		<result property="stuAddt" column="STU_ADDT"/>
+		<result property="stuGrdt" column="STU_GRDT"/>
+		<association property="commonDetailVO" resultMap="commondetailMap"></association>
+		<association property="userVO" resultMap="userMap"></association>
+	</resultMap>
+
+	<resultMap type="commonDetailVO" id="commondetailMap">
+		<result property="comdCd" column="COMD_CD"/>
+		<result property="comCd" column="COM_CD"/>
+		<result property="comdNm" column="COMD_NM"/>
+		<result property="comdDesc" column="COMD_DESC"/>
+	</resultMap>
+
+	<select id="recordApp" parameterType="String" resultMap="studentMap">
+	   SELECT STU_CD, S.COMD_CD,
+       		  C.COMD_CD, COMD_NM
+         FROM STUDENT S, COMMON_DETAIL C
+        WHERE S.COMD_CD=C.COMD_CD
+          AND STU_CD=#{userCd}
+	</select>
+</mapper>

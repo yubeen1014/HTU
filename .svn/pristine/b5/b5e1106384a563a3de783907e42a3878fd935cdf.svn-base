@@ -1,0 +1,35 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.vo.FilesDetailVO;
+import kr.or.ddit.vo.UnivMailVO;
+
+public interface UnivMailMapper {
+
+	public List<UnivMailVO> inbox(String userCd);
+
+	public List<UnivMailVO> sentbox(String userCd);
+	
+	public int sendMail(UnivMailVO univMailVO);
+
+	public UnivMailVO sendMailDetail(String umlCd);
+	
+	public UnivMailVO receiveMailDetail(String umlCd);
+
+	public int deleteMail(String umlCd);
+
+	public int readReceiveMail(String umlCd);
+
+	public List<UnivMailVO> tempMailBox(String userCd);
+
+	public int tempMailUpdate(UnivMailVO univMailVO);
+
+	public int deleteFileUpdate(FilesDetailVO filesDetailVO);
+
+	public int sendTempMail(UnivMailVO univMailVO);
+
+	public int readMail(Map<String, String> map);
+
+}

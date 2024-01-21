@@ -1,0 +1,172 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="/resources/js/jquery.min.js"></script>
+<style>
+	.crewHeaderName{font-size: 20px; padding-bottom:30px;}
+	#rtnModal {
+	  position:absolute; 
+	  width:100%; 
+	  height:100%; 
+	  background: rgba(0,0,0,0.4); 
+	  top:0; 
+	  left:0; 
+	  display:none;
+	}
+	.rtnModal-content {
+	  background-color: #fefefe;
+	  margin: 15% auto;
+	  padding: 20px;
+	  width: 40%;
+	  height: 60%;
+	}
+	#rtnBtn, #closeBtn {
+	  float: right;
+	}
+	.rtnReason {
+	  padding: 10px;
+	}
+	#appRet {
+	  width: 100%;
+	  height: 80%;
+	  font-size: 15px;
+	  border: 0;
+	  border-radius: 15px;
+	  outline: none;
+	  padding: 15px;
+	  background-color: rgb(233, 233, 233);
+	  resize: none;
+	}
+</style>
+<!-- 반려 사유 모달 -->
+<div id="rtnModal">
+	<div class="rtnModal-content">
+		<p class="rtnReason">반려 사유</p>
+		<textarea id="appRet" maxlength=333 required="required"></textarea>
+		<div>
+			<button type="button" class="btn-two red mini" id="rtnBtn">확인</button>
+			<button type="button" class="btn-two gray mini" id="closeBtn">닫기</button>
+		</div>
+	</div>
+</div>
+${appVOList}
+<div class="crewHeaderName">
+	동아리 개설 신청 내역
+</div>
+<div>
+	<table>
+		<tr>
+			<td>번호</td>
+			<td>신청인</td>
+			<td>승인여부</td>
+			<td>신청일시</td>
+			<td>처리일시</td>
+		</tr>
+		<c:forEach var="appVO" items="${appVOList}" varStatus="stat">
+		    <tr>
+		        <td>${stat.count}</td>
+		        <td>${appVO.userCd}</td>
+		        <c:if test="${appVO.appYn eq 0}">
+			        <td>
+			            <button type="button" class="btnApp btn-two red mini" data-app-cd="${appVO.appCd}" data-user-cd="${appVO.userCd}">승인</button>
+			        </td>
+			        <td>
+			            <button type="button" class="btnRtn btn-two blue mini" data-app-cd="${appVO.appCd}" data-user-cd="${appVO.userCd}">반려</button>
+			        </td>
+		        </c:if>
+		        <c:if test="${appVO.appYn eq 1}">
+			        <td>승인</td>
+		        </c:if>
+		        <c:if test="${appVO.appYn eq 2}">
+			        <td>반려</td>
+		        </c:if>
+		        <td><fmt:formatDate pattern="yyyy-MM-dd" value="${appVO.appReg}"></fmt:formatDate></td>
+		        <td><fmt:formatDate pattern="yyyy-MM-dd" value="${appVO.appProdt}"></fmt:formatDate></td>
+		    </tr>
+		</c:forEach>
+<!-- 		<tr> -->
+<!-- 			<td>첨부파일</td> -->
+<!-- 			<td> -->
+<%-- 				<c:forEach var="fileDetail" items="${crewVO.filesDetailVOList}"> --%>
+<%-- 	        		<a href="/resources/upload/${fileDetail.fileSvnm}" download="${fileDetail.fileOrnm}">${fileDetail.fileOrnm}</a><br> --%>
+<%-- 	    		</c:forEach> --%>
+<!-- 	    	</td> -->
+<!-- 		</tr> -->
+	</table>
+</div>
+<script>
+$(function(){
+
+	//승인 버튼 클릭 시
+	$(".btnApp").on("click", function(){
+		let appCd = $(this).data("appCd");
+		let userCd = $(this).data("userCd");
+        
+		console.log("appCd : " + appCd);
+		console.log("userCd : " + userCd);
+		
+		let data = {
+			"appYn" : 1,
+			"appCd" : appCd,
+			"userCd" : userCd
+		}
+		
+		$.ajax({
+			url:"/employee/crew/crewApp",
+			contentType:"application/json;charset=utf-8",
+			data:JSON.stringify(data),
+			type:"post",
+			beforeSend:function(xhr){
+				xhr.setRequestHeader("${_csrf.headerName}","${_csrf.token}");
+			},
+			success:function(res){
+				alertSuccess('승인되었습니다.', '/employee/crew/crewAppList');
+			}
+		});
+	});
+	
+	//반려 버튼 클릭 시
+	$(".btnRtn").on("click", function(){
+		let appCd = $(this).data("appCd");
+		let userCd = $(this).data("userCd");
+
+		console.log("appCd : " + appCd);
+		console.log("userCd : " + userCd);
+        
+        $("#rtnModal").fadeIn();
+
+        $("#closeBtn").on("click", function(){
+        	$("#rtnModal").fadeOut();
+        });
+        
+        $("#rtnBtn").on("click", function(){
+	        let appRet = $("#appRet").val();
+	        
+	        console.log("appRet: " + appRet);
+	        
+	        let data = {
+	    			"appYn" : 2,
+	    			"appCd" : appCd,
+	    			"userCd" : userCd,
+	    			"appRet" : appRet
+	    		}
+	        
+            $.ajax({
+                url: "/employee/crew/crewReturn",
+                contentType:"application/json;charset=utf-8",
+    			data:JSON.stringify(data),
+                type: "post",
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader("${_csrf.headerName}", "${_csrf.token}");
+                },
+                success: function(res) {
+		            $("#rtnModal").modal("hide");
+                    alertSuccess('반려 처리되었습니다.', '/employee/crew/crewAppList');
+                }
+            });
+        });
+    });
+});
+</script>

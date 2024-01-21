@@ -1,0 +1,24 @@
+package kr.or.ddit.service.student;
+
+import java.util.List;
+
+import kr.or.ddit.vo.TestApplyVO;
+import kr.or.ddit.vo.TestDetailVO;
+import kr.or.ddit.vo.TestQuestionVO;
+import kr.or.ddit.vo.TestVO;
+
+public interface TestStuService {
+
+	public List<TestVO> testList(String lecCd);
+
+	public TestVO testDetail(String testCd);
+
+	public List<TestQuestionVO> tqVOList(String testCd);
+
+	public int testApply(TestApplyVO testApplyVO);
+
+	public TestApplyVO testResult(String teaCd, String stuCd);
+
+	public List<TestDetailVO> testResultDetail(String teaCd);
+
+}

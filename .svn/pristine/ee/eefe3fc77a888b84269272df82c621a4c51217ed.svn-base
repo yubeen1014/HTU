@@ -1,0 +1,36 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+<sec:authentication property="principal.userVO" var="vo"/>
+<div class="flex-shrink-0 p-3 bg-white sub_menu">
+    <a href="#none" class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom" style="margin-top:65px; margin-left:5px;">
+      <span class="fs-5"><a href="/employee/lectureapproval/list">결재</a></span>
+    </a>
+    <div class="submenu_menu">
+	    <ul>
+	      	<div class="sub_title2"><a href="/employee/lectureapproval/list">강의결재</a></div>
+	      	<a href="/employee/lectureapproval/list" class="sub_menu_b">강의계획서 제출목록</a>
+	    </ul>
+	    
+		<ul>
+	    	<div class="sub_title2" style="margin-top:30px;"><a href="/employee/stuadmin/recordApprovalList">학적관리</a></div>
+			<a class="sub_menu_b"" href="/employee/stuadmin/recordApprovalList">학적변경신청내역</a>
+		</ul>
+	    
+	    <ul>
+	    	<div class="sub_title2"><a href="/employee/dormitory/list">기숙사관리</a></div>
+      		<a href="/employee/dormitory/list" class="sub_menu_b">기숙사 신청목록</a>
+      	</ul>
+      	
+      	<ul>
+      		<div class="sub_title2"><a href="/employee/crew/crewList"><a href="/employee/crew/crewList">동아리관리</a></a></div>
+       		<a href="/employee/crew/crewList" class="sub_menu_b">동아리목록</a>
+     		<a href="/employee/crew/crewAppList" class="sub_menu_b">동아리 개설 승인</a>
+	    </ul>
+	    
+      	<ul>
+      		<div><a href="/employee/postreport/list">커뮤니티관리</a></div>
+      		<a href="/employee/postreport/list" class="sub_menu_b">게시글 신고 목록</a>
+      	</ul>
+  </div>
+  </div>

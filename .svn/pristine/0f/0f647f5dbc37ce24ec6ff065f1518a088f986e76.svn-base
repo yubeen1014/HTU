@@ -1,0 +1,31 @@
+package kr.or.ddit.service.professor;
+
+import java.util.List;
+
+import kr.or.ddit.vo.LectureApplyVO;
+import kr.or.ddit.vo.TestQuestionVO;
+import kr.or.ddit.vo.TestVO;
+
+public interface TestService {
+
+	//해당 강의 정보
+	public LectureApplyVO lectureInfo(String lecCd);
+	
+	//시험 목록
+	public List<TestVO> testList(String lecCd);
+
+	//시험 등록
+	public int testCreatePost(TestVO testVO);
+
+	//시험 상세
+	public TestVO testDetail(String testCd);
+
+	//시험 문제 리스트
+	public List<TestQuestionVO> tqVOList(String testCd);
+
+	//시험 수정
+	public int testUpdate(TestVO testVO);
+
+
+
+}

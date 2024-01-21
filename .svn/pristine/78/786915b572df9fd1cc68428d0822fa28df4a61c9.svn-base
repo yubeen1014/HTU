@@ -1,0 +1,34 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.vo.ApprovalVO;
+import kr.or.ddit.vo.ScholarshipRecommendVO;
+import kr.or.ddit.vo.UserVO;
+
+public interface ScholarshipRecommendMapper {
+
+	List<UserVO> getEmployee();
+
+	int createScholarshipRecommendApply(ScholarshipRecommendVO scholarshipRecommendVO);
+
+	int createScholarshipRecommendApproval(ApprovalVO approvalVO);
+
+
+//	int createLectureApplyConsent(ApprovalVO consentVO);
+//
+//	int createLectureApply(LectureApplyVO lectureApplyVO);
+//
+//	int updateLectureApplyConCd(LectureApplyVO lectureApplyVO);
+//
+//	LectureApplyVO lecaApplyDetail(String lecaCd);
+//
+//	LectureApplyVO getLectureApply(String appCd);
+//
+//	List<UserVO> getEmployee();
+
+//	int createLecture(LectureVO lectureVO);
+//
+//	int createLectureSchedule(LectureScheduleVO lectureScheduleVO);
+
+}

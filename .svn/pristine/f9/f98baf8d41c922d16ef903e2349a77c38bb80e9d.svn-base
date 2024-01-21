@@ -1,0 +1,50 @@
+package kr.or.ddit.service.employee.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.CrewMapper;
+import kr.or.ddit.service.employee.CrewEmpService;
+import kr.or.ddit.vo.CrewPersonnelVO;
+import kr.or.ddit.vo.CrewVO;
+
+@Service
+public class CrewEmpServiceImpl implements CrewEmpService {
+
+	@Autowired
+	CrewMapper crewMapper;
+
+	@Override
+	public List<CrewVO> crewListEmp(Map<String, Object> map) {
+		return this.crewMapper.crewListEmp(map);
+	}
+
+	@Override
+	public int crewUpdateYn(String appCd) {
+		return this.crewMapper.crewUpdateYn(appCd);
+	}
+
+	@Override
+	public int crewJoinApp(CrewPersonnelVO crewPersonnelVO) {
+		return this.crewMapper.crewJoinApp(crewPersonnelVO);
+	}
+
+	@Override
+	public int deleteCrew(String crCd) {
+		return this.crewMapper.deleteCrew(crCd);
+	}
+
+	@Override
+	public CrewVO crewDetailEmp(String crCd) {
+		return this.crewMapper.crewDetailEmp(crCd);
+	}
+
+	@Override
+	public int deleteCrewPerson(String crCd) {
+		return this.crewMapper.deleteCrewPerson(crCd);
+	} 
+	
+}

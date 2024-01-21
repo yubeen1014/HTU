@@ -1,0 +1,46 @@
+package kr.or.ddit.controller.employee;
+
+import java.security.Principal;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.service.employee.StuAdminService;
+import kr.or.ddit.vo.StudentVO;
+import lombok.extern.slf4j.Slf4j;
+
+
+/**
+ * 학사관리자가 학생을 관리하는 메소드
+ * @author user
+ *
+ */
+@Slf4j
+@Controller
+@RequestMapping("/employee/stuadmin")
+public class StuAdminController {
+	
+	@Autowired
+	StuAdminService stuAdminService;
+	
+	//학생관리 리스트 출력
+	@GetMapping("/stuinfo")
+	public String stuinfolist(Model model) {
+		List<StudentVO> data = this.stuAdminService.stuinfolist();
+		model.addAttribute("data", data);
+		log.info("stuinfo->vo : {}", data);
+		return "employee/stuadmin/stuinfo";
+	}
+	
+	//학생 디테일 리스트
+	@GetMapping("/stuinfodetail")
+	public String stuinfodetail(Model model, String stuCd) {
+		StudentVO studentVO=this.stuAdminService.stuinfodetail(stuCd);
+		model.addAttribute("studentVO", studentVO);
+		return "employee/stuadmin/stuinfodetail";
+	}
+}

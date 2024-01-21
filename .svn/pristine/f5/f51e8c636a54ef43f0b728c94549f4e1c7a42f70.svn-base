@@ -1,0 +1,105 @@
+main {
+display: flex;
+flex-wrap: nowrap;
+height: 100vh;
+max-height: 100vh;
+overflow-x: auto;
+overflow-y: hidden;
+}
+
+.bi {
+vertical-align: -.125em;
+pointer-events: none;
+fill: currentColor;
+border: 1px solid #000;
+}
+
+.dropdown-toggle { outline: 0; }
+
+.nav-flush .nav-link {
+border-radius: 0;
+}
+
+.btn-toggle {
+display: inline-flex;
+align-items: center;
+padding: .25rem .5rem;
+font-weight: 600;
+color: rgba(0, 0, 0, .65);
+background-color: transparent;
+border: 0;
+}
+.btn-toggle:hover,
+.btn-toggle:focus {
+color: rgba(0, 0, 0, .85);
+background-color: #d2f4ea;
+}
+
+.btn-toggle::before {
+width: 1.25em;
+line-height: 0;
+content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
+transition: transform .35s ease;
+transform-origin: .5em 50%;
+}
+
+.btn-toggle[aria-expanded="true"] {
+color: rgba(0, 0, 0, .85);
+}
+.btn-toggle[aria-expanded="true"]::before {
+transform: rotate(90deg);
+}
+
+.btn-toggle-nav a {
+display: inline-flex;
+padding: .1875rem .5rem;
+margin-top: .125rem;
+margin-left: 1.25rem;
+text-decoration: none;
+}
+.btn-toggle-nav a:hover,
+.btn-toggle-nav a:focus {
+background-color: #d2f4ea;
+}
+
+.scrollarea {
+overflow-y: auto;
+}
+
+.fw-semibold { font-weight: 600; }
+.lh-tight { line-height: 1.25; }
+
+.simplebar-content-wrapper {
+  direction: inherit;
+  box-sizing: border-box !important;
+  position: relative;
+  display: block;
+  height: 100%; /* Required for horizontal native scrollbar to not appear if parent is taller than natural height */
+  width: auto;
+  visibility: visible;
+  overflow: auto; /* Scroll on this element otherwise element can't have a padding applied properly */
+ 
+  max-width: 100%; /* Not required for horizontal scroll to trigger */
+  max-height: 100%; /* Needed for vertical scroll to trigger */
+}
+
+/* css */
+ul.nav li{margin: 10px 15px 10px 0;}
+ul.nav li a{height: 40px; line-height: 40px; color:#ffffff; font-weight: 400;}
+.hambuger_btn{width:20px; margin:10px 0 30px 15px;}
+main.aside .logout{color: #ffffff; height: 40px; line-height: 40px; text-align: center; border-radius: 0.25rem; margin:10px 15px 10px 0; transition: .3s; font-weight:500;}
+main.aside .jojick{color: #ffffff; height: 40px; line-height: 40px; text-align: center; border-radius: 0.25rem; margin:100% 15px 0 0; transition: .3s; font-weight:500;}
+/* main.aside_up .logout:hover{background-color: #ffffff!important; color: #751c35!important; font-weight: 500!important;} */
+main.aside_up .jojick:hover{background-color: #ffffff!important; color: #751c35!important; font-weight: 500!important;}
+main.aside .jojick a:hover{color: #751c35!important;}
+/* badge : new_alarm */
+.nav-link{position: relative;}
+.header_right_box .alarm{position: relative;}
+.new_alarm_down{width:5px; height: 5px; border-radius: 5px; background-color: red;
+  position: absolute; 
+  right: 5px; top:30%; transform: translateY(-50%);}
+.new_alarm_up{
+  width:20px; height: 20px; border-radius: 20px;
+  background-color: #751c35; text-align: center; line-height: 20px; color:#ffffff; font-size: 11px;
+  position: absolute; 
+  right: 5px; top:50%; transform: translateY(-50%);}

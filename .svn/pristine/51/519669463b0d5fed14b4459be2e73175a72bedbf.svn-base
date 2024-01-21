@@ -1,0 +1,100 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="/resources/js/jquery.min.js"></script>
+<script type="text/javascript" src="/resources/ckeditor/ckeditor.js"></script>
+<script>
+$(function(){
+	CKEDITOR.replace('umlCon');
+	CKEDITOR.config.allowedContent = true;
+   
+	$("#umlReceiver").find("option").each(function(){
+		if(this.value == "${univMailVO.umlSender}"){
+			$(this).remove();
+		}
+	})
+});
+</script>
+<form name="frm" id="frm" action="/mail/sendTempMail?${_csrf.parameterName}=${_csrf.token}" method="post" enctype="multipart/form-data">
+	<input name="umlCd" value="${univMailVO.umlCd}" hidden />
+	<div>
+		<p>받는 사람</p>
+		<select name="umlReceiver"  id="umlReceiver">
+			<c:forEach var="userVO" items="${userVOList}">
+				<option value="${userVO.userCd}" 
+					<c:if test ="${userVO.userCd eq univMailVO.umlReceiver}">selected="selected"</c:if>
+				>${userVO.userNm}</option>
+			</c:forEach>
+		</select>
+	</div>
+	<div>
+		<p>제목</p>
+		<input type="text" name="umlTitle" value="${univMailVO.umlTitle}" />
+	</div>
+	<div>
+		<p>파일첨부</p>
+		<c:forEach var="fileDetail" items="${univMailVO.filesDetailVOList}">
+			<div>
+		        <a name="uploadFiles" href="/resources/upload/${fileDetail.fileSvnm}">${fileDetail.fileOrnm}</a>
+		        <img data-file-cd="${fileDetail.fileCd}" data-file-sn="${fileDetail.fileSn}" class="fileDeleteBtn" alt="delete" src="/resources/images/x.png" style="width: 10px; height: 10px;" /><br />
+			</div>
+	    </c:forEach>
+		<input type="file" name="uploadFiles" multiple="multiple" />
+	</div>
+	<div>
+		<p>내용</p>
+		<textarea rows="5" cols="30" name="umlCon">${univMailVO.umlCon}</textarea>
+	</div>
+	<div>
+		<button type="button" id="btnList" class="btn-two gray mini">목록</button>
+		<button type="button" id="btnTemp" name="umlTemp" value="1" class="btn-two blue mini">임시저장</button>
+		<button type="submit" id="btnSend" name="umlTemp" value="0" class="btn-two red mini">보내기</button>
+	</div>
+	<sec:csrfInput />
+</form>
+
+<script type="text/javascript">
+$(function(){
+	$("#btnTemp").on("click", function(){
+		$("#frm").attr("action", "/mail/tempMailUpdate?${_csrf.parameterName}=${_csrf.token}");
+		$(this).attr("type", "submit");
+	});
+	
+	$(".fileDeleteBtn").on("click", function(){
+		let node = $(this).parent();
+		let fileCd = $(this).data("fileCd");
+		let fileSn = $(this).data("fileSn");
+		
+		let data = {
+			"fileCd":fileCd,
+			"fileSn":fileSn
+		};
+		
+		console.log("data", data);
+
+		$.ajax({
+			url:"/mail/deleteFileUpdate",
+			contentType:"application/json;charset=utf-8",
+			data:JSON.stringify(data),
+			type:"post",
+			beforeSend:function(xhr){
+				xhr.setRequestHeader("${_csrf.headerName}","${_csrf.token}");
+			},
+			success:function(res){
+				console.log("res : ", res);
+				if(res > 0){
+					node.remove();
+				}
+			}
+		});
+	});
+	
+	$("#btnList").on("click", function(){
+		if(confirm("이 페이지를 벗어나면 수정된 내용은 저장되지 않습니다.")){
+			location.href = "/mail/tempMailBox";
+		}
+	});
+});
+</script>

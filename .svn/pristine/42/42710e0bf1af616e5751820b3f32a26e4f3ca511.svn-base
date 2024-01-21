@@ -1,0 +1,100 @@
+package kr.or.ddit.controller.professor;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.mapper.CommonMapper;
+import kr.or.ddit.mapper.DepartmentMapper;
+import kr.or.ddit.mapper.RoomMapper;
+import kr.or.ddit.service.professor.LectureApplyService;
+import kr.or.ddit.vo.ApprovalVO;
+import kr.or.ddit.vo.DepartmentVO;
+import kr.or.ddit.vo.LectureApplyVO;
+import kr.or.ddit.vo.RoomVO;
+import kr.or.ddit.vo.UserVO;
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
+@Controller
+@RequestMapping("/professor")
+/** 강의계획신청 컨트롤러*/
+public class LectureApplyController {
+	
+	@Autowired
+	LectureApplyService lectureApplyService;
+	
+	@Autowired
+	CommonMapper commonMapper;
+	@Autowired
+	DepartmentMapper departmentMapper;
+	@Autowired
+	RoomMapper roomMapper;
+	
+	
+	@ModelAttribute
+	/** 승인받을 관리자 목록의 정보*/
+	public void getEmployee(Model model) {
+		
+		List<UserVO> userVOList = this.lectureApplyService.getEmployee();
+		
+		model.addAttribute("employeeList", userVOList);
+		
+	}
+	
+	
+	@ModelAttribute
+	/** 학과에 대한 정보를 현재 컨트롤러에서 모두 쓰기위한 메서드*/
+	public void getDepartment(Model model) {
+		
+		List<DepartmentVO> departmentVOList = this.departmentMapper.getDepartment();
+		
+		model.addAttribute("departmentVOList", departmentVOList);
+	}
+	
+	@ModelAttribute
+	/** 호실에 대한 정보를 현재 컨트롤러에서 모두 쓰기위한 메서드*/
+	public void getRoom(Model model) {
+		
+		List<RoomVO> roomVOList = this.roomMapper.getRoomCd();
+		
+		model.addAttribute("roomVOList", roomVOList);
+	}
+	
+	
+	@GetMapping("/mypage")
+	/**교수 메인*/
+	public String getProfessorPage(Model model) {
+		
+		model.addAttribute("alarm", "1");
+		
+		return "pro_home";
+	}
+	
+	@GetMapping("/lectureapply/create")
+	/**강의계획신청 페이지로 이동*/
+	public String create() {
+		
+		return "professor/lectureapply/create";
+	}
+	
+	
+	@PostMapping("/lectureapply/create")
+	/**결재 데이터 생성 -> 강의계획신청데이터생성*/
+	public String createLectureApplyConsent(LectureApplyVO lectureApplyVO) {
+		
+		log.info("lecture ==> {}", lectureApplyVO);
+		
+		int result = this.lectureApplyService.createLectureApplyApproval(lectureApplyVO);
+		
+		return "redirect:/pro/main";
+	}
+	
+}

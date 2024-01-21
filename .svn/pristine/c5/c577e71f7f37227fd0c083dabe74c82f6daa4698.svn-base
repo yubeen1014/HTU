@@ -1,0 +1,60 @@
+package kr.or.ddit.controller.common;
+
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import kr.or.ddit.service.common.FreeBoardService;
+import kr.or.ddit.vo.BoardVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@RequestMapping(value = "/common/board/free/")
+@Controller
+public class FreeBoardController {
+	
+	@Autowired
+	FreeBoardService freeBoardService;
+	
+	@GetMapping("/list")
+	public String list(Model model) {
+		
+		List<BoardVO> boardList = this.freeBoardService.list();
+		
+		model.addAttribute("boardList", boardList);
+		
+		List<BoardVO> data = this.freeBoardService.list();
+		
+		model.addAttribute("data", data);
+		
+		return "board/free_board/list";
+		
+	}
+	
+	@GetMapping("/create")
+	public String create() {
+		
+		return "board/free_board/create";
+	}
+		
+	@PostMapping("/createPost")
+	public String ceratePost(BoardVO boardVO) {
+		
+		int result = this.freeBoardService.createPost(boardVO);
+		
+		return "redirect:board/free_board/create";
+	}
+	
+	@GetMapping("/detail")
+	public String detail(String bdCd, Model model) {
+
+		BoardVO boardVO = this.freeBoardService.detail(bdCd);
+
+		model.addAttribute("boardVO", boardVO);
+
+		return "board/free_board/detail";
+	}
+}

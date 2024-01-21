@@ -1,0 +1,23 @@
+package kr.or.ddit.service.student;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.vo.EnrolmentVO;
+import kr.or.ddit.vo.LectureNoticeVO;
+import kr.or.ddit.vo.LectureVO;
+
+public interface LectureService {
+
+	List<EnrolmentVO> getEnrolmentLecture(String stuCd);
+
+	LectureVO enrolmentLectureDetail(String lecCd);
+
+	List<LectureNoticeVO> stuLectureNoticeList(Map<String, Object> map);
+
+	int getTotal(Map<String, Object> map);
+
+	LectureNoticeVO stuLectureNoticeDetail(String lecnCd);
+
+	
+}

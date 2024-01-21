@@ -1,0 +1,56 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import kr.or.ddit.vo.TestApplyVO;
+import kr.or.ddit.vo.TestDetailVO;
+import kr.or.ddit.vo.TestQuestionVO;
+import kr.or.ddit.vo.TestVO;
+
+public interface TestMapper {
+
+	//시험 목록
+	public List<TestVO> testList(String lecCd);
+
+	//시험 등록
+	public int testCreatePost(TestVO testVO);
+
+	//시험 문제 등록
+	public int testQustionInsert(TestQuestionVO testQuestionVO);
+
+	//시험 상세
+	public TestVO testDetail(String testCd);
+
+	//시험 문제 리스트
+	public List<TestQuestionVO> tqVOList(String testCd);
+
+	//시험 수정
+	public int testUpdate(TestVO testVO);
+
+	//시험 문제 삭제
+	public int deleteQuestion(String testCd);
+
+	public int testApply(TestApplyVO testApplyVO);
+
+	public int testDetailInsert(TestDetailVO testDetailVO);
+
+	public int testScoreUpdate(TestApplyVO testApplyVO);
+
+	public TestApplyVO testResult(@Param(value = "testCd") String testCd, @Param(value = "stuCd") String stuCd);
+
+	public List<TestDetailVO> testResultDetail(String teaCd);
+
+	public String getCrtrCd(String lecCd);
+
+	public int updateMsGrade(@Param(value = "crtrCd") String crtrCd, @Param(value = "stuCd") String stuCd);
+
+	public int updateFsGrade(@Param(value = "crtrCd") String crtrCd, @Param(value = "stuCd") String stuCd);
+
+	public List<TestApplyVO> testResultList(TestVO testVO);
+
+	public TestApplyVO testResultPro(String teaCd);
+
+
+}

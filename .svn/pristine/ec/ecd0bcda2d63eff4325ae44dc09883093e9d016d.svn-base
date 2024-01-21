@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.TestMapper">
+	
+	<resultMap type="testVO" id="testMap">
+		<result property="testCd" column="TEST_CD"/>
+		<result property="lecCd" column="LEC_CD"/>
+		<result property="testOpt" column="TEST_OPT"/>
+		<result property="testNm" column="TEST_NM"/>
+		<result property="testCon" column="TEST_CON"/>
+		<result property="testReg" column="TEST_REG"/>
+		<result property="testDt" column="TEST_DT"/>
+		<result property="testLmt" column="TEST_LMT"/>
+	</resultMap>
+	
+	<select id="testList" parameterType="String" resultMap="testMap">
+		SELECT
+		    TEST_CD
+		  , LEC_CD
+		  , TEST_OPT
+		  , TEST_NM
+		  , TEST_CON
+		  , TEST_REG
+		  , TEST_DT
+		  , TEST_LMT
+		FROM
+		    TEST
+		WHERE 
+		    LEC_CD = #{lecCd}
+	</select>
+	
+	<insert id="testCreatePost" parameterType="testVO">
+		INSERT INTO TEST (
+		    TEST_CD
+		    , LEC_CD
+		    , TEST_OPT
+		    , TEST_NM
+		    , TEST_CON
+		    , TEST_REG
+		    , TEST_DT
+		    , TEST_LMT
+		) VALUES (
+		    #{testCd}
+		  , #{lecCd}
+		  , #{testOpt}
+		  , #{testNm}
+		  , #{testCon}
+		  , SYSDATE
+		  , #{testDt}
+		  , #{testLmt}
+		)
+	</insert>
+</mapper>

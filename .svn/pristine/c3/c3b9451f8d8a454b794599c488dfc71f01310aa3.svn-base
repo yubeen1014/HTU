@@ -1,0 +1,17 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.vo.LectureGradeVO;
+import kr.or.ddit.vo.StudentVO;
+import kr.or.ddit.vo.UserVO;
+
+public interface AcademicAdminMapper {
+
+	public List<LectureGradeVO> getLecList(String stuCd);
+
+	public StudentVO recordApp(String userCd);
+
+	public List<LectureGradeVO> getGrade(StudentVO studentVO);
+
+}

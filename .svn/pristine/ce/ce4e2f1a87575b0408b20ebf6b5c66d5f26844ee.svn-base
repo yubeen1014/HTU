@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.StudentMapper">
+	
+	<resultMap type="studentVO" id="studentMap">
+		<result property="stuCd" column="STU_CD"/>
+		<result property="depCd" column="DEP_CD"/>
+		<result property="comdCd" column="COMD_CD"/>
+		<result property="stuYear" column="STU_YEAR"/>
+		<result property="stuSem" column="STU_SEM"/>
+		<result property="stuMrc" column="STU_MRC"/>
+		<result property="stuMoc" column="STU_MOC"/>
+		<result property="stuCrc" column="STU_CRC"/>
+		<result property="stuCoc" column="STU_COC"/>
+		<result property="stuAddt" column="STU_ADDT"/>
+		<result property="stuGrdt" column="STU_GRDT"/>
+		<association property="userVO" resultMap="userMap"/>
+		<association property="departmentVO" resultMap="departmentMap"/>
+	</resultMap>
+	
+	<resultMap type="userVO" id="userMap">
+		<result property="userCd" column="USER_CD"/>
+		<result property="userNm" column="USER_NM"/>
+		<result property="userNme" column="USER_NME"/>
+		<result property="userTel" column="USER_TEL"/>
+		<result property="userZip" column="USER_ZIP"/>
+		<result property="userAddr1" column="USER_ADDR1"/>
+		<result property="userAddr2" column="USER_ADDR2"/>
+		<result property="userReg1" column="USER_REG1"/>
+		<result property="userReg2" column="USER_REG2"/>
+		<result property="userMail" column="USER_MAIL"/>
+		<result property="userPass" column="USER_PASS"/>
+		<result property="userBank" column="USER_BANK"/>
+		<result property="userDepo" column="USER_DEPO"/>
+		<result property="userAcc" column="USER_ACC"/>
+		<result property="fileCd" column="FILE_CD"/>
+		<result property="comdCd" column="COMD_CD"/>
+	</resultMap>
+	
+	<resultMap type="departmentVO" id="departmentMap">
+		<result property="depCd" column="DEP_CD"/>
+		<result property="colCd" column="COL_CD"/>
+		<result property="depNm" column="DEP_NM"/>
+		<result property="depMrc" column="DEP_MRC"/>
+		<result property="depMoc" column="DEP_MOC"/>
+		<result property="depCrc" column="DEP_CRC"/>
+		<result property="depCoc" column="DEP_COC"/>
+		<result property="depCap" column="DEP_CAP"/>
+		<result property="depTel" column="DEP_TEL"/>
+		<result property="depFee" column="DEP_FEE"/>
+		<association property="collegeVO" resultMap="collegeMap"/>
+	</resultMap>
+	
+	<resultMap type="collegeVO" id="collegeMap">
+		<result property="colCd" column="COL_CD"/>
+		<result property="colCrd" column="COL_CRD"/>
+	</resultMap>
+	
+	
+	<select id="getStudent" parameterType="String" resultMap="studentMap">
+		SELECT  STU_CD, S.DEP_CD, S.COMD_CD, STU_YEAR, STU_SEM, STU_MRC, STU_MOC, 
+		        STU_CRC, STU_COC, STU_ADDT, STU_GRDT,
+		        USER_CD, FILE_CD, USER_NM, USER_NME, USER_TEL, USER_ZIP, USER_ADDR1, 
+		        USER_ADDR2, USER_REG1, USER_REG2, USER_MAIL, USER_PASS, USER_BANK, USER_DEPO, 
+		        USER_ACC, U.COMD_CD,
+		        D.DEP_CD, C.COL_CD, DEP_NM, DEP_MRC, DEP_MOC, DEP_CRC, DEP_COC, DEP_CAP, DEP_TEL, DEP_FEE,
+		        C.COL_CD, COL_CRD
+		FROM    STUDENT S, USERS U, DEPARTMENT D, COLLEGE C
+		WHERE   S.STU_CD = U.USER_CD
+		AND     S.DEP_CD = D.DEP_CD
+		AND		D.COL_CD = C.COL_CD
+		AND     STU_CD = #{stuCd}
+	</select>
+	
+	<select id="getCredit" parameterType="String" resultMap="studentMap">
+		SELECT  STU_MRC, STU_MOC, STU_CRC, STU_COC,
+		        DEP_MRC, DEP_MOC, DEP_CRC, DEP_COC, COL_CRD
+		FROM    STUDENT S, DEPARTMENT D, COLLEGE C
+		WHERE   S.DEP_CD = D.DEP_CD
+		AND     D.COL_CD = C.COL_CD
+		AND     STU_CD = #{stuCd}
+	</select>
+	
+	
+</mapper>

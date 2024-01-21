@@ -1,0 +1,14 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.vo.LectureVO;
+import kr.or.ddit.vo.StudentVO;
+
+public interface EnrolmentMapper {
+
+	public List<LectureVO> list(StudentVO studentVO);
+
+	public String getColNm(String userCd);
+
+}

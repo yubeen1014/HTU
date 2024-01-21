@@ -1,0 +1,58 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Param;
+
+import kr.or.ddit.vo.ApprovalVO;
+import kr.or.ddit.vo.CrewActivityVO;
+import kr.or.ddit.vo.CrewPersonnelVO;
+import kr.or.ddit.vo.CrewVO;
+
+public interface CrewMapper {
+
+	public List<CrewVO> crewList(Map<String, Object> map);
+
+	public int crewApply(CrewVO crewVO);
+
+	public int crewApproval(ApprovalVO appVO);
+
+	public int crewJoinApp(CrewPersonnelVO crewPersonnelVO);
+
+	public List<CrewVO> myCrew(String stuCd);
+
+	public CrewVO crewDetail(String crCd);
+
+	public List<CrewVO> crewPersonnel(String crCd);
+
+	public int crewUpdate(CrewVO crewVO);
+
+	public int crewQuit(@Param(value = "stuCd") String stuCd, @Param(value = "crCd") String crCd);
+
+	public List<CrewVO> myAppList(String userCd);
+
+	public List<CrewVO> myJoinAppList(String userCd);
+
+	public CrewPersonnelVO crewJoinCheck(@Param(value = "crCd") String crCd, @Param(value = "userCd") String userCd);
+
+	public int crewUpdateYn(String appCd);
+
+	public CrewVO joinAppCheck(@Param(value = "stuCd") String stuCd, @Param(value = "crCd") String crCd);
+
+	public List<CrewActivityVO> activityList(String crCd);
+
+	public int deleteCrew(String crCd);
+
+	public List<CrewVO> crewListEmp(Map<String, Object> map);
+
+	public CrewVO crewDetailEmp(String crCd);
+
+	public int deleteCrewPerson(String crCd);
+
+	public ApprovalVO appRetReason(String appCd);
+
+	public int addCrewActivity(CrewActivityVO crewActivityVO);
+
+
+}

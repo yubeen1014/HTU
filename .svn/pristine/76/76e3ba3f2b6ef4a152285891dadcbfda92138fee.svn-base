@@ -1,0 +1,240 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
+<link rel="stylesheet" href="/resources/css/bootstrap.min.css">
+<script src="/resources/js/jquery.min.js"></script>
+
+<br />
+<div class="board_wrap"
+	style="background-color: #ffffff; padding: 30px;">
+	<a href="/common/board/free/list"
+		style="display: inline-block; padding: 10px 20px; background-color: #800020; color: #fff; text-decoration: none; font-weight: 300; border-radius: 5px; position: absolute; right: 30px;">목록</a>
+	<br /> <br />
+	<div class="row" style="margin-bottom: 20px; margin-left: 48px;">
+		<div class="col-lg-12">
+			<h1 class="page-header">
+				<b>자유게시판</b>
+			</h1>
+			</br>
+		</div>
+		<div>
+			<hr>
+			<b>작성자:</b> ${boardVO.userCd}&nbsp;&nbsp;&nbsp; <b>작성일:</b>&nbsp;
+			<fmt:formatDate value="${boardVO.bdReg}" pattern="yyyy-MM-dd HH:mm" />
+			&nbsp;&nbsp;&nbsp; <b>조회수:</b> ${boardVO.bdCnt}
+			<button class="btn btn-warn" style="">신고</button>
+			<hr>
+		</div>
+	</div>
+	<!-- 신고버튼 -->
+		<button onclick="openReportModal('${boardVO.bdCd}')">신고</button>
+<!-- "신고" 모달 창 -->
+	<div class="modal fade" id="reportModal" tabindex="-1" role="dialog"
+		aria-labelledby="reportModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="reportModalLabel">신고</h5>
+				</div>
+				<div class="modal-body">
+					<!-- 입력 폼 -->
+					<div class="form-group">
+						<input type="text" name="bdCd" id="modalBdCd" value="" />
+						<label for="reportReason">신고 사유</label> 
+						<select
+							class="form-control" id="reportReason">
+							<option value="" selected disabled>선택하세요</option>
+							<option value="불건전한 내용">불건전한 내용</option>
+							<option value="주제에 맞지 않음">주제에 맞지 않음</option>
+							<option value="욕설 및 혐오표현">욕설 및 혐오표현</option>
+							<option value="기타">기타</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="reportDetails">상세 내용</label>
+						<textarea class="form-control" id="reportDetails" rows="3"
+							placeholder="상세 내용을 입력하세요"></textarea>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" onclick="closeReportModal()">취소</button>
+					<button type="button" class="btn btn-primary"
+						onclick="submitReport('${boardVO.bdCd}')">신고</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- "신고" 모달 종료 -->
+	<input type="text" id="bdCd" value="${boardVO.bdCd}"
+		style="display: none;">
+	<div class="panel" style="margin-left: 50px;">
+		<div class="table-responsive" style="text-align: left;">
+			<div>
+				<h3>
+					<b>제목</b> </br> </br> ${boardVO.bdTitle}
+				</h3>
+				<hr width="auto;">
+				</br>
+			</div>
+			<c:choose>
+				<c:when test="${not empty boardVO.fileList}">
+					<c:forEach items="${boardVO.fileList}" var="vo">
+						<div id="image-container" class="clsImages"
+							style="width: 500px; height: 300px; border: 1px solid #ccc;"
+							data-url="${vo.fileSvnm}"></div>
+					</c:forEach>
+					<br />
+				</c:when>
+			</c:choose>
+		</div>
+
+		<div
+			style="text-align: left; margin-left: 3px; max-width: 40%; white-space: pre-line;">
+			${boardVO.bdCon}</div>
+		</br>
+
+		<div style="margin-left: 1px;"></div>
+	</div>
+
+	<div id="commentList" class="card-footer">
+		<div class="row">
+			<div class="col-md-10">
+				<div class="form-group">
+					<input id="commentContent" type="text"
+						class="form-control col-md-8" placeholder="댓글을 입력하세요." required>
+				</div>
+			</div>
+			<div class="col-md-2 ml-5">
+				<div class="form-group">
+					<button id="insertComment" class="btn btn-success">등록</button>
+				</div>
+			</div>
+		</div>
+		<sec:authentication property="principal.userVO" var="userVO" />
+		<c:forEach items="${boardVO.commentList}" var="vo">
+			<div class="row">
+				<div class="col-md-8">
+					<div class="form-group">
+						<span>${vo.cmtCon}</span>
+						<button class="btn btn-sm btn-primary parentComment"
+							data-cmt-cd="${vo.cmtCd}">댓글</button>
+						<button class="btn btn-sm btn-danger commentReport"
+							data-cmt-cd="${vo.cmtCd}">신고</button>
+						<c:if test="${vo.userCd eq userVO.userCd}">
+							<button id="btnDelete" data-cmt-cd="${vo.cmtCd}">삭제</button>
+						</c:if>
+					</div>
+				</div>
+			</div>
+		</c:forEach>
+	</div>
+	</br>
+	<button class="btn btn-warning"
+		onclick="location.href='/common/board/free/update?bdCd=${boardVO.bdCd}' "
+		style="margin-left: 10px;">수정</button>
+	<button class="btn btn-danger"
+		onclick="location.href='/common/board/free/delete?bdCd=${boardVO.bdCd}'">삭제</button>
+
+</div>
+<script type="text/javascript" src="/resources/js/postReport.js"></script>
+<script>
+	$(function() {
+		$(".clsImages").each(function() {
+			//data-url='경로'
+			let url = $(this).data("url");
+			$(this).css({
+				"background-image" : "url(/resources/upload/" + url + ")",
+				"background-position" : "center",
+				"background-size" : "cover"
+			});
+		});
+	});
+
+	function updatePost(bdCd, csrfToken) {
+		$.ajax({
+			type : "POST",
+			url : "/common/board/free/update",
+			data : {
+				bdCd : bdCd,
+				bdTitle : $("#bdTitle").val(),
+				bdCon : $("#bdCon").val()
+			},
+			contentType : "application/json;charset=utf-8",
+			dataType : "json",
+			headers : {
+				"X-CSRF-TOKEN" : csrfToken
+			},
+			success : function(data) {
+				if (data.result === "success") {
+					alert("게시물이 수정되었습니다.");
+					location.href = "/common/board/free/detail?bdCd=" + bdCd; // Updated post detail page
+				} else {
+					alert(data.message);
+				}
+			},
+			error : function(jqXHR, textStatus, errorThrown) {
+				console.error("AJAX Error:", textStatus, errorThrown);
+				alert("서버 오류로 인해 게시물 수정에 실패했습니다.");
+			}
+		});
+	}
+
+	function deletePost(bdCd, csrfToken) {
+		$.ajax({
+			type : "POST",
+			url : "/common/board/free/deletePost",
+			data : JSON.stringify({
+				bdCd : bdCd
+			}),
+			contentType : "application/json;charset=utf-8",
+			dataType : "json",
+			headers : {
+				"X-CSRF-TOKEN" : csrfToken
+			},
+			success : function(data) {
+				if (data.result === "success") {
+					alert("게시물이 삭제되었습니다.");
+					location.href = "/common/board/free/list";
+				} else {
+					alert(data.message);
+				}
+			},
+			error : function(jqXHR, textStatus, errorThrown) {
+				console.error("AJAX Error:", textStatus, errorThrown);
+				alert("서버 오류로 인해 게시물 삭제에 실패했습니다.");
+			}
+		});
+	}
+	$(document).ready(function() {
+		// "신고" 버튼에 클릭 이벤트를 추가.
+		$(".btn-warn").click(function() {
+			// 모달을 표시하기 위해 Bootstrap의 modal 함수를 호출.
+			$('#reportModal').modal('show');
+		});
+
+		// "신고" 모달이 닫힐 때 입력된 내용을 초기화.
+		$('#reportModal').on('hidden.bs.modal', function() {
+			$('#reportReason').val('');
+			$('#reportDetails').val('');
+		});
+	});
+
+	// 모달에서 "신고" 버튼을 클릭할 때 호출되는 함수
+	function submitReport() {
+		var reason = $('#reportReason').val();
+		var details = $('#reportDetails').val();
+
+		// 여기에서 서버로 신고 내용을 전송하거나 필요한 작업을 수행.
+		// ...
+
+		// 모달을 닫습니다.
+		$('#reportModal').modal('hide');
+	}
+
+	function cancel() {
+		$('#reportModal').modal('hide');
+	}
+</script>

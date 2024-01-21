@@ -1,0 +1,23 @@
+/*신고버튼 누르면 나오는 모달 로직*/
+
+function openReportModal(bdCd) {
+    // 모달 열기
+    console.log("bdCd : ", bdCd);
+    
+	$("#modalBdCd").val(bdCd);
+
+    $('#reportModal').modal('show');
+}
+
+function closeReportModal() {
+    // 모달 닫기
+    $('#reportModal').modal('hide');
+}
+
+function submitReport(bdCd) {
+    // 여기에서 사용자가 입력한 신고 내용을 가져와서 처리하는 클라이언트 측 로직 추가
+    // ...
+	console.log("bdCd : ", bdCd);
+    // 모달 창 닫기
+    closeReportModal();
+}

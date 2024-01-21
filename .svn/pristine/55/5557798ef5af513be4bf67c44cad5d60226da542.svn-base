@@ -1,0 +1,11 @@
+package kr.or.ddit.mapper;
+
+import kr.or.ddit.vo.FilesDetailVO;
+
+public interface FilesDetailMapper {
+
+	public int insertFile(String fileCd);
+	
+	public int insertFilesDetail(FilesDetailVO filesDetailVO);
+
+}

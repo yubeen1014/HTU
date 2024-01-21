@@ -1,0 +1,62 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+<link rel="stylesheet" href="/resources/css/bootstrap.min.css">
+<script src="/resources/js/jquery.min.js"></script>
+<link rel="stylesheet" href="/resources/css/reset.css">
+<link rel="stylesheet" href="/resources/css/main.css">
+
+<div class="tab-content">
+	<div role="tabpanel" id="react-aria-97-tabpane-design"
+		aria-labelledby="react-aria-97-tab-design"
+		class="fade pb-4 p-4 tab-pane active show">
+		<table class="text-nowrap table">
+			<thead>
+				<tr>
+					<th scope="col">글번호</th>
+					<th scope="col">제목</th>
+					<th scope="col">작성자</th>
+					<th scope="col">작성일</th>
+					<th scope="col">조회수</th>
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach items="${data.content}" var="vo" varStatus="vs">
+					<tr>
+						<th scope="row">${vs.count}</th>
+						<td><a class="detail" href="#" data-board-code="${vo.bdCd}">${vo.bdTitle}</a></td>
+						  <td>${vo.userVO.userNm}</td>
+                  <td><fmt:formatDate value="${vo.bdReg}" pattern="yyyy-MM-dd"/></td>
+                  <td>${vo.bdCnt}</td>
+               </tr>
+            </c:forEach>
+         </tbody>
+      </table>
+${data.getPagingArea()}
+   </div>
+</div>
+
+<script>
+   $(".detail").on("click", function (event) {
+      
+      const bdCd = $(this).data("boardCode")
+      
+      $.ajax({
+         
+         url: "/common/board/publicize/count?bdCd="+bdCd,
+         type: "get",
+         beforeSend:function(xhr){
+            xhr.setRequestHeader("${_csrf.headerName}","${_csrf.token}");
+         },
+         success: (res) => {
+            if (res != null) {
+               location.href = "/common/board/publicize/detail?bdCd="+bdCd;
+            }
+         }
+      });
+      
+   });
+</script>
+<button type="button" class="btn btn-primary" onclick="location.href='/common/board/publicize/create'" style=" display: inline-block; padding: 10px 20px; background-color: #800020; color: #fff; text-decoration: none; font-weight: 300; border-radius: 5px; position: absolute; right: 30px;">등록</button>

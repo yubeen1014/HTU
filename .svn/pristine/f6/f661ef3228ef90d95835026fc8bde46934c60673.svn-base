@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.FreeBoardMapper">
+
+
+	<select id="list" parameterType="map" resultMap="boardMap">
+		SELECT BD_CD,
+		B.USER_CD, B.COMD_CD, BD_TITLE, BD_CON, BD_REG, BD_UDT,
+		BD_CNT,
+		USER_NM, USER_NME, USER_TEL, USER_ZIP, USER_ADDR1, USER_ADDR2,
+		USER_REG1, USER_REG2, USER_MAIL, USER_PASS, USER_BANK, USER_DEPO,
+		USER_ACC,
+		FILE_SN, FILE_PATH, FILE_ORNM, FILE_SVNM, FILE_EXTSN,
+		FILE_CON,
+		FILE_SIZE
+		FROM BOARD B, USERS U, FILES_DETAIL F
+		WHERE B.COMD_CD
+		= 'BRDFREE'
+		AND B.USER_CD = U.USER_CD
+	</select>
+
+	<select id="getTotal" resultType="int">
+		select count(*) from board
+	</select>
+
+	<insert id="createPost" parameterType="BoardVO">
+		<selectKey keyProperty="bdCd" resultType="String"
+			order="BEFORE">
+			SELECT BOARD_SEQ.NEXTVAL AS bdCd FROM DUAL
+		</selectKey>
+		INSERT INTO BOARD (USER_CD, COMD_CD, BD_CD, BD_TITLE, BD_CON, BD_REG,
+		BD_UDT, BD_CNT)
+		VALUES (#{userCd}, 'BRDFREE', BOARD_SEQ.CURRVAL, #{bdTitle},
+		#{bdCon}, SYSDATE, NULL, 0)
+	</insert>
+
+	<select id="detail" resultMap="boardMap" parameterType="String">
+		SELECT
+		A.BD_CD,
+		A.USER_CD,
+		(SELECT C.USER_NM FROM USERS C WHERE C.USER_CD =
+		A.USER_CD) AS USER_NM,
+		A.BD_TITLE,
+		A.BD_CON,
+		A.BD_REG,
+		A.BD_UDT,
+		A.BD_CNT,
+		B.EMP_CD
+		FROM
+		BOARD A
+		INNER JOIN EMPLOYEE B ON A.USER_CD = B.EMP_CD
+		WHERE
+		A.BD_CD = #{bdCd}
+	</select>
+
+	<delete id="deletePost" parameterType="hashMap">
+		DELETE FROM BOARD
+		WHERE
+		BD_CD = #{bdCd}
+	</delete>
+
+	<resultMap type="boardVO" id="boardMap">
+		<result property="bdCd" column="BD_CD" />
+		<result property="userCd" column="USER_CD" />
+		<result property="comdCd" column="COMD_CD" />
+		<result property="bdTitle" column="BD_TITLE" />
+		<result property="bdCon" column="BD_CON" />
+		<result property="bdReg" column="BD_REG" />
+		<result property="bdUdt" column="BD_UDT" />
+		<result property="bdCnt" column="BD_CNT" />
+		<association property="userVO" resultMap="userMap" />
+		<collection property="fileList" resultMap="fileDetailMap" />
+	</resultMap>
+
+	<resultMap type="userVO" id="userMap">
+		<result property="userCd" column="USER_CD" />
+		<result property="userNm" column="USER_NM" />
+		<result property="userNme" column="USER_NME" />
+		<result property="userTel" column="USER_TEL" />
+		<result property="userZip" column="USER_ZIP" />
+		<result property="userAddr1" column="USER_ADDR1" />
+		<result property="userAddr2" column="USER_ADDR2" />
+		<result property="userReg1" column="USER_REG1" />
+		<result property="userReg2" column="USER_REG2" />
+		<result property="userMail" column="USER_MAIL" />
+		<result property="userPass" column="USER_PASS" />
+		<result property="userBank" column="USER_BANK" />
+		<result property="userDepo" column="USER_DEPO" />
+		<result property="userAcc" column="USER_ACC" />
+		<result property="fileCd" column="FILE_CD" />
+		<result property="comdCd" column="COMD_CD" />
+	</resultMap>
+
+	<resultMap type="filesDetailVO" id="fileDetailMap">
+		<result property="fileSn" column="FILE_SN" />
+		<result property="fileCd" column="FILE_CD" />
+		<result property="filePath" column="FILE_PATH" />
+		<result property="fileOrnm" column="FILE_ORNM" />
+		<result property="fileSvnm" column="FILE_SVNM" />
+		<result property="fileExtsn" column="FILE_EXTSN" />
+		<result property="fileCon" column="FILE_CON" />
+		<result property="fileSize" column="FILE_SIZE" />
+	</resultMap>
+
+</mapper>

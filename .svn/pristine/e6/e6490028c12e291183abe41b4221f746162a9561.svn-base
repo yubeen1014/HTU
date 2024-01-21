@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.LectureApplyMapper">
+	<resultMap type="professorVO" id="professorVOMap">
+		<result property="proCd" column="PRO_CD"/>
+		<result property="depCd" column="DEP_CD"/>
+		<result property="roomCd" column="ROOM_CD"/>
+		<result property="proJoin" column="PRO_JOIN"/>
+		<result property="proRet" column="PRO_RET"/>
+		<result property="proPos" column="PRO_POS"/>
+		<association property="userVO" resultMap="userVOMap"></association>
+	</resultMap>
+	
+	<resultMap type="userVO" id="userVOMap">
+		<result property="userCd" column="USER_CD"/>
+		<result property="fileCd" column="FILE_CD"/>
+		<result property="userNm" column="USER_NM"/>
+		<result property="userNme" column="USER_NME"/>
+		<result property="userTel" column="USER_TEL"/>
+		<result property="userZip" column="USER_ZIP"/>
+		<result property="userAddr1" column="USER_ADDR1"/>
+		<result property="userAddr2" column="USER_ADDR2"/>
+		<result property="userReg1" column="USER_REG1"/>
+		<result property="userReg2" column="USER_REG2"/>
+		<result property="userMail" column="USER_MAIL"/>
+		<result property="userPass" column="USER_PASS"/>
+		<result property="userBank" column="USER_BANK"/>
+		<result property="userDepo" column="USER_DEPO"/>
+		<result property="userAcc" column="USER_ACC"/>
+		<result property="comdCd" column="COMD_CD"/>
+	</resultMap>
+	
+	<resultMap type="consentVO" id="consentVOMap">
+		<result property="conCd" column="CON_CD"/>
+		<result property="userCd" column="USER_CD"/>
+		<result property="comdCd" column="COMD_CD"/>
+		<result property="conTarget" column="CON_TARGET"/>
+		<result property="conYn" column="CON_YN"/>
+		<result property="conReg" column="CON_REG"/>
+		<result property="conProdt" column="CON_PRODT"/>
+		<result property="conRet" column="CON_RET"/>
+		<association property="userVO" resultMap="userVOMap"></association>
+	</resultMap>
+	
+	<resultMap type="lectureApplyVO" id="lectureApplyVOMap">
+		<result property="lecaStdt" column="LECA_STDT"/>
+		<result property="lecaEddt" column="LECA_EDDT"/>
+		<result property="lecaCd" column="LECA_CD"/>
+		<result property="proCd" column="PRO_CD"/>
+		<result property="conCd" column="CON_CD"/>
+		<result property="depCd" column="DEP_CD"/>
+		<result property="roomCd" column="ROOM_CD"/>
+		<result property="lecaYear" column="LECA_YEAR"/>
+		<result property="lecaSem" column="LECA_SEM"/>
+		<result property="lecaNm" column="LECA_NM"/>
+		<result property="lecaCon" column="LECA_CON"/>
+		<result property="lecaTrg" column="LECA_TRG"/>
+		<result property="lecaCrd" column="LECA_CRD"/>
+		<result property="lecaPer" column="LECA_PER"/>
+		<result property="lecaCap" column="LECA_CAP"/>
+		<result property="lecaSche" column="LECA_SCHE"/>
+		<result property="lecaBook" column="LECA_BOOK"/>
+		<result property="lecaNote" column="LECA_NOTE"/>
+		<result property="lecaEva" column="LECA_EVA"/>
+		<result property="lecaTemp" column="LECA_TEMP"/>
+		<association property="consentVO" resultMap="consentVOMap"></association>
+		<association property="professorVO" resultMap="professorVOMap"></association>
+	</resultMap>
+	
+	<resultMap type="lectureVO" id="lectureVOMap">
+		<result property="lecCd" column="LEC_CD"/>
+		<result property="lecHcnt" column="LEC_HCNT"/>
+		<result property="lecStat" column="LEC_STAT"/>
+		<association property="lectureApplyVO" resultMap="lectureApplyVOMap"></association>
+	</resultMap>
+	
+	<resultMap type="lectureScheduleVO" id="lectureScheduleVOMap">
+		<result property="lecsCd" column="LECS_CD"/>
+		<result property="lecCd" column="LEC_CD"/>
+		<result property="lecDay" column="LEC_DAY"/>
+		<result property="lecsStdt" column="LECS_STDT"/>
+		<result property="lecsEddt" column="LECS_EDDT"/>
+		<association property="lectureVO" resultMap="lectureVOMap"></association>
+	</resultMap>
+	
+	<resultMap type="ConsentDetailVO" id="consentDetailVOMap">
+		<result property="condSn" column="COND_SN"/>
+		<result property="conCd" column="CON_CD"/>
+		<association property="consentVO" resultMap="consentVOMap"></association>
+	</resultMap>
+	
+	
+	<insert id="createLectureApplyConsent" parameterType="consentVO">
+		<selectKey resultType="String" keyProperty="conCd" order="BEFORE">
+			SELECT 'CON2'|| NVL(TRIM(TO_CHAR(SUBSTR(MAX(CON_CD),5) +
+			1,'0000')),'0001') FROM CONSENT
+		</selectKey>
+		INSERT INTO CONSENT (CON_CD, USER_CD, COMD_CD, CON_TARGET, CON_REG)
+		VALUES(#{conCd}, #{userCd}, #{comdCd}, '1001', SYSDATE)
+	</insert>
+	
+	<insert id="createConsentDetail" parameterType="consentDetailVO">
+		<selectKey resultType="int" keyProperty="condSn" order="BEFORE">
+			SELECT NVL(MAX(COND_SN), 0 + 1) FROM CONSENT_DETAIL
+			WHERE CON_CD = #{conCd}
+		</selectKey>
+	 	INSERT INTO CONSENT_DETAIL (COND_SN, CON_CD)
+	 	VALUES(#{condSn},#{conCd})
+	</insert>
+	
+	<insert id="createLectureApply" parameterType="lectureApplyVO">
+		<selectKey resultType="String" keyProperty="lecaCd" order="BEFORE">
+			SELECT 'LECA'|| NVL(TRIM(TO_CHAR(SUBSTR(MAX(LECA_CD),5) +
+			1,'0000')),'0001') FROM LECTURE_APPLY
+		</selectKey>
+	    INSERT INTO LECTURE_APPLY (
+        LECA_CD, PRO_CD, CON_CD, DEP_CD, ROOM_CD, LECA_YEAR, LECA_SEM,
+         LECA_NM, LECA_CON, LECA_TRG, LECA_CRD, LECA_PER, LECA_CAP, LECA_SCHE, LECA_BOOK,
+          LECA_NOTE, LECA_EVA, LECA_TEMP, LECA_STDT, LECA_EDDT
+	    )
+	    VALUES (
+	       #{lecaCd},#{proCd},#{conCd},#{depCd},#{roomCd},#{lecaYear},#{lecaSem},
+	       #{lecaNm},#{lecaCon},#{lecaTrg},#{lecaCrd},#{lecaPer},#{lecaCap},#{lecaSche},#{lecaBook},
+	       #{lecaNote},#{lecaEva},#{lecaTemp},#{lecaStdt},#{lecaEddt}
+	    )
+	</insert>
+	
+	<update id="updateLectureApplyConCd" parameterType="lectureApplyVO">
+	 	UPDATE 
+	 		LECTURE_APPLY
+	 	SET
+	 		CON_CD = #{conCd}
+	 	WHERE
+	 		LECA_CD = #{lecaCd}
+	</update>
+	
+</mapper>

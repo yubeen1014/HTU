@@ -1,0 +1,90 @@
+package kr.or.ddit.service.employee.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import kr.or.ddit.mapper.ApprovalMapper;
+import kr.or.ddit.mapper.LectureApplyMapper;
+import kr.or.ddit.mapper.LectureMapper;
+import kr.or.ddit.mapper.LectureScheduleMapper;
+import kr.or.ddit.service.employee.LectureApplyApprovalService;
+import kr.or.ddit.vo.ApprovalVO;
+import kr.or.ddit.vo.LectureApplyVO;
+import kr.or.ddit.vo.LectureScheduleVO;
+import kr.or.ddit.vo.LectureVO;
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
+@Service
+public class LectureApplyApprovalServiceImpl implements LectureApplyApprovalService{
+	@Autowired
+	ApprovalMapper approvalMapper; 
+	@Autowired
+	LectureApplyMapper lectureApplyMapper;
+	@Autowired
+	LectureMapper lectureMapper;
+	@Autowired
+	LectureScheduleMapper lectureScheduleMapper;
+	
+	
+	@Override
+	/** 강의계획신청 목록 */
+	public List<LectureApplyVO> getLectureApplyList(Map<String, Object> map) {
+		return this.approvalMapper.getLectureApplyList(map);
+	}
+
+	@Override
+	/** 강의계획신청에 대한 상세*/
+	public LectureApplyVO lecaApplyDetail(String lecaCd) {
+		LectureApplyVO lectureApplyVO = this.lectureApplyMapper.lecaApplyDetail(lecaCd);
+		
+		return lectureApplyVO;
+	}
+	@Override
+	/** 강의계획신청 결재 */
+	public int updateApprovalYn(LectureApplyVO lectureApplyVO) {
+		log.info("@@ => {}", lectureApplyVO);
+		ApprovalVO approvalVO = new ApprovalVO();
+		approvalVO.setAppCd(lectureApplyVO.getAppCd());
+		// 승인여부 1 = 승인, 2 = 반려
+		approvalVO.setAppYn(lectureApplyVO.getApprovalVO().getAppYn());
+		// 반려사유 등록 appYn = 2 일때만 입력됨
+		approvalVO.setAppRet(lectureApplyVO.getApprovalVO().getAppRet());
+		int result = this.approvalMapper.updateApprovalYn(approvalVO);
+		log.info("@@approvalVO => {}", approvalVO);
+		
+		return result;
+	}
+	
+	@Transactional
+	@Override
+	/** 결재가 승인되었을때 실행되는 메서드 강의, 강의일정 데이터가 생성된다 */
+	public int afterUpdate(LectureApplyVO lectureApplyVO) {
+		
+		int result = updateApprovalYn(lectureApplyVO);
+		log.info("Yn@@ => {}",lectureApplyVO.getApprovalVO());
+		if(lectureApplyVO.getApprovalVO().getAppYn() == 1) {
+			
+			LectureVO lectureVO = new LectureVO();
+			LectureScheduleVO lectureScheduleVO = new LectureScheduleVO();
+			lectureVO.setLectureApplyVO(lectureApplyVO);
+			lectureVO.setLecCd(lectureApplyVO.getLecaCd());
+			lectureScheduleVO.setLectureVO(lectureVO);
+			lectureScheduleVO.setLecCd(lectureScheduleVO.getLectureVO().getLecCd());
+		
+			result += this.lectureMapper.createLecture(lectureVO);
+			result += this.lectureScheduleMapper.createLectureSchedule(lectureScheduleVO);
+		}
+		return result;
+	}
+
+	@Override
+	/** 페이징처리용 */
+	public int getTotal(Map<String, Object> map) {
+		return this.approvalMapper.getTotal(map);
+	}
+
+}

@@ -1,0 +1,19 @@
+package kr.or.ddit.service.student;
+
+import java.util.List;
+
+import kr.or.ddit.vo.LectureApplyVO;
+import kr.or.ddit.vo.TestQuestionVO;
+import kr.or.ddit.vo.TestVO;
+
+public interface TestStuService {
+
+	public LectureApplyVO lectureInfo(String lecCd);
+
+	public List<TestVO> testList(String lecCd);
+
+	public TestVO testDetail(String testCd);
+
+	public List<TestQuestionVO> tqVOList(String testCd);
+
+}

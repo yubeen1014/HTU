@@ -1,0 +1,62 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+<style>
+ .content{background-color:#ffffff;}
+ .table_topic{font-size: 20px; padding-bottom:30px;}
+ .prifile_wrap tr{display: table-row;}
+ .profile_wrap th{width:170px; padding:20px; font-size:14px;}
+ .profile_wrap td{padding:10px;}
+ .profile_photo{width:100px!important; height:100px!important; border:1px solid #888888;}
+</style>
+
+<sec:authentication property="principal.userVO" var="userVO" />
+${data}
+<div class="profile_wrap">
+<div class="table_topic">기본정보</div>
+<table>
+<tr>
+	<th>사진</th> 
+	<td class="profile_photo"><td>
+</tr>
+<tr>
+	<th>전공</th> 
+	<td>${userVO.studentVO.depCd}</td>
+</tr>
+<tr>
+	<th>이름(영문)</th> 
+	<td>${userVO.userNm}</td>
+</tr>
+<tr>
+	<th>학번</th> 
+	<td>${userVO.userCd}</td>
+</tr>
+<tr>
+	<th>주민등록번호</th> 
+	<td>${userVO.userReg1} <span style="display:inline-block;">-</span> ${userVO.userReg2}</td>
+</tr>
+<tr> 
+	<th>전화번호</th> 
+	<td>${userVO.userTel}</td>
+</tr>
+<tr>
+	<th>우편번호</th> 
+	<td>${userVO.userZip}</td>
+</tr>
+<tr>
+	<th>주소</th> 
+	<td>${userVO.userReg1}${userVO.userReg2}</td>
+</tr>
+<tr>
+	<th>이메일</th> 
+	<td>${userVO.userMail}</td>
+</tr>
+<tr>
+	<th>계좌</th> 
+	<td>${userVO.userBank} ${userVO.userAcc}</td>
+</tr>
+<tr>
+	<th>비밀번호변경</th>
+</tr>
+</table>
+</div>

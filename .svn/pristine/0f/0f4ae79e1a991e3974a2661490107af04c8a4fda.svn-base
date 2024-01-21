@@ -1,0 +1,79 @@
+package kr.or.ddit.controller.common;
+
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.security.CustomUser;
+import kr.or.ddit.service.mypage.MyPageService;
+import kr.or.ddit.vo.UserVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/common/mypage")
+public class MyPageController {
+	
+	@Autowired
+	MyPageService myPageService;
+	
+	@ModelAttribute
+	public void getUserInfo(Model model, Principal principal) {
+
+		String userCd = principal.getName();
+		
+		UserVO userProfileVO = this.myPageService.profile(userCd);
+		model.addAttribute("userProfileVO", userProfileVO);
+		
+	}
+	
+	@GetMapping("/profile")
+	public String profile(Model model, Principal principal) {
+
+//		String userCd = principal.getName();
+//		
+//		UserVO userProfileVO = this.myPageService.profile(userCd);
+//		model.addAttribute("userProfileVO", userProfileVO);
+		
+		return "common/mypage/profile";
+	}
+	
+	@GetMapping("/profileEdit")
+	public String profileEdit(Model model, String userCd, Principal principal) {
+//		UserVO userProfileVO = this.myPageService.profile(userCd);
+//		model.addAttribute("userProfileVO", userProfileVO);
+		//jsp를 forwarding
+		return "common/mypage/profileEdit";
+	}
+	
+	@PostMapping("/profileEditPost")
+	public String profileEditPost(UserVO userVO, Model model) {
+		
+		model.addAttribute("userVO", userVO);
+		int result = this.myPageService.profileEditPost(userVO);
+		log.info("result : " + result);
+		
+//		myPageService.changeAuthentication(userVO.getUserCd());
+		
+		return "redirect:/common/mypage/profileEdit?userCd="+userVO.getUserCd();
+		
+	}
+	
+	@GetMapping("passwordEdit")
+	public String passwordEdit (Model model, String userCd, Principal principal) {
+		
+		return "common/mypage/passwordEdit";
+	}
+}

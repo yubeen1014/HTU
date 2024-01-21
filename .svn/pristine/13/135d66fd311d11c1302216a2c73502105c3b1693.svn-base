@@ -1,0 +1,23 @@
+package kr.or.ddit.service.mypage.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.MyPageMapper;
+import kr.or.ddit.service.mypage.MyPageService;
+import kr.or.ddit.vo.UserVO;
+
+@Service
+public class MypageServiceImpl implements MyPageService {
+
+	@Autowired
+	MyPageMapper myPageMapper;
+	
+	@Override
+	public List<UserVO> profile(String userCd) {
+		return this.myPageMapper.profile(userCd);
+	}
+
+}

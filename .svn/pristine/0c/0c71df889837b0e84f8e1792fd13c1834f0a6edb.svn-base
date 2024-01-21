@@ -1,0 +1,20 @@
+package kr.or.ddit.service.student;
+
+import java.util.List;
+
+import kr.or.ddit.vo.CrewPersonnelVO;
+import kr.or.ddit.vo.CrewVO;
+
+public interface CrewService {
+
+	public List<CrewVO> crewList();
+
+	public int crewApply(CrewVO crewVO);
+
+	public int crewJoin(CrewPersonnelVO crewPersonnelVO);
+
+	public List<CrewVO> myCrew(String stuCd);
+
+	public CrewVO crewDetail(String crCd);
+
+}

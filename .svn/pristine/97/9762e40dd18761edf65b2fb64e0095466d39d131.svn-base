@@ -1,0 +1,20 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+
+<style>
+	.sub_menu a:hover{color:#333333;}
+</style>
+
+<sec:authentication property="principal.userVO" var="vo"/>
+   <div class="sub_menu">
+    <div class="sub_title">결재관리</div>
+    <button class="sub_button">
+      <a class="sub_text" href="" style="display:block;">결재목록</a>
+    </button>
+    <div class="submenu_menu">
+      <a href="/employee/lectureapproval/list" class="sub_menu_a">강의신청</a>
+      <a href="/employee/postreport/list" class="sub_menu_a">신고목록</a>
+      <a href="/employee/dormitory/list" class="sub_menu_a">기숙사신청</a>
+  </div>
+  </div>

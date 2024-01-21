@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.MyPageMapper">
+
+	<resultMap type="userVO" id="userMap">
+		<result property="userCd" column="USER_CD"/>
+		<result property="fileCd" column="FILE_CD"/>
+		<result property="userNm" column="USER_NM"/>
+		<result property="userNme" column="USER_NME"/>
+		<result property="userTel" column="USER_TEL"/>
+		<result property="userZip" column="USER_ZIP"/>
+		<result property="userAddr1" column="USER_ADDR1"/>
+		<result property="userAddr2" column="USER_ADDR2"/>
+		<result property="userReg1" column="USER_REG1"/>
+		<result property="userReg2" column="USER_REG2"/>
+		<result property="userMail" column="USER_MAIL"/>
+		<result property="userPass" column="USER_PASS"/>
+		<result property="userBank" column="USER_BANK"/>
+		<result property="userDepo" column="USER_DEPO"/>
+		<result property="userAcc" column="USER_ACC"/>
+		<result property="comdCd" column="COMD_CD"/>
+		<association property="filesDetailVO" resultMap="filesDetailMap"></association>
+	</resultMap>
+
+	<resultMap type="filesDetailVO" id="filesDetailMap">
+		<result property="fileSn" column="FILE_SN"/>
+		<result property="fileCd" column="FILE_CD"/>
+		<result property="filePath" column="FILE_PATH"/>
+		<result property="fileOrnm" column="FILE_ORNM"/>
+		<result property="fileSvnm" column="FILE_SVNM"/>
+		<result property="fileExtsn" column="FILE_EXTSN"/>
+		<result property="fileCon" column="FILE_CON"/>
+		<result property="fileSize" column="FILE_SIZE"/>
+		<result property="fileUsed" column="FILE_USED"/>
+	</resultMap>	
+	
+	<select id="profile" parameterType="String" resultMap="userMap">
+		SELECT USER_CD, U.FILE_CD, USER_NM, USER_NME, USER_TEL, USER_ZIP, USER_ADDR1, USER_ADDR2, USER_REG1, USER_REG2, USER_MAIL, USER_PASS, USER_BANK, USER_DEPO, USER_ACC, COMD_CD,
+       		   FILE_SN, F.FILE_CD, FILE_PATH, FILE_ORNM, FILE_SVNM, FILE_EXTSN, FILE_CON, FILE_SIZE, FILE_USED
+		  FROM USERS U LEFT OUTER JOIN FILES_DETAIL F
+            ON U.FILE_CD=F.FILE_CD
+         WHERE USER_CD=#{userCd}
+	</select>
+</mapper>

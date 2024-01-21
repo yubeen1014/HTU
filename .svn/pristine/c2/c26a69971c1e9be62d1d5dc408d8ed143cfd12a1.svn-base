@@ -1,0 +1,134 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="/resources/js/jquery.min.js"></script>
+<sec:authentication property="principal.userVO" var="userVO"/>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+   
+    <link rel="stylesheet" href="/resources/test/fonts/icomoon/style.css">
+   <!--  <link rel="stylesheet" href="/resources/test/css/owl.carousel.min.css"> -->
+   
+    <!-- Style -->
+    <link rel="stylesheet" href="/resources/test/css/style.css">
+    <link rel="stylesheet" href="/resources/css/reset.css">
+    <link rel="stylesheet" href="/resources/css/main2.css">
+</head>
+<body>
+<div style="padding:10px; background-color: white; border: 1px solid gray; float: left;">
+	<div style="padding:10px;">
+		<a href="/mail/sendMail" style="border: 1px solid gray; border-radius: 5px; padding:5px; ">메일쓰기</a>
+	</div>
+	<div style="padding:10px;">
+		<a href="/mail/inbox">받은메일함</a>
+	</div>
+	<div style="padding:10px;">
+	    <a href="/mail/sentbox">보낸메일함</a>
+	</div>
+	<div style="padding:10px;">
+	    <a href="/mail/tempMailBox">임시보관함</a>
+	</div>
+</div>
+<div>
+	<form>
+		<input type="text" placeholder="메일 검색" name="keyword"
+			value="${keyword}" />
+		<input type="submit" value="검색" />
+	</form>
+</div>
+<div class="containerMail">
+    <table class="table custom-table">
+      <thead>
+        <tr>
+          <th scope="col">
+            <label class="control control--checkbox">
+              <input type="checkbox" class="js-check-all"/>
+              <div class="control__indicator"></div>
+            </label>
+          </th>
+          <th onclick="deleteCheck()">삭제</th>
+        </tr>
+      </thead>
+      <tbody>
+      	<c:forEach var="univMailVO" items="${data}">
+         <tr>
+           <th scope="row">
+             <label class="control control--checkbox">
+               <input type="checkbox" name="mailCheck"  data-uml-cd="${univMailVO.umlCd}"/>
+               <div class="control__indicator"></div>
+             </label>
+           </th>
+           <td>
+           </td>
+           <td>
+             ${univMailVO.userVO.userNm}
+           </td>
+           <td>
+           	<a class="mailTitle" href="/mail/tempMail?umlCd=${univMailVO.umlCd}" style="color: #333333">${univMailVO.umlTitle}</a>
+           </td>
+           <td><fmt:formatDate pattern="MM월 dd일 HH:mm" value="${univMailVO.umlReg}"/> </td>
+              <td><img src="/resources/images/x.png" style="width: 10px; height: 10px;" class="deleteMail" data-uml-cd="${univMailVO.umlCd}"></td>
+         </tr>
+        </c:forEach>
+      </tbody>
+    </table>
+    ${articlePage.getPagingArea()}
+</div>
+    
+    <script src="/resources/test/js/jquery-3.3.1.min.js"></script>
+    <script src="/resources/test/js/popper.min.js"></script>
+    <script src="/resources/test/js/bootstrap.min.js"></script>
+    <script src="/resources/test/js/main.js"></script>
+</body>
+<script type="text/javascript">
+function deleteCheck(){
+	let deleteArr = [];
+	
+	$('input:checkbox[name=mailCheck]').each(function (index) { 
+		if($(this).is(":checked")==true){ 
+			deleteArr.push($(this).data("umlCd"));
+		}
+	});
+	
+	$.ajax({
+		url:"/mail/deleteCheck",
+		contentType:"application/json; charset=utf-8",
+		data:JSON.stringify(deleteArr),
+		type:"post",
+		beforeSend:function(xhr){
+			xhr.setRequestHeader("${_csrf.headerName}","${_csrf.token}");
+		},
+		success:function(res){
+			console.log("삭제!");
+			location.reload();
+		}
+	});
+}
+
+$(function(){
+	$(".deleteMail").on("click", function(){
+		if(confirm("삭제하시겠습니까?")){
+			let umlCd = $(this).data("umlCd");
+			console.log("umlCd : " + umlCd);
+			
+			$.ajax({
+				url:"/mail/deleteSentMail?umlCd="+umlCd,
+				data:umlCd,
+				type:"post",
+				beforeSend:function(xhr){
+					xhr.setRequestHeader("${_csrf.headerName}","${_csrf.token}");
+				},
+				success:function(res){
+					alert("삭제 완료");
+					location.reload();
+				}
+			});
+		}
+	});
+});
+</script>
+</html>

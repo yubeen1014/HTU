@@ -1,0 +1,259 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
+<script src="/resources/js/jquery.min.js"></script>
+
+<style>
+.table_topic{font-size: 20px; padding-bottom:30px;}
+.table_topic i{margin-left:10px;}
+.board_wrap {
+	background-color: #ffffff;
+	padding: 30px;
+}
+
+.board_header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+.board_title {
+	font-size: 24px;
+	font-weight: bold;
+	margin-bottom: 10px;
+}
+
+.board_info {
+	color: #555;
+	font-size: 14px;
+}
+
+.board_info span {
+	margin-right: 20px;
+}
+
+.image_container {
+	width: 920px;
+	height: 400px;
+	border: 1px solid #ccc;
+	background-position: center;
+	background-size: cover;
+	margin-bottom: 20px;
+}
+
+.board_content {
+	text-align: left;
+	max-width: 60%;
+	white-space: pre-line;
+}
+
+.report_button {
+	display: inline-block;
+	padding: 10px 20px;
+	background-color: #800020;
+	color: #fff;
+	text-decoration: none;
+	font-weight: 300;
+	border-radius: 5px;
+}
+
+.board_separator {
+	border-top: 1px solid #ccc;
+	margin: 20px 0;
+}
+
+.report_button:hover {
+	background-color: #600015;
+}
+</style>
+<sec:authentication property="principal.userVO" var="userVO" />
+<div class="board_wrap">
+	<div style="font-size:12px; color:#888888; margin-bottom: 20px;">
+		<span><svg xmlns="http://www.w3.org/2000/svg" height="13" width="13" viewBox="0 0 576 512" style="margin-right: 5px;"><path fill="#888888" d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H456c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1H416 392c-22.1 0-40-17.9-40-40V448 384c0-17.7-14.3-32-32-32H256c-17.7 0-32 14.3-32 32v64 24c0 22.1-17.9 40-40 40H160 128.1c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9 .1-2.8V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z"/></svg></span>
+		<span style="font-size:12px; color:#888888;">></span>
+		<span style="font-size:12px; color:#888888;">커뮤니티</span>
+		<span style="font-size:12px; color:#888888;">></span>
+		<span style="font-size:12px; color:#888888;">공지사항</span>
+	</div>
+	<div class="board_header">
+		<div class="table_topic">공지사항<i class="fa-solid fa-circle-info" style="color: #333333;"></i></div>
+		<div class="board_info">
+			<span>작성자:${noticeBoardVO.userNm}</span> 
+			<span>작성일:
+				<fmt:formatDate
+					value="${noticeBoardVO.nbReg}" pattern="yyyy-MM-dd HH:mm" />
+			</span> 
+			<span>조회수:${noticeBoardVO.nbCnt}</span>
+			<c:if test="${userVO.comdCd eq 'USER01' or userVO.comdCd eq 'USER02'}">
+				<!-- 신고버튼 -->
+	      		<button class="btn-two mini orange" style="text-align:center;" onclick="openReportModal('${boardVO.bdCd}')">
+	      		<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path fill="#ffffff" d="M256 32c14.2 0 27.3 7.5 34.5 19.8l216 368c7.3 12.4 7.3 27.7 .2 40.1S486.3 480 472 480H40c-14.3 0-27.6-7.7-34.7-20.1s-7-27.8 .2-40.1l216-368C228.7 39.5 241.8 32 256 32zm0 128c-13.3 0-24 10.7-24 24V296c0 13.3 10.7 24 24 24s24-10.7 24-24V184c0-13.3-10.7-24-24-24zm32 224a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"/></svg>
+	      		<span style="color:#ffffff; margin-left:5px;">신고</span></button>
+			</c:if>
+		</div>
+	</div>
+<input id="empCd" name="empCd" type="hidden" value='${noticeBoardVO.empCd}'/>
+
+<!-- "신고" 모달 창 -->
+   <div class="modal fade" id="reportModal" tabindex="-1" role="dialog"
+      aria-labelledby="reportModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h5 class="modal-title" id="reportModalLabel">신고</h5>
+            </div>
+            <div class="modal-body">
+               <!-- 입력 폼 -->
+               <div class="form-group">
+<!--                   <input type="text" name="nbCd" id="modalBdCd" value="" /> -->
+                  <label for="reportReason">신고 사유</label> 
+                  <select
+                     class="form-control" id="prRsn" name="prRsn">
+                     <option value="" selected disabled>선택하세요</option>
+                     <option value="0">불건전한 내용</option>
+                     <option value="1">주제에 맞지 않음</option>
+                     <option value="2">욕설 및 혐오표현</option>
+                     <option value="3">기타</option>
+                  </select>
+               </div>
+               <div class="form-group">
+                  <label for="reportDetails">상세 내용</label>
+                  <textarea class="form-control" id="prDetail" name="prDetail" rows="3"
+                     placeholder="상세 내용을 입력하세요"></textarea>
+               </div>
+            </div>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-secondary" onclick="closeReportModal()">취소</button>
+               <button type="button" class="btn btn-primary"
+                  onclick="submitReport('${noticeBoardVO.nbCd}')">신고</button>
+            </div>
+         </div>
+      </div>
+   </div>
+   <!-- "신고" 모달 종료 -->
+
+<br />
+
+<hr class="board_separator">
+
+	<div class="board_title">${noticeBoardVO.nbTitle}</div>
+
+	<hr class="board_separator">
+
+	<c:choose>
+		<c:when test="${not empty noticeBoardVO.filesDetailVOList}">
+			<c:forEach items="${noticeBoardVO.filesDetailVOList}" var="vo">
+				<div class="image_container"
+					style="background-image: url(/resources/upload/${vo.fileSvnm});"></div>
+			</c:forEach>
+			<br />
+		</c:when>
+	</c:choose>
+
+	<hr class="board_separator">
+
+	<div class="board_content">${noticeBoardVO.nbCon}</div>
+
+	<hr class="board_separator">
+
+	<div id="commentList" class="card-footer">
+		<div class="row">
+			<div class="col-md-10">
+				<div class="form-group">
+					<input id="commentContent" type="text"
+						class="form-control col-md-8" placeholder="댓글을 입력하세요." required>
+				</div>
+			</div>
+			<div class="col-md-2 ml-5">
+				<div class="form-group">
+					<button id="insertComment" class="btn-two mini sky">등록</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	</br>
+	<c:if test="${userVO.comdCd eq 'USER03'}">
+		<button class="btn-two mini green"
+			onclick="location.href='/common/board/notice/update?nbCd=${noticeBoardVO.nbCd}' "
+			style="margin-left: 10px;">수정</button>
+		<button type="button" id="btnDelete" class="btn-two mini orange" 
+		style="margin-left: -8px;">삭제
+		</button>
+	</c:if>
+</div>
+
+<form id="infoForm" action="/common/board/notice/update?nbCd=${vo.nbCd}" method="get">
+   <input type="hidden" id="nbCd" name="nbCd" value='<c:out value="${noticeBoardVO.nbCd}"/>'>
+</form>
+
+<script type="text/javascript" src="/resources/js/postReport.js"></script>
+<script type="text/javascript" src="/resources/js/main.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script type="text/javascript" src="/resources/js/postReport.js">
+	$(function() {
+		$(".image_container").each(function() {
+			let url = $(this).data("url");
+			$(this).css({
+				"background-image" : "url(/resources/upload/" + url + ")",
+				"background-position" : "center",
+				"background-size" : "cover"
+			});
+		});
+	});
+</script>
+
+<script>
+let form = $("#infoForm");
+	
+	$("#list_btn").on("click", function(){
+		form.find("#nbCd").remove();
+		form.attr("action", "/common/board/notice/list");
+		form.submit();
+	});
+	
+	$("#update_btn").on("click", function(){
+		form.attr("action", "/common/board/notice/update");
+		form.submit();
+	});
+	
+	// 버튼 클릭 이벤트 정의
+	$("#delete_btn").click(function() {
+	    // 확인 다이얼로그 표시
+	    if (confirm("게시물을 삭제하시겠습니까?")) {
+	        // 삭제 함수 호출
+	        deletePost("${noticeBoardVO.nbCd}", "${_csrf.token}");
+	    }
+	});
+
+	// 게시물 삭제 함수
+	function deletePost(nbCd, csrfToken) {
+	    $.ajax({
+	        type: "POST",
+	        url: "/common/board/notice/deletePost",
+	        data: JSON.stringify({ nbCd: nbCd }),
+	        contentType: "application/json;charset=utf-8",
+	        dataType: "json",
+	        headers: {
+	            "X-CSRF-TOKEN": csrfToken
+	        },
+	        success: function(data) {
+	            if (data.result === "success") {
+	                alert("게시물이 삭제되었습니다.");
+	                location.href = "/common/board/notice/list"; // 목록 페이지로 이동
+	            } else {
+	                alert(data.message);
+	            }
+	        },
+	        error: function(jqXHR, textStatus, errorThrown) {
+	            console.error("AJAX Error:", textStatus, errorThrown);
+	            alert("서버 오류로 인해 게시물 삭제에 실패했습니다.");
+	        }
+	    });
+	}
+</script>	

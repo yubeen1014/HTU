@@ -1,0 +1,49 @@
+package kr.or.ddit.controller.common;
+
+import java.security.Principal;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.service.common.AcademicCalendarService;
+import kr.or.ddit.vo.AcademicCalendarVO;
+import kr.or.ddit.vo.ReservationVO;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@RequiredArgsConstructor
+@Slf4j
+@RequestMapping("/academicCalendar")
+public class AcademicCalendarController {
+
+	private final AcademicCalendarService academicCalendarService;
+
+	@GetMapping("/list")
+	public String list(Principal principal, Model model) {
+
+		String userCd = principal.getName();
+
+		List<AcademicCalendarVO> academicCalendarList = this.academicCalendarService.getListByUserCd(userCd);
+
+		model.addAttribute("academicCalendarList", academicCalendarList);
+
+		model.addAttribute("now", new Date());
+
+		return "academicCalendar/acaList";
+	}
+
+	@GetMapping("/current")
+	public String current(Model model) {
+
+		List<AcademicCalendarVO> academicCalendarList = this.academicCalendarService.getAcademicCalendarList();
+
+		model.addAttribute("academicCalendarList", academicCalendarList);
+
+		return "academicCalendar/acaCurrent";
+	}
+}

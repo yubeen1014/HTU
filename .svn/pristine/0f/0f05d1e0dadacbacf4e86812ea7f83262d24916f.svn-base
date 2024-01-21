@@ -1,0 +1,25 @@
+package kr.or.ddit.service.employee;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.vo.CrewPersonnelVO;
+import kr.or.ddit.vo.CrewVO;
+
+public interface CrewEmpService {
+
+	public List<CrewVO> crewListEmp(Map<String, Object> map);
+
+	public int crewUpdateYn(String appCd);
+
+	public int crewJoinApp(CrewPersonnelVO crewPersonnelVO);
+
+	public int deleteCrew(String crCd);
+
+	public CrewVO crewDetailEmp(String crCd);
+
+	public int deleteCrewPerson(String crCd);
+
+
+
+}

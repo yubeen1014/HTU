@@ -1,0 +1,105 @@
+package kr.or.ddit.service.common.impl;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import kr.or.ddit.mapper.AnonymousBoardMapper;
+import kr.or.ddit.mapper.FilesDetailMapper;
+import kr.or.ddit.service.common.AnonymousBoardService;
+import kr.or.ddit.util.FileUtil;
+import kr.or.ddit.vo.BoardVO;
+import kr.or.ddit.vo.CommentVO;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class AnonymousBoardServiceImpl implements AnonymousBoardService{
+	
+	private final AnonymousBoardMapper anonyBoardMapper;
+	
+	private final FilesDetailMapper fileMapper;
+	
+	private final FileUtil fileUtil;
+	
+	@Override
+	public List<BoardVO> list() {
+		return this.anonyBoardMapper.list();
+		
+	}
+
+	@Override
+	public BoardVO detail(String bdCd) {
+		BoardVO boardVO = this.anonyBoardMapper.detail(bdCd);
+		
+		List<CommentVO> commentList = this.anonyBoardMapper.getCommentList(bdCd);
+		
+		if (commentList != null && commentList.size() > 0) boardVO.setCommentList(commentList);
+		
+		return boardVO;
+	}
+
+	@Override
+	public int count(String bdCd) {
+		BoardVO boardVO = new BoardVO();
+		boardVO.setBdCd(bdCd);
+		return this.anonyBoardMapper.count(boardVO);
+	}
+
+	@Transactional
+	@Override
+	public int insert(BoardVO boardVO) {
+		
+		int cnt = 0;
+		
+		boardVO.setComdCd("BORD03");
+		
+		cnt += this.anonyBoardMapper.insert(boardVO);
+		
+		if (boardVO.getUploadFiles() != null) {
+			cnt += this.fileUtil.uploadFile(boardVO.getUploadFiles(), boardVO.getBdCd());
+		}
+		
+		return cnt;
+	}
+
+	@Override
+	public int delete(String bdCd) {
+		
+		int cnt = this.fileMapper.updateFileUsed(bdCd);
+		
+		cnt += this.anonyBoardMapper.delete(bdCd);
+		
+		return cnt;
+		
+	}
+	
+	@Transactional
+	@Override
+	public int update(BoardVO boardVO) {
+		
+		MultipartFile[] uploadFiles = boardVO.getUploadFiles();
+		
+		log.error("uploadFiles ==> {}", uploadFiles[0].getSize());
+		log.error("uploadFiles lengh ==> {}", uploadFiles.length);
+		
+		
+		int cnt = this.fileMapper.updateFileUsed(boardVO.getBdCd());
+		
+		if (cnt > 0) this.fileUtil.uploadFile(uploadFiles, boardVO.getBdCd());
+			
+		
+		cnt += this.anonyBoardMapper.update(boardVO);
+		
+		return cnt;
+	}
+	
+	
+	
+	
+}

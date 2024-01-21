@@ -1,0 +1,9 @@
+package kr.or.ddit.mapper;
+
+import kr.or.ddit.vo.ObjectionVO;
+
+public interface ObjectionMapper {
+
+	public int insertObjection(ObjectionVO objectionVO);
+
+}

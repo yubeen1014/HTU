@@ -1,0 +1,21 @@
+package kr.or.ddit.vo;
+
+import lombok.Data;
+
+@Data
+public class PostReportVO {
+	
+	private String prCd;	//신고
+	private String userCd; //신고한유저
+	private String appCd; //승인
+	private String bdCd; //게시글
+	private int prRsn; //"0:불건전한내용, 1: 주제에 맞지않음, 2: 욕설, 3: 기타"
+	private String prDetail; //상세내용
+	
+	//private UserVO userVO;
+	
+	// 승인 정보를 가져오기 위한 필드
+	private ApprovalVO approvalVO;
+	
+	//private BoardVO boardVO;
+}

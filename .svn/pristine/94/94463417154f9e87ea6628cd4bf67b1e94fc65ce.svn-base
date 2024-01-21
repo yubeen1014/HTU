@@ -1,0 +1,171 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<style>
+ .content{background-color:#ffffff;}
+ .table_topic{font-size: 20px; padding-bottom:30px;}
+ .prifile_wrap tr{display: table-row;}
+ .profile_wrap th{width:170px; padding:20px; font-size:14px;}
+ .profile_wrap td{padding:10px;}
+ .profile_photo{width:100px!important; height:100px!important; border:1px solid #888888;}
+</style>
+
+<sec:authentication property="principal.userVO" var="userVO" />
+${data}
+<br><br>
+<div class="profile_wrap">
+<div class="table_topic">기본정보</div>
+<table>
+<tr>
+	<th>사진</th> 
+	<td style="display: flex; align-items: center;">
+		<div style="width: 120px; height: 120px; border-radius:50%; position: relative; overflow: hidden;">
+			<img src="/resources/upload/${data[0].filesDetailVO.fileSvnm}" style="width: 160px; height: 160px;  object-fit: contain; display:inline; position: absolute; top: 60%; left: 50%; transform: translate(-50%, -50%);">
+		</div>
+		
+		<c:if test="${data[0].filesDetailVO eq null}">
+			<form action="/common/insertPicture" method="post" enctype="multipart/form-data">
+				<div style="display: flex; flex-direction: column; margin-left: 20px;">
+					<div class="mb-3">사진을 등록해주세요</div>
+					<input class="form-control" type="file" name="uploadFile">
+					<sec:csrfInput/>
+					<button class="btn-two mini green" type="submit">사진 등록</button>
+				</div>
+			</form>
+		</c:if>
+	<td>
+</tr>
+<tr>
+	<th>전공</th> 
+	<td>${userVO.studentVO.depCd}</td>
+</tr>
+<tr>
+	<th>이름(영문)</th> 
+	<td>${userVO.userNm}</td>
+</tr>
+<tr>
+	<th>학번</th> 
+	<td>${userVO.userCd}</td>
+</tr>
+<tr>
+	<th>주민등록번호</th> 
+	<td>${userVO.userReg1} <span style="display:inline-block;">-</span> ${userVO.userReg2}</td>
+</tr>
+<tr> 
+	<th>전화번호</th> 
+	<td>${userVO.userTel}</td>
+</tr>
+<tr>
+	<th>우편번호</th> 
+	<td>${userVO.userZip}</td>
+</tr>
+<tr>
+	<th>주소</th> 
+	<td>${userVO.userReg1}${userVO.userReg2}</td>
+</tr>
+<tr>
+	<th>이메일</th> 
+	<td>${userVO.userMail}</td>
+</tr>
+<tr>
+	<th>계좌</th> 
+	<td>${userVO.userBank} ${userVO.userAcc}</td>
+</tr>
+<tr>
+	<th>비밀번호변경</th>
+</tr>
+</table>
+</div>
+<!-- 부트스트랩 시작 -->
+<div class="card mb-4">
+      <h5 class="card-header"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">마이페이지</font></font></h5>
+      <div class="card-body">
+        <div class="mb-3 row">
+          <label for="html5-text-input" class="col-md-2 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">전공</font></font></label>
+          <div class="col-md-10">
+            <input class="form-control" type="text" value="Sneat" id="html5-text-input">
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="html5-search-input" class="col-md-2 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">찾다</font></font></label>
+          <div class="col-md-10">
+            <input class="form-control" type="search" value="Search ..." id="html5-search-input">
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="html5-email-input" class="col-md-2 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">이메일</font></font></label>
+          <div class="col-md-10">
+            <input class="form-control" type="email" value="john@example.com" id="html5-email-input">
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="html5-url-input" class="col-md-2 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">URL</font></font></label>
+          <div class="col-md-10">
+            <input class="form-control" type="url" value="https://themeselection.com" id="html5-url-input">
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="html5-tel-input" class="col-md-2 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">핸드폰</font></font></label>
+          <div class="col-md-10">
+            <input class="form-control" type="tel" value="90-(164)-188-556" id="html5-tel-input">
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="html5-password-input" class="col-md-2 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">비밀번호</font></font></label>
+          <div class="col-md-10">
+            <input class="form-control" type="password" value="password" id="html5-password-input">
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="html5-number-input" class="col-md-2 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">숫자</font></font></label>
+          <div class="col-md-10">
+            <input class="form-control" type="number" value="18" id="html5-number-input">
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="html5-datetime-local-input" class="col-md-2 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">날짜 시간</font></font></label>
+          <div class="col-md-10">
+            <input class="form-control" type="datetime-local" value="2021-06-18T12:30:00" id="html5-datetime-local-input">
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="html5-date-input" class="col-md-2 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">날짜</font></font></label>
+          <div class="col-md-10">
+            <input class="form-control" type="date" value="2021-06-18" id="html5-date-input">
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="html5-month-input" class="col-md-2 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">월</font></font></label>
+          <div class="col-md-10">
+            <input class="form-control" type="month" value="2021-06" id="html5-month-input">
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="html5-week-input" class="col-md-2 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">주</font></font></label>
+          <div class="col-md-10">
+            <input class="form-control" type="week" value="2021-W25" id="html5-week-input">
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="html5-time-input" class="col-md-2 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">시간</font></font></label>
+          <div class="col-md-10">
+            <input class="form-control" type="time" value="12:30:00" id="html5-time-input">
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="html5-color-input" class="col-md-2 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">색상</font></font></label>
+          <div class="col-md-10">
+            <input class="form-control" type="color" value="#666EE8" id="html5-color-input">
+          </div>
+        </div>
+        <div class="row">
+          <label for="html5-range" class="col-md-2 col-form-label"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">범위</font></font></label>
+          <div class="col-md-10">
+            <input type="range" class="form-range mt-3" id="html5-range">
+          </div>
+        </div>
+      </div>
+    </div>
+<!-- 부트스트랩 끝 -->
+

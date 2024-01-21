@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- 
+	[마이바티스] 스프링에서 "_"를 사용한 컬럼명을 사용 시(BOOK 테이블의 BOOK_ID)
+	카멜케이스로 읽어줌(bookId), INSERT_DATE => insertDate
+	ex) 테이블 컬러명이 member_id인 경우 jsp화면단에서 이 값을 사용 시 memberId로 사용
+	-->
+	<settings>
+		<setting name="mapUnderscoreToCamelCase" value="true"/>
+		<setting name="jdbcTypeForNull" value="NULL"/>
+	</settings>
+	<!-- 자주 사용하는 타입의 별칭을 세팅 -->
+	<typeAliases>
+		<typeAlias type="kr.or.ddit.vo.CommonVO" alias="commonVO" />
+		<typeAlias type="kr.or.ddit.vo.CommonDetailVO" alias="commonDetailVO" />
+		<typeAlias type="kr.or.ddit.vo.UserVO" alias="userVO"/>
+		<typeAlias type="kr.or.ddit.vo.NotificationVO" alias="notificationVO"/>
+		<typeAlias type="kr.or.ddit.vo.UnivMailVO" alias="univMailVO"/>
+		<typeAlias type="kr.or.ddit.vo.FilesVO" alias="filesVO"/>
+		<typeAlias type="kr.or.ddit.vo.FilesDetailVO" alias="filesDetailVO"/>
+		<typeAlias type="kr.or.ddit.vo.WeekplanVO" alias="weekplanVO"/>
+		<typeAlias type="kr.or.ddit.vo.ProfessorVO" alias="professorVO"/>
+		<typeAlias type="kr.or.ddit.vo.LectureVO" alias="lectureVO"/>
+		<typeAlias type="kr.or.ddit.vo.LectureScheduleVO" alias="lectureScheduleVO"/>
+		<typeAlias type="kr.or.ddit.vo.LectureApplyVO" alias="lectureApplyVO"/>
+		<typeAlias type="kr.or.ddit.vo.DepartmentVO" alias="departmentVO"/>
+		<typeAlias type="kr.or.ddit.vo.ApprovalVO" alias="approvalVO"/>
+		<typeAlias type="kr.or.ddit.vo.NoticeBoardVO" alias="noticeBoardVO"/>
+		<typeAlias type="kr.or.ddit.vo.BoardVO" alias="boardVO"/>
+		<typeAlias type="kr.or.ddit.vo.EmployeeVO" alias="employeeVO"/>
+		<typeAlias type="kr.or.ddit.vo.CounselVO" alias="counselVO"/>
+		<typeAlias type="kr.or.ddit.vo.CollegeVO" alias="collegeVO"/>
+		<typeAlias type="kr.or.ddit.vo.RoomVO" alias="roomVO" />
+		<typeAlias type="kr.or.ddit.vo.BuildingVO" alias="buildingVO" />
+		<typeAlias type="kr.or.ddit.vo.CrewVO" alias="crewVO" />
+		<typeAlias type="kr.or.ddit.vo.CrewPersonnelVO" alias="crewPersonnelVO" />
+		<typeAlias type="kr.or.ddit.vo.Criteria" alias="criteria" />
+		<typeAlias type="kr.or.ddit.vo.PostReportVO" alias="postReportVO" />
+		
+		<typeAlias type="kr.or.ddit.vo.ReservationVO" alias="reservationVO"/>
+		
+		<typeAlias type="kr.or.ddit.vo.CommentVO" alias="commentVO"/>
+		
+		<typeAlias type="kr.or.ddit.vo.StudentVO" alias="studentVO"/>
+		
+		<typeAlias type="kr.or.ddit.vo.Criteria" alias="criteria"/>
+		
+		<typeAlias type="kr.or.ddit.vo.CalendarVO" alias="calendarVO"/>
+		
+		<typeAlias type="kr.or.ddit.vo.LectureNoticeVO" alias="lectureNoticeVO"/>
+		<typeAlias type="kr.or.ddit.vo.OrganizationChartVO" alias="organizationChartVO"/>
+		
+		
+	</typeAliases>
+</configuration>

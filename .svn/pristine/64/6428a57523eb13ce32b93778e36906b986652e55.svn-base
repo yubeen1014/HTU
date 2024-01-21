@@ -1,0 +1,16 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.vo.LectureVO;
+
+public interface LectureMapper {
+
+	int createLecture(LectureVO lectureVO);
+
+	List<LectureVO> lectureList();
+
+	LectureVO lectureDetail(String lecCd);
+
+
+}

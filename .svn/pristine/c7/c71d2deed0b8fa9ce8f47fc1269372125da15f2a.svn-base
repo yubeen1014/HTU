@@ -1,0 +1,9 @@
+package kr.or.ddit.mapper;
+
+import kr.or.ddit.vo.LectureScheduleVO;
+
+public interface LectureScheduleMapper {
+
+	int createLectureSchedule(LectureScheduleVO lectureScheduleVO);
+
+}

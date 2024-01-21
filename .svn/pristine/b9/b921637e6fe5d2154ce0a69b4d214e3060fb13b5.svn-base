@@ -1,0 +1,26 @@
+package kr.or.ddit.service.common;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.vo.NoticeBoardVO;
+
+public interface NoticeBoardService {
+	
+	public int createNoticeBoard(NoticeBoardVO noticeBoardVO);
+
+	public int getTotal();
+
+	public List<NoticeBoardVO> list();
+
+	public NoticeBoardVO detail(String nbCd);
+
+	public int count(String nbCd);
+
+	public int create(NoticeBoardVO noticeBoardVO);
+
+	public int updatePost(NoticeBoardVO noticeBoardVO);
+
+	public int deletePost(Map<String, String> map);
+
+}

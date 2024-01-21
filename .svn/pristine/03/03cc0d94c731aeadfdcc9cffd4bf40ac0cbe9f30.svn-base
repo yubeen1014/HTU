@@ -1,0 +1,94 @@
+package kr.or.ddit.controller.common;
+
+import java.security.Principal;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.service.common.PublicizeBoardService;
+import kr.or.ddit.vo.BoardVO;
+import kr.or.ddit.vo.NoticeBoardVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@RequestMapping("/common/board/publicize")
+@Slf4j
+public class PublicizeBoardController {
+
+	@Autowired
+	PublicizeBoardService publicizeBoardService;
+
+	// 요청URI : /instrs/list
+	// 요청방식 : get
+	// 강사 목록
+	@GetMapping("/list")
+	public String list(Model model) {
+
+		List<BoardVO> data = this.publicizeBoardService.list();
+		log.info("data : " + data);
+
+		model.addAttribute("data", data);
+
+		// forwarding
+		return "board/publicize/list";
+	}
+
+	@GetMapping("/detail")
+	public String detail(Model model, String bdCd) {
+		log.info("bdCode ==> {}", bdCd);
+		BoardVO boardVO = this.publicizeBoardService.detail(bdCd);
+		
+		log.info("boardVO ==> {}", boardVO);
+		model.addAttribute("boardVO", boardVO);
+		return "board/publicize/detail";
+	}
+	
+	@GetMapping("/count")
+	@ResponseBody
+	public int count(String bdCd) {
+		
+		int cnt = this.publicizeBoardService.count(bdCd);
+		
+		return cnt;
+	}
+	
+	@GetMapping("/create")
+	public String create() {
+		//forwarding : jsp
+		return "board/publicize/create";
+	}
+	
+	@PostMapping("/createPost")
+	public BoardVO createPost(@RequestBody BoardVO boardVO,
+			Principal principal) {
+	    //NoticeBoardVO(nbCd=null, empCd=null, fileCd=null, nbTitle=2, nbCon=3
+		//, nbReg=null, nbUdt=null, nbCnt=0, userNm=이상민, filesDetailVOList=null
+		//		, employeeVO=null, employeeVOList=null)
+		//로그인한 아이디
+		String userCd = principal.getName();
+		boardVO.setUserCd(userCd);
+		
+	    log.info("create->boardVO : " + boardVO);
+	    
+	    int result = this.publicizeBoardService.create(boardVO);
+	    log.info("result :" + result );
+
+//	    if (result > 0) {
+//	        // 게시물 생성 성공, 리다이렉트 URL을 반환
+//	        return "redirect:/board/publicize/list";
+//	    } else {
+//	        // 게시물 생성 실패 처리
+//	        return "error"; // 실패했을 경우에 대한 처리를 추가하세요
+//	    }
+	    
+	    return boardVO;
+	}
+
+}

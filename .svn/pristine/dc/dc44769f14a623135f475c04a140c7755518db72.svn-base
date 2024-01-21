@@ -1,0 +1,91 @@
+package kr.or.ddit.service.student.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.AcademicAdminMapper;
+import kr.or.ddit.mapper.ApprovalMapper;
+import kr.or.ddit.mapper.NotificationMapper;
+import kr.or.ddit.service.student.AcademicAdminService;
+import kr.or.ddit.vo.ApprovalVO;
+import kr.or.ddit.vo.LectureGradeVO;
+import kr.or.ddit.vo.NotificationVO;
+import kr.or.ddit.vo.ObjectionVO;
+import kr.or.ddit.vo.RecordVO;
+import kr.or.ddit.vo.StudentVO;
+import kr.or.ddit.vo.UserVO;
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class AcademicAdminServiceImpl implements AcademicAdminService{
+
+	private final AcademicAdminMapper academicAdminMapper;
+	
+	private final ApprovalMapper approvalMapper;
+	
+	private final NotificationMapper notificationMapper;
+	
+	@Override
+	public List<LectureGradeVO> getLecList(String stuCd) {
+		return this.academicAdminMapper.getLecList(stuCd);
+	}
+
+	@Override
+	public StudentVO recordApp(String userCd) {
+		return this.academicAdminMapper.recordApp(userCd);
+	}
+
+	@Override
+	public int recordAppPost(RecordVO recordVO) {
+		
+		int result = 0;
+		
+		ApprovalVO appVO = new ApprovalVO();
+		appVO.setUserCd(recordVO.getStuCd());
+		appVO.setAppTarget("1001");
+		appVO.setComdCd("APPR08");
+		
+		result += this.approvalMapper.insert(appVO);
+		recordVO.setAppCd(appVO.getAppCd());
+		
+		result += this.academicAdminMapper.recordAppPost(recordVO);
+		
+		NotificationVO notificationVO = new NotificationVO();
+		notificationVO.setComdCd("ALAM14");
+		notificationVO.setUserCd("1001");
+		notificationVO.setNtfUrl("/employee/stuadmin/recordApprovalList");
+		notificationVO.setNtfCon(recordVO.getStuCd());
+		this.notificationMapper.insert(notificationVO);
+		
+		return result;
+	}
+
+	@Override
+	public List<RecordVO> recordList(Map<String, Object> map) {
+		return this.academicAdminMapper.recordList(map);
+	}
+
+	@Override
+	public int delete(String recCd) {
+		return this.academicAdminMapper.delete(recCd);
+	}
+
+	@Override
+	public List<LectureGradeVO> getGrade(StudentVO studentVO) {
+		return this.academicAdminMapper.getGrade(studentVO);
+	}
+
+	@Override
+	public List<ObjectionVO> getObjectionList(String userCd) {
+		return this.academicAdminMapper.getObjectionList(userCd);
+	}
+
+	@Override
+	public int getTotalRecord(Map<String, Object> map) {
+		return this.academicAdminMapper.getTotalRecord(map);
+	}
+
+}

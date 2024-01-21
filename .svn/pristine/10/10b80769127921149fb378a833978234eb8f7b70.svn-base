@@ -1,0 +1,109 @@
+package kr.or.ddit.controller.student;
+
+import java.security.Principal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.service.student.DormitoryService;
+import kr.or.ddit.service.student.StudentService;
+import kr.or.ddit.vo.DormitoryVO;
+import kr.or.ddit.vo.StudentVO;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequiredArgsConstructor
+@RequestMapping("/student/dormitory")
+public class DormitoryController {
+	
+	private final DormitoryService dormitoryService;
+	
+	
+	@GetMapping("/home")
+	public String myPage() {
+		return "student/dormitory/home";
+	}
+	
+	@GetMapping("/list")
+	public String list(Model model, Principal principal) {
+		
+		String stuCd = principal.getName();
+		
+		List<DormitoryVO> list = this.dormitoryService.list(stuCd);
+		log.info("list : " + list);
+		
+		model.addAttribute("list",list);
+		
+		return "student/dormitory/list";
+	}
+	
+	@GetMapping("/apply")
+	public String applyDormitory(Model model, Principal principal) {
+		
+		String stuCd = principal.getName();
+		
+		model.addAttribute("stuCd", stuCd);
+		
+		return "student/dormitory/apply";
+	}
+	
+	@PostMapping("/checkDuplicate")
+	public ResponseEntity<?> checkDuplicateApplication(@RequestBody DormitoryVO dormitoryVO) {
+	   
+		boolean isDuplicated = dormitoryService.isDuplicatedApplication(
+	       
+	    	dormitoryVO.getStuCd(),
+	        dormitoryVO.getDomYear(),
+	        dormitoryVO.getDomSem()
+	    );
+
+	    // 중복 여부를 클라이언트에게 반환
+	    Map<String, Object> responseMap = new HashMap<>();
+	    responseMap.put("duplicated", isDuplicated);
+
+	    return ResponseEntity.ok(responseMap);
+	}
+	/**
+	 * 기숙사 신청데이터 /student/dormitory/applyPost
+	 * @param dormitoryVO
+	 * @return
+	 */
+	@ResponseBody
+	@PostMapping("/applyPost")
+	public DormitoryVO createApplyDormitoryConsent(@RequestBody DormitoryVO dormitoryVO) {
+		
+		log.info("dormitoryVO : " + dormitoryVO);
+		
+		
+		int result = this.dormitoryService.createApplyDormitoryConsent(dormitoryVO);
+		
+		return dormitoryVO;
+		
+	}
+	
+	@PostMapping("/payment")
+	/** 기숙사등록금 결제시 결제여부 업데이트 */
+	public String paymentDormitory(String domCd, int payYn) {
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		map.put("domCd", domCd);
+		map.put("payYn", payYn);
+		
+		this.dormitoryService.paymentDormitory(map);
+		
+		return "redirect:/student/dormitory/list";
+	}
+}

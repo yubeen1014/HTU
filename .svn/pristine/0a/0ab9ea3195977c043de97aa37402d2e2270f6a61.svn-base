@@ -1,0 +1,17 @@
+package kr.or.ddit.service.employee;
+
+import java.util.List;
+
+import kr.or.ddit.vo.ApprovalVO;
+import kr.or.ddit.vo.LectureApplyVO;
+
+public interface LectureApplyApprovalService {
+
+
+	List<LectureApplyVO> getLectureApplyList();
+
+	LectureApplyVO lecaApplyDetail(String lecaCd);
+
+	int updateApprovalYn(LectureApplyVO lectureApplyVO);
+
+}

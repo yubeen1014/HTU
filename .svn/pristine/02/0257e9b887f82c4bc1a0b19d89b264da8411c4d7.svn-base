@@ -1,0 +1,161 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="/resources/js/jquery.min.js"></script>
+<style>
+	.divMailbox .mailHeaderName{font-size: 20px; padding-bottom:30px;}
+ 	.dataTables_paginate paging_simple_numbers{margin: 0 auto;}
+ 	.col-sm-12 col-md-7{margin: 0 auto;}
+</style>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+   
+    <link rel="stylesheet" href="/resources/test/fonts/icomoon/style.css">
+   
+    <!-- Style -->
+    <link rel="stylesheet" href="/resources/test/css/style.css">
+</head>
+<body>
+<sec:authentication property="principal.userVO" var="userVO"/>
+<div class="divMailbox">
+	<div class="mailHeader">
+		<div class="mailHeaderName">
+			받은 메일함
+		</div>
+		<div class="mailSearchForm">
+			<form>
+				<input class="mailSearch" type="text" placeholder="메일 검색" name="keyword"
+					value="${keyword}" />
+				<input type="image" src="/resources/images/free-icon-search-149852.png" name="submit" class="mailSearchBtn" value="검색" />
+			</form>
+		</div>
+	</div>
+	<div class="containerMail">
+	    <table class="table custom-table">
+	      <thead>
+	        <tr>
+	          <th scope="col">
+	            <label class="control control--checkbox">
+	              <input type="checkbox" class="js-check-all" name="mailCheck"/>
+	              <div class="control__indicator"></div>
+	            </label>
+	          </th>
+	          <th onclick="readCheck()">읽음</th>
+	          <th onclick="deleteCheck()">삭제</th>
+	        </tr>
+	      </thead>
+	      <tbody>
+	      	<c:forEach var="univMailVO" items="${data}">
+	         <tr>
+	           <th scope="row" style="width: 5%;">
+	             <label class="control control--checkbox">
+	               <input type="checkbox" name="mailCheck"  data-uml-cd="${univMailVO.umlCd}"/>
+	               <div class="control__indicator"></div>
+	             </label>
+	           </th>
+	           <td style="width: 5%;">
+	           <c:if test="${univMailVO.umlYn eq 0}">
+	           	<img alt="" class="mailRead" src="/resources/images/mail2.png" style="width: 28px; height: 28px;" />
+	           </c:if>
+	           <c:if test="${univMailVO.umlYn eq 1}">
+	           	<img alt="" class="mailRead" src="/resources/images/readmail.png" style="width: 26px; height: 26px;" />
+	           </c:if>
+	           </td>
+	           <td style="width: 15%;">
+	             ${univMailVO.userVO.userNm}
+	           </td>
+	           <td style="width: 45%;">
+	           	<a class="mailTitle" href="/mail/receiveDetail?umlCd=${univMailVO.umlCd}">${univMailVO.umlTitle}</a>
+	           </td>
+	           <td style="width: 20%;"><fmt:formatDate pattern="MM월 dd일 HH:mm" value="${univMailVO.umlReg}"/></td>
+	           <td style="width: 10%;"><img src="/resources/images/x.png" style="width: 10px; height: 10px;" class="deleteMail" data-uml-cd="${univMailVO.umlCd}" /></td>
+	         </tr>
+	        </c:forEach>
+	      </tbody>
+	    </table>
+	    ${articlePage.getPagingArea()}
+	</div>
+</div>    
+    <script src="/resources/test/js/jquery-3.3.1.min.js"></script>
+    <script src="/resources/test/js/popper.min.js"></script>
+    <script src="/resources/test/js/bootstrap.min.js"></script>
+    <script src="/resources/test/js/main.js"></script>
+</body>
+<script type="text/javascript">
+$(function(){
+	function readCheck(){
+		let readArr = [];
+		
+		$('input:checkbox[name=mailCheck]').each(function (index) { 
+			if($(this).is(":checked")==true){ 
+				readArr.push($(this).data("umlCd"));
+			}
+		});
+		
+		console.log("readArr:", readArr);
+		
+		$.ajax({
+			url:"/mail/readCheck",
+			contentType:"application/json; charset=utf-8",
+			data:JSON.stringify(readArr),
+			type:"post",
+			beforeSend:function(xhr){
+				xhr.setRequestHeader("${_csrf.headerName}","${_csrf.token}");
+			},
+			success:function(res){
+				console.log("읽음!");
+				location.reload();
+			}
+		});
+	}
+	
+	function deleteCheck(){
+		let deleteArr = [];
+		
+		$('input:checkbox[name=mailCheck]').each(function (index) { 
+			if($(this).is(":checked")==true){ 
+				deleteArr.push($(this).data("umlCd"));
+			}
+		});
+		
+		$.ajax({
+			url:"/mail/deleteCheck",
+			contentType:"application/json; charset=utf-8",
+			data:JSON.stringify(deleteArr),
+			type:"post",
+			beforeSend:function(xhr){
+				xhr.setRequestHeader("${_csrf.headerName}","${_csrf.token}");
+			},
+			success:function(res){
+				console.log("삭제!");
+				location.reload();
+			}
+		});
+	}
+
+	$(".deleteMail").on("click", function(){
+		if(confirm("삭제하시겠습니까?")){
+			let umlCd = $(this).data("umlCd");
+			console.log("umlCd : " + umlCd);
+			
+			$.ajax({
+				url:"/mail/deleteReceiveMail?umlCd="+umlCd,
+				data:umlCd,
+				type:"post",
+				beforeSend:function(xhr){
+					xhr.setRequestHeader("${_csrf.headerName}","${_csrf.token}");
+				},
+				success:function(res){
+					alert("삭제 완료");
+					location.reload();
+				}
+			});
+		}
+	});
+});
+</script>
+</html>

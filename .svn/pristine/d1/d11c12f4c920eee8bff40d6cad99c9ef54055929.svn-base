@@ -1,0 +1,57 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+
+<!-- quick -->
+<section class="quick">
+  <div class="swiper quickSwiper quick_box">
+    <div class="swiper-wrapper ">
+      <div class="swiper-slide">
+        <a href="#none" class="quick_menu quick_menu1">
+          <img src="/resources/images/dept.png" alt="dept">
+          <div class="title">조직도</div>
+        </a>
+      </div>
+      <div class="swiper-slide">
+        <a href="#none" class="quick_menu quick_menu2">
+          <img src="/resources/images/class.png" alt="class">
+          <div class="title">강의조회</div>
+        </a>
+      </div>
+      <div class="swiper-slide">
+        <a href="#none" class="quick_menu quick_menu3">
+          <img src="/resources/images/consule.png" alt="consule">
+          <div class="title">상담</div>
+        </a>
+      </div>
+      <div class="swiper-slide">
+        <a href="#none" class="quick_menu quick_menu5">
+          <img src="/resources/images/club.png" alt="club">
+          <div class="title">동아리</div>
+        </a>
+      </div>
+      <div class="swiper-slide">
+        <a href="#none" class="quick_menu quick_menu4">
+          <img src="/resources/images/dormitory.png" alt="dormitory">
+          <div class="title">기숙사</div>
+        </a>
+      </div>
+      <div class="swiper-slide">
+        <a href="#none" class="quick_menu quick_menu5">
+          <img src="/resources/images/bus.png" alt="bus">
+          <div class="title">셔틀버스</div>
+        </a>
+      </div>
+      <div class="swiper-slide">
+        <a href="#none" class="quick_menu quick_menu6">
+          <img src="/resources/images/restaurant.png" alt="restaurant">
+          <div class="title">학식</div>
+        </a>
+      </div>
+      <div class="swiper-slide"><a href="#none" class="quick_menu quick_menu7">
+        <img src="/resources/images/certificate.png" alt="certificate">
+        <div class="title">증명서</div>
+      </a></div>
+    </div>
+  </div>
+  <div class="quick_arrow"><img src="/resources/images/right_arrow.png" alt="arrow"></div>
+  
+</section>

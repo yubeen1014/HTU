@@ -1,0 +1,63 @@
+package kr.or.ddit.service.counsel.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import kr.or.ddit.mapper.CounselMapper;
+import kr.or.ddit.mapper.NotificationMapper;
+import kr.or.ddit.mapper.ProfessorMapper;
+import kr.or.ddit.service.counsel.CounselService;
+import kr.or.ddit.vo.CounselVO;
+import kr.or.ddit.vo.NotificationVO;
+import kr.or.ddit.vo.ProfessorVO;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class CounselServiceImpl implements CounselService {
+
+	private final CounselMapper counselMapper;
+	
+	private final NotificationMapper ntfMapper;
+	
+	private final ProfessorMapper proMapper;
+	
+	@Override
+	public List<CounselVO> counselList(String userCd) {
+		return this.counselMapper.counselList(userCd);
+	}
+
+	@Override
+	@Transactional
+	public int counselCreatePost(CounselVO counselVO) {
+		
+		int result = 0;
+		
+		result += this.counselMapper.counselCreatePost(counselVO);
+		
+		
+		ProfessorVO proVO = this.proMapper.getProfessor(counselVO.getProCd());
+		
+		log.info("ㅋㅋㅋㅋㅋㅋㅋㅋㅋ ==> {}", counselVO);
+		NotificationVO ntfVO = new NotificationVO();
+		ntfVO.setUserCd(proVO.getProCd());
+		ntfVO.setComdCd("NTFCOUNSEL");
+		ntfVO.setNtfUrl("/pro/counsel/counseldetail?cnslCd="+counselVO.getCnslCd());
+		
+		result += this.ntfMapper.insert(ntfVO);
+		
+		return result;
+	}
+
+	@Override
+	public CounselVO counseldetail(String cnslCd) {
+		return this.counselMapper.counseldetail(cnslCd);
+	}
+	
+
+}

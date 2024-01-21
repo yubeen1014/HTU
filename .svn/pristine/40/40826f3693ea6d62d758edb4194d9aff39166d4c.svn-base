@@ -1,0 +1,53 @@
+package kr.or.ddit.service.common.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.PublicizeBoardMapper;
+import kr.or.ddit.service.common.PublicizeBoardService;
+import kr.or.ddit.vo.BoardVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Service
+public class PublicizeBoardServiceImpl implements PublicizeBoardService {
+
+   @Autowired
+   PublicizeBoardMapper publicizeBoardMapper;
+   
+      
+   //자유게시판 목록
+   @Override
+   public List<BoardVO> list() {
+      return this.publicizeBoardMapper.list();
+   }
+
+
+	@Override
+	public BoardVO detail(String bdCd) {
+		return this.publicizeBoardMapper.detail(bdCd);
+	}
+
+	@Override
+	public int count(String bdCd) {
+		BoardVO boardVO = new BoardVO();
+		boardVO.setBdCd(bdCd);
+		return this.publicizeBoardMapper.count(boardVO);
+	}
+
+	//전체행의 수 (검색 포함)
+	@Override
+	public int getTotal() {
+		return this.publicizeBoardMapper.getTotal();
+	}
+
+
+	@Override
+	public int create(BoardVO boardVO) {
+		// TODO Auto-generated method stub
+		return this.publicizeBoardMapper.create(boardVO);
+	}
+}

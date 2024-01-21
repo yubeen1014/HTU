@@ -1,0 +1,14 @@
+package kr.or.ddit.service.employee;
+
+import java.util.List;
+
+import kr.or.ddit.vo.CrewVO;
+
+public interface CrewEmpService {
+
+	public List<CrewVO> crewList();
+
+	public int crewUpdateYn(CrewVO crewVO);
+
+
+}

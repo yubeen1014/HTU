@@ -1,0 +1,34 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import kr.or.ddit.vo.ApprovalVO;
+import kr.or.ddit.vo.CrewPersonnelVO;
+import kr.or.ddit.vo.CrewVO;
+
+public interface CrewMapper {
+
+	public List<CrewVO> crewList();
+
+	public int crewApply(CrewVO crewVO);
+
+	public int crewApproval(ApprovalVO appVO);
+
+	public int crewJoinApp(CrewPersonnelVO crewPersonnelVO);
+
+	public List<CrewVO> myCrew(String stuCd);
+
+	public CrewVO crewDetail(String crCd);
+
+	public List<CrewVO> crewPersonnel(String crCd);
+
+	public int crewUpdate(CrewVO crewVO);
+
+	public int crewQuit(@Param(value = "stuCd") String stuCd, @Param(value = "crCd") String crCd);
+
+	public int crewUpdateYn(CrewVO crewVO);
+
+
+}

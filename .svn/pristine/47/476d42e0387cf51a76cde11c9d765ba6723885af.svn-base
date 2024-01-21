@@ -1,0 +1,64 @@
+package kr.or.ddit.controller.professor;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.mapper.CommonMapper;
+import kr.or.ddit.service.professor.ScholarshipRecommendService;
+import kr.or.ddit.vo.LectureApplyVO;
+import kr.or.ddit.vo.ScholarshipRecommendVO;
+import kr.or.ddit.vo.UserVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@PreAuthorize("hasRole('ROLE_PROFESSOR')")
+@RequestMapping("/professor")
+/** 강의계획신청 컨트롤러 */
+public class ScholarshipRecommendController {
+
+	@Autowired
+	ScholarshipRecommendService scholarshipRecommendService;
+
+	@Autowired
+	CommonMapper commonMapper;
+
+	@ModelAttribute
+	/** 승인받을 관리자 목록의 정보 */
+	public void getEmployee(Model model) {
+
+		List<UserVO> userVOList = this.scholarshipRecommendService.getEmployee();
+
+		model.addAttribute("employeeList", userVOList);
+	}
+	
+	@GetMapping("/scholarshipRecommend/list")
+	/**교수추천장학금신청 페이지로 이동*/
+	public String create() {
+		
+		return "professor/scholarshipRecommend/list";
+	}
+	
+	
+	@PostMapping("/scholarshipRecommend/list")
+	/**결재 데이터 생성 -> 교수추천장학금신청데이터생성*/
+	public String createScholarshipRecommendApproval(ScholarshipRecommendVO scholarshipRecommendVO) {
+		
+		log.info("lecture ==> {}", scholarshipRecommendVO);
+		
+		int result = this.scholarshipRecommendService.createScholarshipRecommendApproval(scholarshipRecommendVO);
+		
+		return "redirect:/professor/mypage";
+	}
+	
+	
+
+}

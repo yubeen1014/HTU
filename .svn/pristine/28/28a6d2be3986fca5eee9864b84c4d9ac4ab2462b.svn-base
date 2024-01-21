@@ -1,0 +1,45 @@
+package kr.or.ddit.controller.test;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.service.common.AnonymousBoardService;
+import kr.or.ddit.vo.BoardVO;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@RequestMapping("/test")
+@RequiredArgsConstructor
+@Slf4j
+public class TestController {
+	
+	private final AnonymousBoardService boardService;
+	
+	
+	@GetMapping("/alarm")
+	public String alarm() {
+		return "exam/websocketAlarm/notification";
+	}
+	
+	@GetMapping("/file")
+	public String file() {
+		
+		return "test/atchFile";
+	}
+	
+	@PostMapping("/file")
+	public String file(BoardVO boardVO) {
+		
+		log.info("boardVO ==> {}", boardVO);
+		
+		int cnt = this.boardService.create(boardVO);
+		
+		return "null";
+	}
+	
+	
+	
+}

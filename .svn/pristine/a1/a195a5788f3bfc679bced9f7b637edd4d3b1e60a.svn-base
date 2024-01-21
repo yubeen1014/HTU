@@ -1,0 +1,134 @@
+package kr.or.ddit.service.common.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.UnivMailMapper;
+import kr.or.ddit.service.common.UnivMailService;
+import kr.or.ddit.util.FileUtil;
+import kr.or.ddit.vo.FilesDetailVO;
+import kr.or.ddit.vo.UnivMailVO;
+import kr.or.ddit.vo.UserVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Service
+public class UnivMailServiceImpl implements UnivMailService {
+
+	@Autowired
+	UnivMailMapper univMailMapper;
+	
+	@Autowired
+	FileUtil fileUtil;
+	
+	//받은 메일함
+	@Override
+	public List<UnivMailVO> inbox(String userCd) {
+		return this.univMailMapper.inbox(userCd);
+	}
+
+	//보낸 메일함
+	@Override
+	public List<UnivMailVO> sentbox(String userCd) {
+		return this.univMailMapper.sentbox(userCd);
+	}
+
+	//메일 작성
+	@Override
+	public int sendMail(UnivMailVO univMailVO) {
+		int result = this.univMailMapper.sendMail(univMailVO);
+		
+		result += this.fileUtil.uploadFile(univMailVO.getUploadFiles(), univMailVO.getUmlCd());
+
+		log.info("sendMail->univMailVO : " + univMailVO);
+		
+		return result;
+	}
+
+	//받은 메일 상세
+	@Override
+	public UnivMailVO receiveMailDetail(String umlCd) {
+		return this.univMailMapper.receiveMailDetail(umlCd);
+	}
+	
+	//보낸 메일 상세
+	@Override
+	public UnivMailVO sendMailDetail(String umlCd) {
+		return this.univMailMapper.sendMailDetail(umlCd);
+	}
+	
+	//메일 삭제
+	@Override
+	public int deleteMail(String umlCd) {
+		log.info("umlCd : " + umlCd);
+		int result = this.univMailMapper.deleteMail(umlCd);
+		
+		result += this.fileUtil.updateFileUsed(umlCd);
+		
+		return result;
+	}
+
+	//메일 읽음
+	@Override
+	public int readReceiveMail(String umlCd) {
+		return this.univMailMapper.readReceiveMail(umlCd);
+	}
+
+	//임시 보관함
+	@Override
+	public List<UnivMailVO> tempMailBox(String userCd) {
+		return this.univMailMapper.tempMailBox(userCd);
+	}
+
+	//임시 메일 업데이트
+	@Override
+	public int tempMailUpdate(UnivMailVO univMailVO) {
+		int result = this.univMailMapper.tempMailUpdate(univMailVO);
+		log.info("tempMailUpdate->univMailVO : " + univMailVO);
+		
+		result += this.fileUtil.uploadFile(univMailVO.getUploadFiles(), univMailVO.getUmlCd());
+		log.info("sendMail->univMailVO : " + univMailVO);
+		
+		return result;
+	}
+
+	//임시 메일 파일 삭제
+	@Override
+	public int deleteFileUpdate(FilesDetailVO filesDetailVO) {
+		int result = this.fileUtil.deleteFileUpdate(filesDetailVO.getFileCd(), filesDetailVO.getFileSn());
+		
+		return result;
+	}
+
+	//임시 저장 메일 전송
+	@Override
+	public int sendTempMail(UnivMailVO univMailVO) {
+		int result = this.univMailMapper.sendTempMail(univMailVO);
+		result += this.fileUtil.uploadFile(univMailVO.getUploadFiles(), univMailVO.getUmlCd());
+		return result;
+	}
+
+	//선택 메일 읽음
+	@Override
+	public int readCheck(List<String> umlCdList) {
+		return this.univMailMapper.readCheck(umlCdList);
+	}
+
+	//선택 메일 삭제
+	@Override
+	public int deleteMail(List<String> umlCdList) {
+		int result = 0;
+		
+		for (String umlCd : umlCdList) {
+            log.info("deleteMail->umlCd : " + umlCd);
+            result += this.univMailMapper.deleteMail(umlCd);
+            result += this.fileUtil.updateFileUsed(umlCd);
+        }
+
+        return result;
+	}
+
+}

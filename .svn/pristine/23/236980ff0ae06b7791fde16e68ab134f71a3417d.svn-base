@@ -1,0 +1,14 @@
+package kr.or.ddit.service.professor;
+
+import java.util.List;
+
+import kr.or.ddit.vo.ScholarshipRecommendVO;
+import kr.or.ddit.vo.UserVO;
+
+public interface ScholarshipRecommendService {
+
+	List<UserVO> getEmployee();
+
+	int createScholarshipRecommendApproval(ScholarshipRecommendVO scholarshipRecommendVO);
+
+}

@@ -1,0 +1,57 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<section class="content container">
+  <sec:authentication property="principal.userVO" var="userVO"/>
+    <div class="item content1">
+      <div class="loginbox_top">
+        <div class="profile">
+          <img src="/resources/images/unknown.png" alt="profile" />
+        </div>
+        <div class="name_no">
+          <div class="user_name">
+            <input type="text" name="" value="${userVO.userNm}" /> <span>님</span>
+          </div>
+          <input type="text" name="" value="${userVO.userCd}" class="no" />
+        </div>
+        <a href="#none" class="my_page">마이페이지</a>
+        <form id="logoutForm" action="/logout" method="post">
+          <a class="log_out" href="#" onclick="logout()">
+            <span>로그아웃</span>
+            <img src="/resources/images/logout.png" alt="logout" />
+          </a>
+          <sec:csrfInput/>
+        </form>
+      </div>
+      <div class="loginbox_bottom">
+        <a href="/mail/inbox" id="inbox">메일함</a>
+        <a href="#none" id="notification" onclick="javascript:toggleDropdown()">알림</a>
+        <a href="#none">내강의실</a>
+      </div>
+      <div>
+        <div id="notificationDropdown">
+          <ul style="display: flex; justify-content: space-around;"></ul>
+          <ul id="notificationDetail"></ul>
+        </div>
+        <div>
+          <a href="/pro/lectureapply/create">강의계획신청</a>
+        </div>
+      </div>
+    </div>
+    <div class="item content2"></div>
+    <div class="item content3"></div>
+    <div class="item content4"></div>
+    <div class="item content5"></div>
+    <div class="item content6"></div>
+    <div class="item content7"></div>
+    <div class="item content8"></div>
+  </section>
+<%-- 	${commonDetailList} --%>
+	
+
+<script>
+  logout = function() {
+    $("#logoutForm").submit();
+  }
+  
+</script>

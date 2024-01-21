@@ -1,0 +1,52 @@
+package kr.or.ddit.service.common;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.vo.BoardVO;
+import kr.or.ddit.vo.Criteria;
+import kr.or.ddit.vo.NoticeBoardVO;
+
+public interface NoticeBoardService {
+	
+
+
+	public List<NoticeBoardVO> list();
+
+	public NoticeBoardVO detail(String nbCd);
+
+	public int count(String nbCd);
+
+	public int create(NoticeBoardVO noticeBoardVO);
+
+	public int updatePost(NoticeBoardVO noticeBoardVO);
+
+	public int deletePost(Map<String, String> map);
+	
+	public List<NoticeBoardVO> getList(Criteria cri);	//페이징처리 후 리스트 조회
+	
+	public int getTotal(Criteria cri);
+
+	public List<NoticeBoardVO> renderHome();
+
+	/**
+     * 게시글을 상단고정합니다.
+     *
+     * @param nbNo 게시글 번호
+     * @param nbYn 상단고정 여부 (1: 상단고정, 0: 상단고정해제)
+     */
+    void fixNoticeBoard(int nbNo, int nbYn);
+
+    /**
+     * 여러 게시글을 상단고정합니다.
+     *
+     * @param nbCodes 게시글 번호 목록
+     * @param nbYn 상단고정 여부 (1: 상단고정, 0: 상단고정해제)
+     */
+    void fixNoticeBoards(List<Integer> nbCodes, int nbYn);
+
+	public int getNbYnByNbNo(int nbNo);
+
+	
+
+}

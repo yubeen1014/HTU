@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.LectureMapper">
+	<resultMap type="approvalVO" id="appMap">
+		<result property="appCd" column="APP_CD" />
+		<result property="userCd" column="USER_CD" />
+		<result property="comdCd" column="COMD_CD" />
+		<result property="appTarget" column="APP_TARGET" />
+		<result property="appYn" column="APP_YN" />
+		<result property="appReg" column="APP_REG" />
+		<result property="appProdt" column="APP_PRODT" />
+		<result property="appRet" column="APP_RET" />
+		<result property="appPcd" column="APP_PCD" />
+	</resultMap>
+
+	<resultMap type="lectureApplyVO" id="lectureApplyVOMap">
+		<result property="lecaCd" column="LECA_CD" />
+		<result property="proCd" column="PRO_CD" />
+		<result property="appCd" column="APP_CD" />
+		<result property="depCd" column="DEP_CD" />
+		<result property="roomCd" column="ROOM_CD" />
+		<result property="lecaYear" column="LECA_YEAR" />
+		<result property="lecaSem" column="LECA_SEM" />
+		<result property="lecaNm" column="LECA_NM" />
+		<result property="lecaCon" column="LECA_CON" />
+		<result property="lecaTrg" column="LECA_TRG" />
+		<result property="lecaCrd" column="LECA_CRD" />
+		<result property="lecaPer" column="LECA_PER" />
+		<result property="lecaCap" column="LECA_CAP" />
+		<result property="lecaSche" column="LECA_SCHE" />
+		<result property="lecaBook" column="LECA_BOOK" />
+		<result property="lecaNote" column="LECA_NOTE" />
+		<result property="lecaEva" column="LECA_EVA" />
+		<result property="lecaTemp" column="LECA_TEMP" />
+		<result property="lecaStdt" column="LECA_STDT" />
+		<result property="lecaEddt" column="LECA_EDDT" />
+		<association property="approvalVO" resultMap="appMap"></association>
+		<association property="professorVO" resultMap="professorVOMap"></association>
+	</resultMap>
+
+	<resultMap type="professorVO" id="professorVOMap">
+		<result property="proCd" column="PRO_CD" />
+		<result property="depCd" column="DEP_CD" />
+		<result property="roomCd" column="ROOM_CD" />
+		<result property="proJoin" column="PRO_JOIN" />
+		<result property="proRet" column="PRO_RET" />
+		<result property="proPos" column="PRO_POS" />
+		<association property="userVO" resultMap="userVOMap"></association>
+	</resultMap>
+
+	<resultMap type="userVO" id="userVOMap">
+		<result property="userCd" column="USER_CD" />
+		<result property="fileCd" column="FILE_CD" />
+		<result property="userNm" column="USER_NM" />
+		<result property="userNme" column="USER_NME" />
+		<result property="userTel" column="USER_TEL" />
+		<result property="userZip" column="USER_ZIP" />
+		<result property="userAddr1" column="USER_ADDR1" />
+		<result property="userAddr2" column="USER_ADDR2" />
+		<result property="userReg1" column="USER_REG1" />
+		<result property="userReg2" column="USER_REG2" />
+		<result property="userMail" column="USER_MAIL" />
+		<result property="userPass" column="USER_PASS" />
+		<result property="userBank" column="USER_BANK" />
+		<result property="userDepo" column="USER_DEPO" />
+		<result property="userAcc" column="USER_ACC" />
+		<result property="comdCd" column="COMD_CD" />
+	</resultMap>
+	
+	<resultMap type="lectureVO" id="lectureVOMap">
+		<result property="lecCd" column="LEC_CD"/>
+		<result property="lecHcnt" column="LEC_HCNT"/>
+		<result property="lecStat" column="LEC_STAT"/>
+		<association property="lectureApplyVO" resultMap="lectureApplyVOMap"></association>
+	</resultMap>
+	
+	<resultMap type="lectureScheduleVO" id="lectureScheduleVOMap">
+		<result property="lecsCd" column="LECS_CD"/>
+		<result property="lecCd" column="LEC_CD"/>
+		<result property="lecDay" column="LEC_DAY"/>
+		<result property="lecsStdt" column="LECS_STDT"/>
+		<result property="lecsEddt" column="LECS_EDDT"/>
+		<association property="lectureVO" resultMap="lectureVOMap"></association>
+	</resultMap>
+	
+	<insert id="createLecture" parameterType="lectureVO">
+		INSERT INTO LECTURE (
+			LEC_CD
+		) VALUES (
+			#{lecCd}
+		)
+	</insert>
+</mapper>

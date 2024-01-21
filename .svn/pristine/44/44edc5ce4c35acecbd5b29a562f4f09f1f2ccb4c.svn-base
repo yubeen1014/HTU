@@ -1,0 +1,91 @@
+package kr.or.ddit.service.employee.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import kr.or.ddit.mapper.ApprovalMapper;
+import kr.or.ddit.mapper.LectureApplyMapper;
+import kr.or.ddit.mapper.LectureMapper;
+import kr.or.ddit.mapper.LectureScheduleMapper;
+import kr.or.ddit.service.employee.LectureApplyApprovalService;
+import kr.or.ddit.vo.ApprovalVO;
+import kr.or.ddit.vo.LectureApplyVO;
+import kr.or.ddit.vo.LectureScheduleVO;
+import kr.or.ddit.vo.LectureVO;
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
+@Service
+public class LectureApplyApprovalServiceImpl implements LectureApplyApprovalService{
+	@Autowired
+	ApprovalMapper approvalMapper; 
+	@Autowired
+	LectureApplyMapper lectureApplyMapper;
+	@Autowired
+	LectureMapper lectureMapper;
+	@Autowired
+	LectureScheduleMapper lectureScheduleMapper;
+	
+	
+	@Override
+	public List<LectureApplyVO> getLectureApplyList(Map<String, Object> map) {
+		return this.approvalMapper.getLectureApplyList(map);
+	}
+
+	@Override
+	public LectureApplyVO lecaApplyDetail(String lecaCd) {
+		LectureApplyVO lectureApplyVO = this.lectureApplyMapper.lecaApplyDetail(lecaCd);
+		
+		return lectureApplyVO;
+	}
+	@Override
+	public int updateApprovalYn(LectureApplyVO lectureApplyVO) {
+		log.info("@@ => {}", lectureApplyVO);
+		ApprovalVO approvalVO = new ApprovalVO();
+		approvalVO.setAppCd(lectureApplyVO.getAppCd());
+		approvalVO.setAppYn(lectureApplyVO.getApprovalVO().getAppYn());
+		int result = this.approvalMapper.updateApprovalYn(approvalVO);
+		log.info("@@approvalVO => {}", approvalVO);
+		
+//		LectureVO lectureVO = new LectureVO();
+//		LectureScheduleVO lectureScheduleVO = new LectureScheduleVO();
+//		lectureVO.setLectureApplyVO(lectureApplyVO);
+//		lectureVO.setLecCd(lectureApplyVO.getLecaCd());
+//		lectureScheduleVO.setLectureVO(lectureVO);
+//		lectureScheduleVO.setLecCd(lectureScheduleVO.getLectureVO().getLecCd());
+//		
+//	
+//		result += this.lectureMapper.createLecture(lectureVO);
+//		result += this.lectureScheduleMapper.createLectureSchedule(lectureScheduleVO);
+		return result;
+	}
+	@Transactional
+	@Override
+	public int afterUpdate(LectureApplyVO lectureApplyVO) {
+		
+		int result = updateApprovalYn(lectureApplyVO);
+		log.info("Yn@@ => {}",lectureApplyVO.getApprovalVO());
+		if(lectureApplyVO.getApprovalVO().getAppYn() == 1) {
+			
+			LectureVO lectureVO = new LectureVO();
+			LectureScheduleVO lectureScheduleVO = new LectureScheduleVO();
+			lectureVO.setLectureApplyVO(lectureApplyVO);
+			lectureVO.setLecCd(lectureApplyVO.getLecaCd());
+			lectureScheduleVO.setLectureVO(lectureVO);
+			lectureScheduleVO.setLecCd(lectureScheduleVO.getLectureVO().getLecCd());
+		
+			result += this.lectureMapper.createLecture(lectureVO);
+			result += this.lectureScheduleMapper.createLectureSchedule(lectureScheduleVO);
+		}
+		return result;
+	}
+
+	@Override
+	public int getTotal(Map<String, Object> map) {
+		return this.approvalMapper.getTotal(map);
+	}
+
+}

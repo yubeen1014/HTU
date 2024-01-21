@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.RoomMapper">
+	
+	<resultMap type="roomVO" id="roomVOMap">
+		<result property="roomCd" column="ROOM_CD"/>
+		<result property="bldCd" column="BLD_CD"/>
+		<result property="roomPur" column="ROOM_PUR"/>
+		<result property="roomCap" column="ROOM_CAP"/>
+		<result property="roomTel" column="ROOM_TEL"/>
+		<result property="roomNm" column="ROOM_NM"/>
+		<association property="buildingVO" resultMap="buildingVOMap"></association>
+	</resultMap>
+	
+	<resultMap type="buildingVO" id="buildingVOMap">
+		<result property="bldCd" column="BLD_CD"/>
+		<result property="colCd" column="COL_CD"/>
+		<result property="bldZip" column="BLD_ZIP"/>
+		<result property="bldAddr1" column="BLD_ADDR1"/>
+		<result property="bldAddr2" column="BLD_ADDR2"/>
+	</resultMap>
+	
+	<resultMap type="commonDetailVO" id="commonDetailMap">
+		<result property="comdCd" column="COMD_CD"/>
+		<result property="comCd" column="COM_CD"/>
+		<result property="comdNm" column="COMD_NM"/>
+		<result property="comdDesc" column="COMD_DESC"/>
+	</resultMap>
+	
+	<select id="getRoomCd" resultMap="roomVOMap">
+		SELECT ROOM_CD, ROOM.BLD_CD, ROOM_PUR, ROOM_CAP, ROOM_TEL
+		FROM ROOM, BUILDING
+		WHERE ROOM.BLD_CD = BUILDING.BLD_CD
+	</select>
+	
+	<select id="getCrewRoomCd" resultMap="roomVOMap">
+		SELECT C.COMD_NM || ' ' || SUBSTR(R.ROOM_CD, 7) || '호' ROOM_NM, R.ROOM_CD
+		FROM   COMMON_DETAIL C, ROOM R
+		WHERE  C.COMD_CD = R.BLD_CD
+		AND    R.ROOM_CD NOT IN (SELECT ROOM_CD FROM CREW)
+		AND    R.BLD_CD = 'BULD09'
+	</select>
+	
+	<select id="getRoomListByComdCd" parameterType="String" resultMap="roomVOMap">
+		SELECT * FROM ROOM WHERE BLD_CD = #{bldCd}
+	</select>
+	
+	<select id="getComdCdByRoomCd" parameterType="String" resultMap="commonDetailMap">
+		SELECT  CD.COMD_CD, COM_CD, COMD_NM, COMD_DESC
+		FROM    COMMON_DETAIL CD, ROOM R, BUILDING B
+		WHERE   R.ROOM_CD = #{roomCd}
+		AND     R.BLD_CD = B.BLD_CD
+		AND     B.COL_CD = CD.COMD_CD
+	</select>
+	
+	<select id="getRoom" parameterType="String" resultMap="roomVOMap">
+		SELECT * FROM ROOM WHERE ROOM_CD = #{roomCd}	
+	</select>
+	
+</mapper>

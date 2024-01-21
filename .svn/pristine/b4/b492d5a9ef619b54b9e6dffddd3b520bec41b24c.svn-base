@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.RoomMapper">
+	
+	<resultMap type="roomVO" id="roomVOMap">
+		<result property="roomCd" column="ROOM_CD"/>
+		<result property="bldCd" column="BLD_CD"/>
+		<result property="roomPur" column="ROOM_PUR"/>
+		<result property="roomCap" column="ROOM_CAP"/>
+		<result property="roomTel" column="ROOM_TEL"/>
+		<association property="buildingVO" resultMap="buildingVOMap"></association>
+	</resultMap>
+	
+	<resultMap type="buildingVO" id="buildingVOMap">
+		<result property="bldCd" column="BLD_CD"/>
+		<result property="colCd" column="COL_CD"/>
+		<result property="bldZip" column="BLD_ZIP"/>
+		<result property="bldAddr1" column="BLD_ADDR1"/>
+		<result property="bldAddr2" column="BLD_ADDR2"/>
+	</resultMap>
+	
+	<select id="getRoom">
+	
+	</select>
+	
+	<select id="getRoomCd" resultMap="roomVOMap">
+		SELECT ROOM_CD, ROOM.BLD_CD, ROOM_PUR, ROOM_CAP, ROOM_TEL
+		FROM ROOM, BUILDING
+		WHERE ROOM.BLD_CD = BUILDING.BLD_CD
+	</select>
+	
+</mapper>

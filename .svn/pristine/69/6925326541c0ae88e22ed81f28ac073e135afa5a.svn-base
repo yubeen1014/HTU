@@ -1,0 +1,15 @@
+package kr.or.ddit.service.student;
+
+import java.util.List;
+
+import kr.or.ddit.vo.EnrolmentVO;
+import kr.or.ddit.vo.LectureVO;
+
+public interface LectureService {
+
+	List<EnrolmentVO> getEnrolmentLecture(String stuCd);
+
+	LectureVO enrolmentLectureDetail(String lecCd);
+
+	
+}

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.TestMapper">
+	
+	<resultMap type="testVO" id="testMap">
+		<result property="testCd" column="TEST_CD"/>
+		<result property="lecCd" column="LEC_CD"/>
+		<result property="testOpt" column="TEST_OPT"/>
+		<result property="testNm" column="TEST_NM"/>
+		<result property="testCon" column="TEST_CON"/>
+		<result property="testReg" column="TEST_REG"/>
+		<result property="testDt" column="TEST_DT"/>
+		<result property="testLmt" column="TEST_LMT"/>
+		<result property="lecNm" column="LEC_NM"/>
+		<association property="testQuestionVOList" resultMap="tqMap"></association>
+	</resultMap>
+	
+	<resultMap type="testQuestionVO" id="tqMap">
+		<result property="teqCd" column="TEQ_CD"/>
+		<result property="testCd" column="TEST_CD"/>
+		<result property="teqNo" column="TEQ_NO"/>
+		<result property="teqCon" column="TEQ_CON"/>
+		<result property="teqOp1" column="TEQ_OP1"/>
+		<result property="teqOp2" column="TEQ_OP2"/>
+		<result property="teqOp3" column="TEQ_OP3"/>
+		<result property="teqOp4" column="TEQ_OP4"/>
+		<result property="teqOp5" column="TEQ_OP5"/>
+		<result property="teqAnswer" column="TEQ_ANSWER"/>
+		<result property="teqAllot" column="TEQ_ALLOT"/>
+	</resultMap>
+	
+	<resultMap type="lectureApplyVO" id="lecaMap">
+		<result property="lecaStdt" column="LECA_STDT"/>
+		<result property="lecaEddt" column="LECA_EDDT"/>
+		<result property="lecaType" column="LECA_TYPE"/>
+		<result property="crtrMp" column="CRTR_MP"/>
+		<result property="crtrFp" column="CRTR_FP"/>
+		<result property="crtrTp" column="CRTR_TP"/>
+		<result property="crtrAp" column="CRTR_AP"/>
+		<result property="lecaCd" column="LECA_CD"/>
+		<result property="proCd" column="PRO_CD"/>
+		<result property="appCd" column="APP_CD"/>
+		<result property="depCd" column="DEP_CD"/>
+		<result property="roomCd" column="ROOM_CD"/>
+		<result property="lecaYear" column="LECA_YEAR"/>
+		<result property="lecaSem" column="LECA_SEM"/>
+		<result property="lecaNm" column="LECA_NM"/>
+		<result property="lecaCon" column="LECA_CON"/>
+		<result property="lecaTrg" column="LECA_TRG"/>
+		<result property="lecaCrd" column="LECA_CRD"/>
+		<result property="lecaPer" column="LECA_PER"/>
+		<result property="lecaCap" column="LECA_CAP"/>
+		<result property="lecaSche" column="LECA_SCHE"/>
+		<result property="lecaBook" column="LECA_BOOK"/>
+		<result property="lecaNote" column="LECA_NOTE"/>
+		<result property="lecaEva" column="LECA_EVA"/>
+		<result property="lecaTemp" column="LECA_TEMP"/>
+	</resultMap>
+	
+	<select id="testList" parameterType="String" resultMap="testMap">
+		SELECT
+		    TEST_CD
+		  , LEC_CD
+		  , TEST_OPT
+		  , TEST_NM
+		  , TEST_CON
+		  , TEST_REG
+		  , TEST_DT
+		  , TEST_LMT
+		FROM
+		    TEST
+		WHERE 
+		    LEC_CD = #{lecCd}
+	</select>
+	
+	<select id="lectureInfo" parameterType="String" resultMap="lecaMap">
+		SELECT
+		    LECA_CD
+		  , PRO_CD
+		  , APP_CD
+		  , DEP_CD
+		  , ROOM_CD
+		  , LECA_YEAR
+		  , LECA_SEM
+		  , LECA_NM
+		  , LECA_CON
+		  , LECA_TRG
+		  , LECA_CRD
+		  , LECA_PER
+		  , LECA_CAP
+		  , LECA_SCHE
+		  , LECA_BOOK
+		  , LECA_NOTE
+		  , LECA_EVA
+		  , LECA_TEMP
+		  , LECA_STDT
+		  , LECA_EDDT
+		  , LECA_TYPE
+		  , CRTR_MP
+		  , CRTR_FP
+		  , CRTR_TP
+		  , CRTR_AP
+		FROM
+		    LECTURE_APPLY
+		WHERE
+		    LECA_CD = #{lecCd}
+	</select>
+	
+	<insert id="testCreatePost" parameterType="testVO">
+		INSERT INTO TEST (
+		    TEST_CD
+		    , LEC_CD
+		    , TEST_OPT
+		    , TEST_NM
+		    , TEST_CON
+		    , TEST_REG
+		    , TEST_DT
+		    , TEST_LMT
+		) VALUES (
+		    #{testCd}
+		  , #{lecCd}
+		  , #{testOpt}
+		  , #{testNm}
+		  , #{testCon}
+		  , SYSDATE
+		  , #{testDt}
+		  , #{testLmt}
+		)
+	</insert>
+	
+	<insert id="testQustionInsert" parameterType="testQuestionVO">
+		INSERT INTO TEST_QUESTION (
+		    TEQ_CD
+		    , TEST_CD
+		    , TEQ_NO
+		    , TEQ_CON
+		    , TEQ_OP1
+		    , TEQ_OP2
+		    , TEQ_OP3
+		    , TEQ_OP4
+		    , TEQ_OP5
+		    , TEQ_ANSWER
+		    , TEQ_ALLOT
+		) VALUES (
+		    #{testCd} || TRIM(TO_CHAR(#{teqNo}, '00'))
+		  , #{testCd}
+		  , #{teqNo}
+		  , #{teqCon}
+		  , #{teqOp1}
+		  , #{teqOp2}
+		  , #{teqOp3}
+		  , #{teqOp4}
+		  , #{teqOp5}
+		  , #{teqAnswer}
+		  , #{teqAllot}
+		)
+	</insert>
+	
+	<select id="testDetail" parameterType="String" resultMap="testMap">
+		SELECT TEST_CD, LEC_CD, TEST_OPT, TEST_NM, TEST_CON, TEST_REG, TEST_DT, TEST_LMT
+		FROM   TEST
+		WHERE  TEST_CD = #{testCd}
+	</select>
+	
+	<select id="tqVOList" parameterType="String" resultMap="tqMap">
+		SELECT TEQ_CD, TEST_CD, TEQ_NO, TEQ_CON, TEQ_OP1, TEQ_OP2, TEQ_OP3, TEQ_OP4, TEQ_OP5, TEQ_ANSWER, TEQ_ALLOT
+		FROM   TEST_QUESTION
+		WHERE  TEST_CD = #{testCd}
+	</select>
+</mapper>

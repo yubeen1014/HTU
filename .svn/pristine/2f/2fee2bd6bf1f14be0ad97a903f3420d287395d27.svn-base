@@ -1,0 +1,14 @@
+package kr.or.ddit.service.professor;
+
+import kr.or.ddit.vo.ApprovalVO;
+import kr.or.ddit.vo.LectureApplyVO;
+
+public interface LectureApplyService {
+
+	int createLectureApply(LectureApplyVO lectureApplyVO);
+
+	int createLectureApplyConsent(LectureApplyVO lectureApplyVO);
+
+	
+
+}

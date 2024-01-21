@@ -1,0 +1,113 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
+<link rel="stylesheet" href="/resources/css/bootstrap.min.css">
+<script src="/resources/js/jquery.min.js"></script>
+<link rel="stylesheet" href="/resources/css/reset.css">
+<link rel="stylesheet" href="/resources/css/main.css">
+
+<sec:authorize access="isAuthenticated()">
+	<sec:authentication property="principal.userVO" var="userVO" />
+</sec:authorize>
+
+<div class="row" style="margin-bottom: 20px; margin-left: 1px;">
+	<div class="col-lg-12">
+		<h1 class="page-header">수정하기</h1>
+	</div>
+</div>
+<!-- 
+//NoticeBoardVO(bdCd=3, empCd=1001, fileCd=1, bdTitle=ㄱㄱ, bdCon=ㄱㄱ, bdReg=Sat Dec 02 11:39:10 KST 2023
+//, bdUdt=null, bdCnt=0, userNm=이상민, 
+//filesDetailVOList=[FilesDetailVO(fileSn=1, fileCd=1, filePath=path, fileOrnm=origin, fileSvnm=save, 
+//fileExtsn=jpg, fileCon=content, fileSize=3000, fileUsed=0), 
+//FilesDetailVO(fileSn=2, fileCd=1, filePath=path, fileOrnm=origin, fileSvnm=save, fileExtsn=jpg
+//, fileCon=content, fileSize=3000, fileUsed=0)], employeeVO=EmployeeVO(empCd=1001, empDept=null
+//, empPos=null, empJoin=null, empQuit=null), employeeVOList=null)
+ -->
+<div class="panel" style="margin-left: 1px;">
+	<div id="contAreaBox">
+		<div class="panel">
+			<div class="panel-body">
+				<form role="form" id="boardForm" method="post">
+				<input type="hidden"  id="bdCd" name="bdCd" value="${boardVO.bdCd}"/>
+					<div class="table-responsive" style="text-align: center;">
+						<table id="datatable-scroller"
+							class="table table-bordered tbl_Form">
+							<caption></caption>
+							<colgroup>
+								<col width="250px" />
+								<col />
+							</colgroup>
+							<tbody>
+								<tr>
+									<th class="active">작성자</th>
+									<td class="form-inline"><input type="text" id="userNm"
+										name="userNm" value="${userVO.userNm}" readonly
+										class="form-control" style="width: 200px" /></td>
+								</tr>
+								<tr>
+									<th class="active">제목</th>
+									<td class="form-inline"><input type="text" id="bdTitle"
+										name="bdTitle" value="${boardVO.bdTitle}"
+										class="form-control" style="width: 840px" /></td>
+								</tr>
+								<tr>
+									<th class="active">내용</th>
+									<td class="form-inline"><textarea id="bdCon" name="bdCon"
+											cols="100" rows="10" class="form-control">${boardVO.bdCon}</textarea>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div style="margin-left: 1px;">
+						<button type="button" class="btn btn-primary" onclick="submitForm()" style=" display: inline-block; padding: 10px 20px; background-color: #800020; color: #fff; text-decoration: none; font-weight: 300; border-radius: 5px; position: absolute; right: 110px;">등록</button>
+						<button type="button" class="btn btn-primary" onclick="location.href='/common/board/publicize/list'" style=" display: inline-block; padding: 10px 20px; background-color: #800020; color: #fff; text-decoration: none; font-weight: 300; border-radius: 5px; position: absolute; right: 30px;">취소</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	//등록버튼 클릭 시 실행
+	function submitForm() {
+		let data = {
+			"bdCd" : $("#bdCd").val(),
+			"userNm" : $("#userNm").val(),
+			"bdTitle" : $("#bdTitle").val(),
+			"bdCon" : $("#bdCon").val()
+		};
+
+		$.ajax({
+			url : "/common/board/publicize/updatePost",
+			contentType : "application/json;charset=utf-8",
+			data : JSON.stringify(data),
+			type : "post",
+			dataType : "json",
+			beforeSend : function(xhr) {
+				xhr.setRequestHeader("${_csrf.headerName}", "${_csrf.token}");
+			},
+			success : function(result) {
+				// 성공적으로 제출되었을 때의 로직을 처리합니다. 예: 리다이렉트 또는 메시지 표시
+				console.log("result", result);
+				//if문..(기본키 데이터가 있다면(selectKey에 의해 생성된))
+				location.href = "/common/board/publicize/list";
+			}
+		});
+	}
+	//화면이 모두 로딩되면 자동 실행
+	$(function() {
+
+	});
+</script>
+<!-- <div style="margin-left:1px;"> -->
+<!-- 	<button type="submit" class="btn btn-primary">등록</button> -->
+<!-- 	<a href="/common/board/notice/list" class="btn btn-danger">취소</a> -->
+<!-- </div> -->
+
+

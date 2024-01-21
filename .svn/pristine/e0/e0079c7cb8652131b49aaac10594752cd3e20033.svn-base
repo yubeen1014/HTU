@@ -1,0 +1,67 @@
+package kr.or.ddit.service.professor.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.TestMapper;
+import kr.or.ddit.service.professor.TestService;
+import kr.or.ddit.vo.LectureApplyVO;
+import kr.or.ddit.vo.TestQuestionVO;
+import kr.or.ddit.vo.TestVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Service
+public class TestServiceImpl implements TestService {
+
+	@Autowired
+	TestMapper testMapper;
+	
+	@Override
+	public List<TestVO> testList(String lecCd) {
+		return this.testMapper.testList(lecCd);
+	}
+
+	@Override
+	public LectureApplyVO lectureInfo(String lecCd) {
+		return this.testMapper.lectureInfo(lecCd);
+	}
+	
+	@Override
+	public int testCreatePost(TestVO testVO) {
+		int result = this.testMapper.testCreatePost(testVO);
+		
+		log.info("testCreatePost->testVO : " + testVO);
+		
+		List<TestQuestionVO> testQuestionVOList = testVO.getTestQuestionVOList();		
+		for(TestQuestionVO testQuestionVO : testQuestionVOList) {
+			
+			testQuestionVO.setTestCd(testVO.getTestCd());
+			log.info("testCreatePost->testQuestionVO : " + testQuestionVO);
+			result += this.testMapper.testQustionInsert(testQuestionVO);
+		}
+
+		log.info("testCreatePost->testQuestionVOList : " + testQuestionVOList);
+		
+		return result;
+	}
+
+	@Override
+	public TestVO testDetail(String testCd) {
+		return this.testMapper.testDetail(testCd);
+	}
+
+	@Override
+	public List<TestQuestionVO> tqVOList(String testCd) {
+		return this.testMapper.tqVOList(testCd);
+	}
+
+	@Override
+	public int testUpdate(TestVO testVO) {
+		return 0;
+	}
+
+
+}

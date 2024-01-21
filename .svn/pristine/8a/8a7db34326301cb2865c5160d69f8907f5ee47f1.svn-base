@@ -1,0 +1,10 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+
+<section class="side">
+  <div class="side_menu">
+  	<a type="button" href="/mail/sendMail" class="btn-two red mini">메일쓰기</a>
+    <a href="/mail/inbox">받은메일함</a>
+    <a href="/mail/sentbox">보낸메일함</a>
+    <a href="/mail/tempMailBox">임시보관함</a>
+  </div>
+</section>

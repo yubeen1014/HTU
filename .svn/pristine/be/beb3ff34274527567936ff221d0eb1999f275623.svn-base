@@ -1,0 +1,22 @@
+package kr.or.ddit.vo;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+public class RecordVO {
+	
+	private String recCd;
+	private String stuCd;
+	private String appCd;
+	private String comdCd;
+	private int recYear;
+	private int recSem;
+	private int recPer;
+	private String recRsn;
+}

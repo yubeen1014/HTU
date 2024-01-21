@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.RecordMapper">
+
+	<resultMap type="recordVO" id="recordMap">
+		<result property="recCd" column="REC_CD"/>
+		<result property="stuCd" column="STU_CD"/>
+		<result property="appCd" column="APP_CD"/>
+		<result property="comdCd" column="COMD_CD"/>
+		<result property="recYear" column="REC_YEAR"/>
+		<result property="recSem" column="REC_SEM"/>
+		<result property="recPer" column="REC_PER"/>
+		<result property="recRsn" column="REC_RSN"/>
+	</resultMap>
+	
+	<select id="getRecord" parameterType="String" resultMap="recordMap">
+		SELECT * FROM RECORD
+	</select>
+	
+</mapper>

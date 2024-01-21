@@ -1,0 +1,17 @@
+package kr.or.ddit.controller.emp;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping("/emp")
+public class EmpController {
+	
+//	@GetMapping("/mypage")
+//	public String myPage() {
+//		return "emp_home";
+//	}
+	
+	
+}

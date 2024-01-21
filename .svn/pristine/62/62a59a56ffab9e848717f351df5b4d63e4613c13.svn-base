@@ -1,0 +1,47 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="/resources/js/jquery.min.js"></script>
+<script type="text/javascript" src="/resources/ckeditor/ckeditor.js"></script>
+<script>
+$(function(){
+	CKEDITOR.replace('umlCon');
+	CKEDITOR.config.allowedContent = true;
+   
+	$("#umlReceiver").find("option").each(function(){
+		if(this.value == "${umlSender}"){
+			$(this).remove();
+		}
+	})
+});
+</script>
+<sec:authentication property="principal.userVO" var="userVO"/>
+<form name="frm" id="frm" action="/mail/sendMailPost?${_csrf.parameterName}=${_csrf.token}" method="post" enctype="multipart/form-data">
+	<div>
+		<p>받는 사람</p>
+		<select name="umlReceiver" id="umlReceiver">
+			<c:forEach var="userVO" items="${userVOList}">
+				<option value="${userVO.userCd}">${userVO.userNm}</option>
+			</c:forEach>
+		</select>
+	</div>
+	<div>
+		<p>제목</p>
+		<input type="text" name="umlTitle" required="required"/>
+	</div>
+	<div>
+		<p>파일첨부</p>
+		<input type="file" name="uploadFiles" multiple="multiple" />
+	</div>
+	<div>
+		<p>내용</p>
+		<textarea rows="5" cols="30" name="umlCon"></textarea>
+	</div>
+	<div>
+		<button type="submit" id="btnTemp" name="umlTemp" value="1" class="btn-two gray mini">임시저장</button>
+		<button type="submit" id="btnSend" class="btn-two red mini">보내기</button>
+	</div>
+	<sec:csrfInput />
+</form>

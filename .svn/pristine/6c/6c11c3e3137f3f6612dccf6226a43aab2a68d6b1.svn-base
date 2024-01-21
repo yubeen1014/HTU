@@ -1,0 +1,49 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="/resources/js/jquery.min.js"></script>
+<sec:authentication property="principal.userVO" var="userVO"/>
+${crewVO}
+${crewPersonnelList }
+<div>
+	<form action="/student/crew/crewUpdatePost?${_csrf.parameterName}=${_csrf.token}" method="post" enctype="multipart/form-data">
+		<input name="crCd" value="${crewVO.crCd}" hidden />
+		<div>
+			<p>동아리명</p>
+			<input type="text" name="crNm" value="${crewVO.crNm}" required="required"/>
+		</div>
+		<div>
+			<p>동아리장</p>
+			<select name="crLeader" id="crLeader">
+				<c:forEach var="crewMem" items="${crewPersonnelList}">
+					<option value="${crewMem.stuCd}"
+						<c:if test ="${crewMem.stuCd eq crewVO.crLeader}">selected="selected"</c:if>
+					>${crewMem.stuNm}</option>
+				</c:forEach>
+			</select>
+		</div>
+		<div>
+			<p>동아리실</p>
+			<select name="roomCd" id="roomCd">
+				<c:forEach var="roomList" items="${roomList}">
+					<option value="${roomList.roomCd}">${roomList.roomCd}</option>
+				</c:forEach>
+			</select>
+		</div>
+		<div>
+			<p>파일첨부</p>
+			<input type="file" name="uploadFiles" multiple="multiple" />
+		</div>
+		<div>
+			<button type="submit" id="btnUpdate" class="btn-two red mini">확인</button>
+			<button type="button" onclick="history.back()" id="btnCancle" class="btn-two red mini">취소</button>
+		</div>
+		<sec:csrfInput />
+	</form>
+</div>
+<script>
+$(function(){
+});
+</script>

@@ -1,0 +1,41 @@
+package kr.or.ddit.service.student.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.TestMapper;
+import kr.or.ddit.service.student.TestStuService;
+import kr.or.ddit.vo.LectureApplyVO;
+import kr.or.ddit.vo.TestQuestionVO;
+import kr.or.ddit.vo.TestVO;
+
+@Service
+public class TestStuServiceImpl implements TestStuService {
+
+	@Autowired
+	TestMapper testMapper;
+	
+	//해당 강의 정보
+	@Override
+	public LectureApplyVO lectureInfo(String lecCd) {
+		return this.testMapper.lectureInfo(lecCd);
+	}
+
+	@Override
+	public List<TestVO> testList(String lecCd) {
+		return this.testMapper.testList(lecCd);
+	}
+
+	@Override
+	public TestVO testDetail(String testCd) {
+		return this.testMapper.testDetail(testCd);
+	}
+
+	@Override
+	public List<TestQuestionVO> tqVOList(String testCd) {
+		return this.testMapper.tqVOList(testCd);
+	}
+
+}

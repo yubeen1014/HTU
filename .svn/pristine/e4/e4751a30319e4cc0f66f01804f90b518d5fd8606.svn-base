@@ -1,0 +1,130 @@
+package kr.or.ddit.controller.common;
+
+import java.security.Principal;
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import kr.or.ddit.mapper.NotificationMapper;
+import kr.or.ddit.service.common.CommonService;
+import kr.or.ddit.service.counsel.CounselService;
+import kr.or.ddit.util.FileUtil;
+import kr.or.ddit.vo.BoardVO;
+import kr.or.ddit.vo.CommonDetailVO;
+import kr.or.ddit.vo.CounselVO;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@RequiredArgsConstructor
+@Slf4j
+public class CommonController {
+
+//	private final PasswordEncoder passwordEncoder;
+	
+	private final CommonService commonService;
+	
+	private final NotificationMapper notificationMapper;
+	
+	private final FileUtil fileUtil;
+	
+	private final CounselService counselService;
+	
+	@GetMapping("/")
+	public String test(Locale locale, Model model) {
+
+		Date date = new Date();
+		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
+
+		String formattedDate = dateFormat.format(date);
+
+		model.addAttribute("serverTime", formattedDate);
+		return "home";
+	}
+
+	@GetMapping("/login")
+	public String login(String error, String logout, String expired, Model model) {
+
+		if (error != null)
+			model.addAttribute("error", "정보불일치메세지");
+
+		if (logout != null)
+			model.addAttribute("logout", "로그아웃메세지");
+		
+		if (expired != null)
+			model.addAttribute("expired", "세션만료 로그아웃");
+		
+		return "login";
+	}
+	
+	
+	/**
+	 * 공통코드로 공통상세코드 리스트 가져오기
+	 * @param comCd 공통코드
+	 * @return
+	 */
+	@ResponseBody
+	@GetMapping("/getCommonDetail")
+	public List<CommonDetailVO> getCommonDetail(String comCd) {
+		log.error("comCd ==> {}", comCd);
+		return this.commonService.getCommonDetails(comCd);
+	}
+	
+	
+	@ResponseBody
+	@GetMapping("/notification/check")
+	public int checkNotification(String ntfCd) {
+		log.info("ntfCd ==> {}", ntfCd);
+		int cnt = this.notificationMapper.checkNotification(ntfCd);
+		log.info(cnt+"");
+		return cnt;
+	}
+	
+	
+	@ResponseBody
+	@GetMapping("/common/getCounselByCnslCd")
+	public CounselVO getCounselByCnslCd(String cnslCd) {
+		return this.counselService.getDetailCounsel(cnslCd);
+	}
+	
+	
+	@PostMapping("/common/insertPicture")
+	public String insertPicture(MultipartFile[] uploadFile, Principal principal) {
+		
+		log.info("uploadFile ==> {}", uploadFile);
+		
+		int cnt = this.fileUtil.uploadFile(uploadFile, principal.getName());
+		
+		log.info("result ==> {}", cnt);
+		
+		return "redirect:/common/mypage/profile";
+	}
+	
+	@GetMapping("/sub/community")
+	public String community() {
+		return "sub/community";
+	}
+	
+	@GetMapping("/common/board/renderHome")
+	@ResponseBody
+	public List<BoardVO> renderHome(String category) {
+		return this.commonService.renderHome(category);
+	}
+	
+	@GetMapping(value ="/common/getLectureName", produces = "application/text; charset=UTF-8")
+	@ResponseBody
+	public String getLectureName(String lecCd) {
+		return this.commonService.getLectureName(lecCd);
+	}
+
+}
+

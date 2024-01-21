@@ -1,0 +1,84 @@
+package kr.or.ddit.service.employee.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import kr.or.ddit.mapper.ApprovalMapper;
+import kr.or.ddit.mapper.DormitoryMapper;
+import kr.or.ddit.service.employee.DormitoryApprovalService;
+import kr.or.ddit.vo.ApprovalVO;
+import kr.or.ddit.vo.CommonDetailVO;
+import kr.or.ddit.vo.DormitoryVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Service
+public class DormitoryApprovalServiceImpl implements DormitoryApprovalService {
+	
+	@Autowired
+	ApprovalMapper approvalMapper; 
+	
+	@Autowired
+	DormitoryMapper dormitoryMapper;
+	
+	@Override
+	public int getTotal(Map<String, Object> map) {
+		return this.approvalMapper.getTotal(map);
+	}
+
+	@Override
+	public List<DormitoryVO> getDormitoryList(Map<String, Object> map) {
+		return this.approvalMapper.getDormitoryList(map);
+	}
+
+	@Override
+	public DormitoryVO dormitoryDetail(String domCd) {
+		DormitoryVO dormitoryVO =  this.dormitoryMapper.dormitoryDetail(domCd);
+		
+		return dormitoryVO;
+	}
+
+	@Override
+	public int updateApprovalYn(DormitoryVO dormitoryVO) {
+		
+		log.info("ㅇㅇ -> " + dormitoryVO);
+		ApprovalVO approvalVO = new ApprovalVO();
+		approvalVO.setAppCd(dormitoryVO.getAppCd());
+		
+		approvalVO.setAppYn(dormitoryVO.getApprovalVO().getAppYn());
+		
+		approvalVO.setAppRet(dormitoryVO.getApprovalVO().getAppRet());
+		
+		int result = this.approvalMapper.updateApprovalYn(approvalVO);
+		return result;
+	}
+	
+	@Transactional
+	@Override
+	public int afterUpdate(DormitoryVO dormitoryVO) {
+		
+		int result = updateApprovalYn(dormitoryVO);
+		log.info("ㅇㅇ : " + dormitoryVO.getApprovalVO());
+		if(dormitoryVO.getApprovalVO().getAppYn() == 1) {
+			
+//			CommonDetailVO commonDetailVO = new CommonDetailVO();
+//			dormitoryVO.setComdCd(commonDetailVO.getComdCd());
+			if(dormitoryVO.getBldCd() == "BULD10") {
+				dormitoryVO.setComdCd("PAYM01");
+			}else if(dormitoryVO.getBldCd() == "BULD11") {
+				dormitoryVO.setComdCd("PAYM02");
+			}
+			
+			
+			result += this.dormitoryMapper.createApplyDormitory(dormitoryVO);
+			
+		}
+		
+		return result;
+	}
+
+}

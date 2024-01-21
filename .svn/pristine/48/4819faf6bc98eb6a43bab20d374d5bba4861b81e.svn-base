@@ -1,0 +1,108 @@
+let alarmList = [];
+let socket = null;
+
+$(function() {
+  connectWS();
+});
+
+// 소켓
+connectWS = function() {
+  let ws = new SockJS("http://localhost/echo");
+  socket = ws;
+  
+  ws.onopen = function(userCd) {
+    console.log("연결 완료");
+    sendMessageToServer("로그인사용자");
+  }
+  
+  ws.onmessage = function(event) {
+    
+    alarmList = JSON.parse(event.data);
+    console.log("alarmList ==>", alarmList);
+    
+    // 수강신청 실시간 수강인원 업데이트
+    if (alarmList.lecCd != null && alarmList.lecCd != undefined) {
+      $(".lecHcnt"+alarmList.lecCd).text(alarmList.lecHcnt);
+    }
+    
+    // 빨간점..ㅎ
+    if (alarmList.length > 0) {
+      $(".alarm").append(`<div class="new_alarm_down"></div>`);
+    }
+    
+    renderAlarm(alarmList);
+    
+  };
+  
+  ws.onclose = function() {
+    console.log("소켓 연결 종료");
+  };
+};
+
+function renderAlarm(alarmList) {
+  
+  const alarmCodeArr = [
+    {"ALAM01":"강의시험등록알림"}, 
+    {"ALAM02": "상담신청알림"},
+    {"ALAM03": "메일알림"},
+    {"ALAM04": "게시글댓글알림"},
+    {"ALAM05": "대댓글알림"},
+    {"ALAM06": "강의공지사항등록알림"},
+    {"ALAM07": "강의과제등록알림"},
+    {"ALAM08": "학사일정등록알림"},
+    {"ALAM09": "상담승인알림"},
+    {"ALAM10": "상담반려알림"},
+    {"ALAM11": "강의계획신청알림"},
+    {"ALAM12": "강의개설알림"},
+    {"ALAM13": "성적이의신청알림"},
+  ];
+  
+  const keys = Object.keys(alarmCodeArr);
+  
+  alarmList.forEach(alarm => {
+    if (keys.includes(alarm.comdCd)) {
+      
+    }
+    
+  })
+  
+}
+
+function checkAlarm(ntfCd, url) {
+  
+  console.log(ntfCd, url);
+  
+  $.ajax({
+    url: "/notification/check?ntfCd="+ntfCd,
+    type: "get",
+    success: res => {
+      if (res == 1 && url != undefined) location.href=url;
+    },
+    error: xhr => {
+      console.log(xhr);
+    }
+    
+  })
+  
+}
+
+function  getCounselDetail(pk) {
+  $.ajax({
+    url: "/common/getCounselByCnslCd?cnslCd=" + pk,
+    type: "get",
+    dataType: "json",
+    async: false,
+    success: res => {
+      console.log(res);
+      return res;
+    },
+  })
+}
+
+function sendMessageToServer(message) {
+  socket.send(message);
+};
+
+function sendEnrolmentToServer(message) {
+  socket.send(message);
+};

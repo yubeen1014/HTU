@@ -1,0 +1,32 @@
+package kr.or.ddit.controller.common;
+
+import java.security.Principal;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.service.mypage.MyPageService;
+import kr.or.ddit.vo.UserVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/common/mypage")
+public class MyPageController {
+	
+	@Autowired
+	MyPageService myPageService;
+	
+	@GetMapping("/profile")
+	public String profile(Model model, Principal principal) {
+		String userCd=principal.getName();
+		List<UserVO> data=this.myPageService.profile(userCd);
+		model.addAttribute("data", data);
+		log.info("profile->data : "+data);
+		return "common/mypage/profile";
+	}
+}

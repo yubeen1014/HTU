@@ -1,0 +1,23 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.vo.ApprovalVO;
+import kr.or.ddit.vo.CrewPersonnelVO;
+import kr.or.ddit.vo.CrewVO;
+
+public interface CrewMapper {
+
+	public List<CrewVO> crewList();
+
+	public int crewApply(CrewVO crewVO);
+
+	public int crewApproval(ApprovalVO appVO);
+
+	public int crewJoin(CrewPersonnelVO crewPersonnelVO);
+
+	public List<CrewVO> myCrew(String stuCd);
+
+	public CrewVO crewDetail(String crCd);
+
+}

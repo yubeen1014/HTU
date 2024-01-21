@@ -1,0 +1,14 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.vo.AcademicCalendarVO;
+
+public interface AcademicCalendarMapper {
+
+	public List<AcademicCalendarVO> getListByUserCd(String userCd);
+
+	public List<AcademicCalendarVO> getAcademicCalendarList();
+
+	
+}

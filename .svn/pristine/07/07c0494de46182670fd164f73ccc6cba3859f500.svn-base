@@ -1,0 +1,15 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="/resources/js/jquery.min.js"></script>
+<sec:authentication property="principal.userVO" var="userVO"/>
+<div>
+	<form action="/crewApplyPost">
+		<p>동아리명</p>
+		<input type="text" name="crNm" >
+	
+		<p>신청인</p>
+	</form>
+</div>

@@ -1,0 +1,14 @@
+package kr.or.ddit.controller.common;
+
+import org.springframework.stereotype.Controller;
+
+import kr.or.ddit.service.common.ReservationService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@RequiredArgsConstructor
+@Slf4j
+public class PostReportController {
+
+}

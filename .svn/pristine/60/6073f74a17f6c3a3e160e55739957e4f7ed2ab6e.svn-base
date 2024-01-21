@@ -1,0 +1,163 @@
+//"use strict"
+
+// timer
+var totalSeconds = 60 * 60; // 초 단위로 설정
+
+function updateTimer() {
+  var minutes = Math.floor(totalSeconds / 60);
+  var seconds = totalSeconds % 60;
+
+  // 분과 초를 두 자리 숫자로 표시
+  document.getElementById("minutes").textContent = minutes
+    .toString()
+    .padStart(2, "0");
+  document.getElementById("seconds").textContent = seconds
+    .toString()
+    .padStart(2, "0");
+}
+
+function myTimerFunction() {
+  if (totalSeconds > 0) {
+    totalSeconds--;
+    updateTimer();
+  } else {
+    clearInterval(intervalId);
+    alert("타이머가 종료되었습니다!");
+  }
+}
+
+// 1초마다 myTimerFunction 함수를 실행
+var intervalId = setInterval(myTimerFunction, 1000);
+
+// 초기화
+updateTimer();
+
+function addExtraTime() {
+  // 추가할 시간 (여기선 5분을 추가하는 예제)
+  var extraTime = 60 * 60;
+  totalSeconds = extraTime;
+  updateTimer();
+}
+
+//페이지내에서 어떤 버튼을 눌러도 시간리셋
+document.addEventListener("click", function () {
+  addExtraTime();
+  $("#notificationList").html("");
+});
+
+//weather
+// const API_KEY = "dfae6f06f26d27a5b24a81783d154911";
+
+// // position => GeolocationPosition Object
+// function onGeoOk(position) {
+//   const lat = position.coords.latitude;
+//   const lon = position.coords.longitude;
+//   const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
+//   fetch(url)
+//     .then((response) => response.json())
+//     .then((data) => {
+//       const weather = document.querySelector("#weather span:first-child");
+//       const city = document.querySelector("#weather span:last-child");
+//       city.innerText = data.name;
+//       weather.innerText = `${data.weather[0].main} / ${data.main.temp}`
+//       console.log(data);
+//     });
+//   // fetch() 가 브라우저로 가지 않고 url을 실행시켜줌
+// }
+
+// function onGeoError() {
+//   alert("날씨정보를 이용하시려면 위치를 허용해주세요.");
+// }
+
+// // 2개의 argument (true function, false function)
+// navigator.geolocation.getCurrentPosition(onGeoOk, onGeoError);
+
+$(document).ready(function () {
+  $(".aside_down .hambuger_btn").click(function () {
+    $(".aside_down").hide();
+    $(".aside_up").show();
+    $(".aside_up").css("width", "200px");
+    // .body_container의 너비를 변경
+    const currentWidth = parseFloat($(".body_container").css("width"));
+    const newWidth = currentWidth - 105;
+    $(".body_container").css("width", `${newWidth}px`);
+  });
+  $(".aside_up .hambuger_btn").click(function () {
+    $(".aside_up").hide();
+    $(".aside_down").show();
+    $(".aside_down").css("width", "95px");
+    // .body_container의 너비를 변경
+    const currentWidth = parseFloat($(".body_container").css("width"));
+    const newWidth = currentWidth + 105;
+    $(".body_container").css("width", `${newWidth}px`);
+  });
+  // 알림 드랍다운
+  $(".dropdown-menu").on("click", function(event) {
+    event.stopPropagation();
+  });
+  
+  
+});
+
+function alertError(message, url) {
+  const Toast = Swal.mixin({
+    toast: true,
+    position: "top",
+    width: 400,
+    showConfirmButton: false,
+    timer: 3000,
+    didClose: () => {
+      alertLocation(url);
+    }
+  });
+  Toast.fire({
+    icon: "error",
+    title: message,
+  });
+}
+
+function alertSuccess(message, url) {
+  const Toast = Swal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 3000,
+    didClose: () => {
+      alertLocation(url);
+    }
+  });
+  Toast.fire({
+    icon: "success",
+    title: message,
+  });
+}
+
+function alertLocation(url) {
+  if (url) location.href=url;
+}
+
+function sweetConfirm() {
+  Swal.fire({
+    /* title: '상담을 취소하시겠습니까?', */
+    text: "상담을 취소하시겠습니까?",
+    icon: "question",
+    /* warning,error,success,info,question */
+    width: 300,
+    /* padding: "4em", */
+    position: "top",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "상담취소",
+    cancelButtonText: "뒤로가기",
+    /* reverseButtons: true, */ // 버튼 순서 거꾸로
+  }).then((result) => {
+    console.log(result);
+    if (result.isConfirmed) {
+      var PageUrl = "/student/counsel/counselDelete?cnslCd=" + cnslCd;
+      window.location.href = PageUrl;
+    } else {
+      console.log("이동이 취소되었습니다.");
+    }
+  });
+}

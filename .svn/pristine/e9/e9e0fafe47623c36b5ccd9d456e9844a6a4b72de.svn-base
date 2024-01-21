@@ -1,0 +1,114 @@
+package kr.or.ddit.service.common.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.UnivMailMapper;
+import kr.or.ddit.service.common.UnivMailService;
+import kr.or.ddit.util.FileUtil;
+import kr.or.ddit.vo.FilesDetailVO;
+import kr.or.ddit.vo.UnivMailVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Service
+public class UnivMailServiceImpl implements UnivMailService {
+
+	@Autowired
+	UnivMailMapper univMailMapper;
+	
+	@Autowired
+	FileUtil fileUtil;
+	
+	@Override
+	public List<UnivMailVO> inbox(String userCd) {
+		return this.univMailMapper.inbox(userCd);
+	}
+
+	@Override
+	public List<UnivMailVO> sentbox(String userCd) {
+		return this.univMailMapper.sentbox(userCd);
+	}
+
+	@Override
+	public int sendMail(UnivMailVO univMailVO) {
+		int result = this.univMailMapper.sendMail(univMailVO);
+		
+//		if (univMailVO.getUploadFiles() != null && univMailVO.getUploadFiles().length > 0) {
+//		if (univMailVO.getFilesDetailVOList() != null && !univMailVO.getFilesDetailVOList().isEmpty()) {
+
+		result += this.fileUtil.uploadFile(univMailVO.getUploadFiles(), univMailVO.getUmlCd());
+
+		
+		log.info("sendMail->univMailVO : " + univMailVO);
+//		}
+		
+		return result;
+	}
+
+	@Override
+	public UnivMailVO sendMailDetail(String umlCd) {
+		return this.univMailMapper.sendMailDetail(umlCd);
+	}
+	
+	@Override
+	public UnivMailVO receiveMailDetail(String umlCd) {
+		return this.univMailMapper.receiveMailDetail(umlCd);
+	}
+
+	@Override
+	public int deleteMail(String umlCd) {
+		log.info("umlCd : " + umlCd);
+		int result = this.univMailMapper.deleteMail(umlCd);
+		
+		result += this.fileUtil.updateFileUsed(umlCd);
+		
+		return result;
+	}
+
+	@Override
+	public int readReceiveMail(String umlCd) {
+		return this.univMailMapper.readReceiveMail(umlCd);
+	}
+
+	@Override
+	public List<UnivMailVO> tempMailBox(String userCd) {
+		return this.univMailMapper.tempMailBox(userCd);
+	}
+
+	@Override
+	public int tempMailUpdate(UnivMailVO univMailVO) {
+		int result = this.univMailMapper.tempMailUpdate(univMailVO);
+		log.info("tempMailUpdate->univMailVO : " + univMailVO);
+		
+		result += this.fileUtil.uploadFile(univMailVO.getUploadFiles(), univMailVO.getUmlCd());
+		log.info("sendMail->univMailVO : " + univMailVO);
+		
+		return result;
+	}
+
+	@Override
+	public int deleteFileUpdate(FilesDetailVO filesDetailVO) {
+		log.info("TEST11 deleteFileUpdate->filesDetailVO : " + filesDetailVO);
+		int result = this.fileUtil.deleteFileUpdate(filesDetailVO.getFileCd(), filesDetailVO.getFileSn());
+		log.info("TEST33 deleteFileUpdate->filesDetailVO : " + filesDetailVO);
+		
+		return result;
+	}
+
+	@Override
+	public int sendTempMail(UnivMailVO univMailVO) {
+		int result = this.univMailMapper.sendTempMail(univMailVO);
+		result += this.fileUtil.uploadFile(univMailVO.getUploadFiles(), univMailVO.getUmlCd());
+		return result;
+	}
+
+	@Override
+	public int readMail(Map<String, String> map) {
+		return this.univMailMapper.readMail(map);
+	}
+
+}

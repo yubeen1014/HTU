@@ -1,0 +1,72 @@
+package kr.or.ddit.service.employee.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import kr.or.ddit.mapper.ApprovalMapper;
+import kr.or.ddit.mapper.LectureApplyMapper;
+import kr.or.ddit.mapper.LectureMapper;
+import kr.or.ddit.mapper.LectureScheduleMapper;
+import kr.or.ddit.service.employee.LectureApplyApprovalService;
+import kr.or.ddit.vo.ApprovalVO;
+import kr.or.ddit.vo.LectureApplyVO;
+import kr.or.ddit.vo.LectureScheduleVO;
+import kr.or.ddit.vo.LectureVO;
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
+@Service
+public class LectureApplyApprovalServiceImpl implements LectureApplyApprovalService{
+	@Autowired
+	ApprovalMapper approvalMapper; 
+	@Autowired
+	LectureApplyMapper lectureApplyMapper;
+	@Autowired
+	LectureMapper lectureMapper;
+	@Autowired
+	LectureScheduleMapper lectureScheduleMapper;
+	
+	
+	@Override
+	public List<LectureApplyVO> getLectureApplyList() {
+		return this.approvalMapper.getLectureApplyList();
+	}
+
+	@Override
+	public LectureApplyVO lecaApplyDetail(String lecaCd) {
+		LectureApplyVO lectureApplyVO = this.lectureApplyMapper.lecaApplyDetail(lecaCd);
+		
+		return lectureApplyVO;
+	}
+	@Transactional
+	@Override
+	public int updateApprovalYn(LectureApplyVO lectureApplyVO) {
+
+		int result = this.approvalMapper.updateApprovalYn(lectureApplyVO.getAppCd());
+		
+		if(result == 1) {
+			LectureVO lectureVO = new LectureVO();
+			lectureVO.setLectureApplyVO(lectureApplyVO);
+			result += this.lectureMapper.createLecture(lectureVO);
+		}
+		
+		return result;
+	}
+	
+//	public int updatePost(ApprovalVO approvalVO) {
+//		
+//		int result = approvalMapper.updatePost(approvalVO);
+//		
+//		
+//		if(approvalVO.getAppYn() == 1) {
+//			result += create강의
+//			result += create강의일정
+//		}
+//		return result;
+//		
+//	}
+
+
+}

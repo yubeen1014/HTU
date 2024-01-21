@@ -1,0 +1,22 @@
+package kr.or.ddit.service.professor;
+
+import java.util.List;
+
+import kr.or.ddit.vo.DepartmentVO;
+import kr.or.ddit.vo.ScholarshipRecommendVO;
+import kr.or.ddit.vo.StudentVO;
+import kr.or.ddit.vo.UserVO;
+
+public interface ScholarshipRecommendService {
+
+	List<UserVO> getEmployee();
+
+	int createScholarshipRecommendApproval(ScholarshipRecommendVO scholarshipRecommendVO);
+
+	List<StudentVO> getStudent();
+
+	List<DepartmentVO> getDepCdListAjax(DepartmentVO departmentVO);
+
+	List<StudentVO> getStudentListAjax(StudentVO studentVO);
+	
+}

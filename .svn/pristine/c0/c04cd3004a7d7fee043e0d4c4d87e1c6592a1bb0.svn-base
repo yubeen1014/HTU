@@ -1,0 +1,185 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="/resources/js/jquery.min.js"></script>
+<style>
+	.testWrap {
+		background-color: #ffffff;
+	    border-radius: 15px;
+    	box-shadow: 0 0 15px #bcbfc5ed;
+    	margin: 30px;
+    	padding: 50px;
+	}
+	.testHeader {
+		font-size: 20px;
+	    padding: 20px 0;
+	    font-weight: 800;
+	}
+	.testContent {
+	    background-color: #f2f4f7;
+    	padding: 30px;
+    	height: 300px;
+	}
+	.testContent p {
+		margin-bottom: 10px;
+	}
+	.testCon1, .testCon2 {
+    	display: flex;
+	}
+	.testCon1 {
+    	margin-bottom: 15px;
+	}
+	.testSelect {
+		width: 100px;	
+	}
+	.testTitle {
+		width: 400px;	
+	}
+	.testDate {
+		width: 250px;	
+	}
+	.testTime {
+		width: 100px;	
+	}
+	.testCon2 {
+    	height: 140px;
+    	width: 100%;
+	}
+	.testCon {
+		width: 100%;
+	}
+	.tc {
+		margin: 0 10px;
+	}
+	.testQuestion {
+	    margin-top: 25px;
+	}
+	.questionHeader {
+		border-top: 1px solid #dadada;
+		border-bottom: 1px solid #dadada;
+	    padding: 15px 0;
+	}
+	.questionNo {
+   		background: none;
+	    width: 30px;
+	    text-align: center;
+	}
+	.questionInput {
+		border: 1px solid #dadada;
+		font-size: 14px;
+	    padding: 10px;
+	    width: 100%;
+	    margin: 3px 0;
+	}
+	.questionBody {
+		padding: 15px 35px;
+	}
+	input {
+		font-size: 14px;
+	}
+	input:focus, textarea:focus {
+		outline: none;
+	}
+</style>
+<div class="testWrap">
+	<div class="testHeader">
+		시험 등록
+	</div>
+	
+	<div class="testBody">
+		<form action="/professor/test/testCreate?${_csrf.parameterName}=${_csrf.token}" method="post" enctype="multipart/form-data">
+			<div class="testContent">
+				<div class="testCon1">
+					<div class="tc testSelect">
+						<p>시험구분</p>
+						<select name="testOpt" style="font-size: 14px; width: 100%; border: none;">
+							<option value="1">중간고사</option>
+							<option value="2">기말고사</option>
+						</select>
+					</div>
+					<div class="tc testTitle">
+						<p>시험명</p>
+						<input type="text" name="testNm" style="width: 100%;" />
+					</div>
+					<div class="tc testDate">
+						<p>시험일시</p>
+						<input type="datetime-local" id="currentTime" name="testDt" style="width: 100%;" />
+					</div>
+					<div class="tc testTime">
+						<p>제한시간</p>
+						<input type="text" name="testLmt" style="width: 75%;" /> 분
+					</div>
+					<button type="button" class="btn-two mini gray">자동 입력</button>
+				</div>
+				<div class="testCon2">
+					<div class="tc testCon">
+						<p>내용</p>
+						<textarea name="testCon" style="height: 100%; width: 100%; border: none; resize: none;" ></textarea>
+					</div>
+				</div>
+			</div>		
+		
+			<div class="testQuestion">
+				<div class="testNo">
+					<div class="questionHeader">
+					<c:set var="cnt" value="1" />
+						<input class="questionNo" name="testVO.testQuestionVOList[0].teqNo" value="${cnt}." disabled="disabled" />
+						<input type="text" name="testVO.testQuestionVOList[0].teqCon" placeholder="문제를 입력하세요." 
+						style="width: 90%; border: 1px solid #dadada; font-size: 14px; padding: 10px;" />
+						
+						<a class="minusQuestion" type="button" style="margin: 0 5px 0 5px;">
+							<svg xmlns="http://www.w3.org/2000/svg" height="16" width="14" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.--><path fill="#333333" d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg>
+						</a>
+					</div>
+					<div class="questionBody">
+						<input class="questionInput" type="text" placeholder="답안을 입력하세요." />
+						<input class="questionInput" type="text" placeholder="답안을 입력하세요." />
+						<input class="questionInput" type="text" placeholder="답안을 입력하세요." />
+						<input class="questionInput" type="text" placeholder="답안을 입력하세요." />
+						<input class="questionInput" type="text" placeholder="답안을 입력하세요." />
+						<input class="questionInput" type="text" placeholder="정답을 입력하세요." />
+					</div>				
+				</div>
+			</div>
+			<a class="plusQuestion" type="button" style="margin: 0 10px 0 5px;">
+				<svg xmlns="http://www.w3.org/2000/svg" height="16" width="14" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.--><path fill="#333333" d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"/></svg>
+			</a>
+		
+			 <sec:csrfInput/>
+		</form>
+		
+		
+	</div>
+	
+</div>
+<script>
+$(function(){
+	
+	let dateElement = document.getElementById("currentTime");
+    let date = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, -5);
+    dateElement.value = date;
+    dateElement.setAttribute("min", date);
+    
+    let cntQuestion = 1;
+    
+    $(".plusQuestion").on("click", function(){
+    	cntQuestion++;
+		let str = "<div class='testNo'><div class='questionHeader'>";
+            str += "<input class='questionNo' name='testVO.testQuestionVOList[0].teqNo' value='"+cntQuestion+". ' disabled='disabled' />";
+            str += "<input type='text' name='testVO.testQuestionVOList[0].teqCon' placeholder='문제를 입력하세요.'";
+            str += "style='width: 90%; border: 1px solid #dadada; font-size: 14px; padding: 10px;' />";
+            str += "<a class='minusQuestion' type='button' style='margin: 0 5px 0 5px;'>";
+            str += "<svg xmlns='http://www.w3.org/2000/svg' height='16' width='14' viewBox='0 0 448 512'><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.--><path fill='#333333' d='M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z'/></svg></a></div>";
+            str += "<div class='questionBody'>";
+            str += "<input class='questionInput' type='text' placeholder='답안을 입력하세요.' />";
+            str += "<input class='questionInput' type='text' placeholder='답안을 입력하세요.' />";
+            str += "<input class='questionInput' type='text' placeholder='답안을 입력하세요.' />";
+            str += "<input class='questionInput' type='text' placeholder='답안을 입력하세요.' />";
+            str += "<input class='questionInput' type='text' placeholder='답안을 입력하세요.' /></div></div>";
+
+		$(".testQuestion").append(str);
+    });
+})
+</script>

@@ -1,0 +1,125 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
+<script src="/resources/js/jquery.min.js"></script>
+<style>
+.board_wrap {
+	background-color: #ffffff;
+	padding: 30px;
+}
+
+.board_header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+.board_title {
+	font-size: 24px;
+	font-weight: bold;
+	margin-bottom: 10px;
+}
+
+.board_info {
+	color: #555;
+	font-size: 14px;
+}
+
+.board_info span {
+	margin-right: 20px;
+}
+
+.image_container {
+	width: 920px;
+	height: 400px;
+	border: 1px solid #ccc;
+	background-position: center;
+	background-size: cover;
+	margin-bottom: 20px;
+}
+
+.board_content {
+	text-align: left;
+	max-width: 60%;
+	white-space: pre-line;
+}
+
+.report_button {
+	display: inline-block;
+	padding: 10px 20px;
+	background-color: #800020;
+	color: #fff;
+	text-decoration: none;
+	font-weight: 300;
+	border-radius: 5px;
+}
+
+.board_separator {
+	border-top: 1px solid #ccc;
+	margin: 20px 0;
+}
+
+.report_button:hover {
+	background-color: #600015;
+}
+</style>
+<sec:authorize access="isAuthenticated()">
+	<sec:authentication property="principal.userVO" var="userVO" />
+</sec:authorize>
+
+<%-- <p>${lectureVOList}</p> --%>
+
+<div class="row" style="margin-bottom: 20px; margin-left: 1px;">
+	<div class="col-lg-12">
+		<h1 class="page-header">강의상세</h1>
+	</div>
+</div>
+${lectureVO}
+
+
+
+
+
+<script type="text/javascript">
+logout = function() {
+	$("#logoutForm").submit();
+}
+	
+<!-- // <button onclick="alertSuccess('메세지')">zz</button> -->
+// <button onclick="alertError('메세지')">ㅇㅇ</button>
+$(function(){
+	$("#weekplanCreate").on("click", function(){
+		console.log("왔다")
+		
+		var attributeValue = "${lectureVO.lecCd}"
+		console.log("왔다", attributeValue);
+		localStorage.setItem("lecCD", attributeValue);
+		window.location.href = "/professor/weekplan/create?lecCd=" + ${lectureVO.lecCd};
+	});
+	$("#lectureNoticeCreate").on("click", function(){
+		console.log("왔다")
+		
+		var attributeValue = "${lectureVO.lecCd}"
+		console.log("왔다", attributeValue);
+		localStorage.setItem("lecCD", attributeValue);
+		window.location.href = "/professor/lecturenotice/create?lecCd=" + ${lectureVO.lecCd};
+	});
+	$("#lectureNoticeList").on("click", function(){
+		console.log("왔다")
+		
+		var attributeValue = "${lectureVO.lecCd}"
+		console.log("왔다", attributeValue);
+		localStorage.setItem("lecCD", attributeValue);
+		window.location.href = "/professor/lecturenotice/list?lecCd=" + ${lectureVO.lecCd};
+	});
+	
+});	
+
+</script>
+
+
+

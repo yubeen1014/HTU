@@ -1,0 +1,100 @@
+package kr.or.ddit.controller.common;
+
+import java.security.Principal;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.mapper.UserMapper;
+import kr.or.ddit.service.common.UnivMailService;
+import kr.or.ddit.vo.UnivMailVO;
+import kr.or.ddit.vo.UserVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/mail")
+public class UnivMailController {
+	
+	@Autowired
+	UnivMailService univMailService;
+	
+	@Autowired
+	UserMapper userMapper;
+	
+	@ModelAttribute
+	public void userList(Model model) {
+		List<UserVO> userVOList = this.userMapper.userList();
+		log.info("userVOList : " + userVOList);
+		model.addAttribute("userVOList", userVOList);
+	}
+
+	@GetMapping("/inbox")
+	public String inbox(Model model, Principal principal) {
+		
+		String userCd = principal.getName();
+		
+		List<UnivMailVO> data = this.univMailService.inbox(userCd);
+		log.info("data : " + data);
+		
+		model.addAttribute("data", data);
+		
+		return "mail/inbox";
+	}
+	
+	@GetMapping("/sentbox")
+	public String sentbox(Model model, Principal principal) {
+		
+		String userCd = principal.getName();
+		
+		List<UnivMailVO> data = this.univMailService.sentbox(userCd);
+		log.info("data : " + data);
+		
+		model.addAttribute("data", data);
+		
+		return "mail/sentbox";
+	}
+	
+	@GetMapping("/sendmail")
+	public String sendMail() {
+		return "mail/sendmail";
+	}
+	
+	@PostMapping("/sendMailPost")
+	public String sendMailPost(UnivMailVO univMailVO, Principal principal) {
+		
+		String sender = principal.getName();
+		log.info("sender : " + sender);
+		
+		univMailVO.setUmlSender(sender);
+		log.info("univMailVO : " + univMailVO);
+		
+		int result = this.univMailService.sendMail(univMailVO);
+		
+		log.info("result : " + result);
+		
+		if(result > 0) {
+			return "redirect:/mail/sentbox";
+		}else {
+			return null;
+		}
+	}
+	
+	@GetMapping("/detail")
+	public String mailDetail(String umlCd, Model model) {
+		
+		UnivMailVO univMailVO = this.univMailService.mailDetail(umlCd);
+		log.info("univMailVO : " + univMailVO);
+		
+		model.addAttribute("univMailVO", univMailVO);
+		
+		return "mail/detail";
+	}
+	
+}

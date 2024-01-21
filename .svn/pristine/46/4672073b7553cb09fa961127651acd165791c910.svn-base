@@ -1,0 +1,46 @@
+package kr.or.ddit.service.common.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.UnivMailMapper;
+import kr.or.ddit.service.common.UnivMailService;
+import kr.or.ddit.util.FileUtil;
+import kr.or.ddit.vo.UnivMailVO;
+
+@Service
+public class UnivMailServiceImpl implements UnivMailService {
+
+	@Autowired
+	UnivMailMapper univMailMapper;
+	
+	@Autowired
+	FileUtil fileUtil;
+	
+	@Override
+	public List<UnivMailVO> inbox(String userCd) {
+		return this.univMailMapper.inbox(userCd);
+	}
+
+	@Override
+	public UnivMailVO mailDetail(String umlCd) {
+		return this.univMailMapper.mailDetail(umlCd);
+	}
+
+	@Override
+	public int sendMail(UnivMailVO univMailVO) {
+		int result = this.univMailMapper.sendMail(univMailVO);
+		
+		result += this.fileUtil.uploadFile(univMailVO.getUploadFiles(), univMailVO.getUmlCd());
+		
+		return result;
+	}
+
+	@Override
+	public List<UnivMailVO> sentbox(String userCd) {
+		return this.univMailMapper.sentbox(userCd);
+	}
+
+}

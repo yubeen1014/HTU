@@ -1,0 +1,57 @@
+package kr.or.ddit.service.student.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.EnrolmentMapper;
+import kr.or.ddit.mapper.LectureMapper;
+import kr.or.ddit.service.student.LectureService;
+import kr.or.ddit.vo.EnrolmentVO;
+import kr.or.ddit.vo.LectureNoticeVO;
+import kr.or.ddit.vo.LectureVO;
+import kr.or.ddit.vo.StudentVO;
+
+@Service
+public class LectureServiceImpl implements LectureService{
+	
+	@Autowired
+	EnrolmentMapper enrolmentMapper;
+	
+	@Autowired
+	private LectureMapper lectureMapper;
+	
+	@Override
+	public List<EnrolmentVO> getEnrolmentLecture(String stuCd) {
+		return this.enrolmentMapper.getEnrolmentLecture(stuCd);
+	}
+
+	@Override
+	public LectureVO enrolmentLectureDetail(String lecCd) {
+		return this.enrolmentMapper.enrolmentLectureDetail(lecCd);
+	}
+
+	@Override
+	public List<LectureNoticeVO> stuLectureNoticeList(Map<String, Object> map) {
+		return this.enrolmentMapper.stuLectureNoticeList(map);
+	}
+
+	@Override
+	public int getTotal(Map<String, Object> map) {
+		return this.enrolmentMapper.getTotal(map);
+	}
+
+	@Override
+	public LectureNoticeVO stuLectureNoticeDetail(String lecnCd) {
+		return this.enrolmentMapper.stuLectureNoticeDetail(lecnCd);
+	}
+
+	@Override
+	public List<LectureVO> getLectureList(StudentVO studentVO) {
+		return this.lectureMapper.getLectureList(studentVO);
+	}
+
+
+}

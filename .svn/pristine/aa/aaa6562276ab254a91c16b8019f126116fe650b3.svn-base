@@ -1,0 +1,51 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
+<!-- style.css -->
+<link href="/resources/css/counsel.css" rel="stylesheet" type="text/css">
+
+<div class="counsel_box">
+	<a href="/student/counsel/counselApp" class="app_btn">상담신청</a>
+	<table>
+		<tr>
+			<td>순번</td>
+			<td>상담종류</td>
+			<td>상담일</td>
+			<td>교수명</td>
+			<td>승인여부</td>
+			<!-- 상담날짜 이후에 써짐 -->
+			<td>상담내역</td>
+			<td>수정/삭제</td>
+		</tr>
+		<c:forEach var="counselVO" items="${data}" varStatus="stat">
+		<tr>
+		${counselVO.cnslCd}
+			<td>${stat.count}</td>
+			<td>${counselVO.commonDetailVO.comdNm}</td>
+			<td>${counselVO.cnslDt}</td>
+			<td>${counselVO.professorVO.userVO.userNm}</td>
+			<td>${counselVO.conCd}</td>
+			<td><button>상담내용상세</button></td>
+			<td><a href="/student/counsel/counseldetail?cnslCd="+"${counselVO.cnslCd}">수정</a><button>삭제</button></td>
+		</tr>
+		</c:forEach>
+		<!-- <tr>
+			<td>2</td>
+			<td>기타상담</td>
+			<td>2023-11-30</td>
+			<td>임형택</td>
+			<td><a href="#none">반려</a></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>3</td>
+			<td>기타상담</td>
+			<td>2023-11-24</td>
+			<td>임형택</td>
+			<td>승인</td>
+			<td><a href="#none">상세보기</a></td>
+		</tr> -->
+
+	</table>
+</div>

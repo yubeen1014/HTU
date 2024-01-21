@@ -1,0 +1,15 @@
+package kr.or.ddit.service.student;
+
+import java.util.List;
+
+import kr.or.ddit.vo.LectureVO;
+import kr.or.ddit.vo.StudentVO;
+
+public interface EnrolmentService {
+
+	public List<LectureVO> list(StudentVO studentVO);
+	
+	// 단과대 이름
+	public String getColNm(String userCd);
+
+}

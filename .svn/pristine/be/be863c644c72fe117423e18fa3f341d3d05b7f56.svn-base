@@ -1,0 +1,18 @@
+package kr.or.ddit.service.common;
+
+import java.util.List;
+
+import kr.or.ddit.vo.UnivMailVO;
+
+public interface UnivMailService {
+
+	public List<UnivMailVO> inbox(String userCd);
+
+	public UnivMailVO mailDetail(String umlCd);
+
+	public int sendMail(UnivMailVO univMailVO);
+
+	public List<UnivMailVO> sentbox(String userCd);
+
+
+}

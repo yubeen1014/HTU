@@ -1,0 +1,67 @@
+package kr.or.ddit.controller.employee;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.service.employee.LectureApplyApprovalService;
+import kr.or.ddit.vo.ApprovalVO;
+import kr.or.ddit.vo.LectureApplyVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/emp")
+/**
+결재요청된 강의계획신청 리스트를 가져오기 위한 클래스  
+ */
+public class LectureApplyApprovalController {
+	
+	@Autowired
+	LectureApplyApprovalService lectureApplyApprovalService;
+	
+	@GetMapping("/lectureappr/list")
+	public String lectureApplyList(Model model) {
+		
+		List<LectureApplyVO> lectureApplyVOList = this.lectureApplyApprovalService.getLectureApplyList();
+		
+		log.info("lectureApplyVOList@" + lectureApplyVOList);
+		
+		model.addAttribute("lectureApplyVOList", lectureApplyVOList);
+		
+		
+		return "employee/lectureapplylist";
+	}
+	
+	@GetMapping("/lectureapprdetail")
+	public String lecaApplyDetail(Model model, String lecaCd) {
+		
+		LectureApplyVO lectureApplyVO = this.lectureApplyApprovalService.lecaApplyDetail(lecaCd);
+//		log.info("이름이름" + lectureApplyVO.getProfessorVO().getUserVO().getUserNm());
+		log.info("lectureApplyVO" + lectureApplyVO);
+		
+		model.addAttribute("lectureApplyVO", lectureApplyVO);
+		
+		return "employee/lectureapplyappr";
+	}
+	@PostMapping("/createleclecsch")
+	public String approvalLectureApply(LectureApplyVO lectureApplyVO) {
+		
+		int result = this.lectureApplyApprovalService.updateApprovalYn(lectureApplyVO);
+		
+		return "redirect:/emp/lectureappr/list";
+	}
+}
+
+
+
+
+
+
+
+

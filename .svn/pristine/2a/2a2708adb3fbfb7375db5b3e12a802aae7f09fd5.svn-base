@@ -1,0 +1,240 @@
+package kr.or.ddit.controller.student;
+
+import java.security.Principal;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.mapper.ApprovalMapper;
+import kr.or.ddit.mapper.ProfessorMapper;
+import kr.or.ddit.mapper.RoomMapper;
+import kr.or.ddit.mapper.StudentMapper;
+import kr.or.ddit.mapper.UserMapper;
+import kr.or.ddit.service.student.CrewService;
+import kr.or.ddit.vo.ApprovalVO;
+import kr.or.ddit.vo.CrewPersonnelVO;
+import kr.or.ddit.vo.CrewVO;
+import kr.or.ddit.vo.ProfessorVO;
+import kr.or.ddit.vo.RoomVO;
+import kr.or.ddit.vo.UnivMailVO;
+import kr.or.ddit.vo.UserVO;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 학생 동아리 컨트롤러
+ * @author 전유빈
+ *
+ */
+@Slf4j
+@Controller
+@RequestMapping("/student/crew")
+public class CrewController {
+
+	@Autowired
+	CrewService crewService; 
+	
+	@Autowired
+	UserMapper userMapper;
+	
+	@Autowired
+	RoomMapper roomMapper;
+	
+	@Autowired
+	ApprovalMapper approvalMapper;
+	
+	@ModelAttribute
+	public void roomList(Model model) {
+		
+		List<RoomVO> roomList = this.roomMapper.getRoomCd();
+		model.addAttribute("roomList", roomList);
+	}
+	
+	//동아리 조회
+	@GetMapping("/crewList")
+	public String crewList(Model model) {
+		
+		List<CrewVO> crewVOList = this.crewService.crewList();
+		log.info("crewVOList : {}", crewVOList);
+		
+		model.addAttribute("crewVOList", crewVOList);
+		
+		return "student/crew/crewList";
+	}
+	
+	//나의 동아리
+	@GetMapping("/myCrew")
+	public String myCrew(Model model, Principal principal) {
+		
+		String stuCd = principal.getName();
+		
+		List<CrewVO> myCrew = this.crewService.myCrew(stuCd);
+		
+		model.addAttribute("myCrew", myCrew);
+		
+		return "student/crew/myCrew";
+	}
+	
+	//동아리 개설 신청
+	@GetMapping("/crewApply")
+	public String crewApply(Model model, Principal principal) {
+//		String stuNm = principal.getName();
+//		
+//		model.addAttribute("stuNm", stuNm);
+		
+		return "student/crew/crewApply";
+	}
+	
+	@PostMapping("/crewApplyPost")
+	public String crewApplyPost(CrewVO crewVO, Principal principal) {
+	
+		String stuCd = principal.getName();
+		
+		crewVO.setStuCd(stuCd);
+	
+		int result = this.crewService.crewApply(crewVO);
+		log.info("crewApplyPost->crewVO : {}", crewVO);
+		
+		log.info("result : {}", result);
+		
+		if(result > 0) {
+			return "redirect:/student/crew/crewList";
+		}else {
+			return null;
+		}
+	}
+	
+	//동아리 상세
+	@GetMapping("/crewDetail")
+	public String crewDetail(String crCd, Model model, Principal principal) {
+		
+		String crLeader = principal.getName();
+		log.info("crewDetail->crLeader : {}", crLeader);
+		log.info("crewDetail->crCd : {}", crCd);
+		
+		CrewVO crewVO = this.crewService.crewDetail(crCd);
+		log.info("crewDetail->crewVO : {}", crewVO);
+		
+		if(crLeader.equals(crewVO.getCrLeader())) {
+			List<ApprovalVO> approvalVOList = this.approvalMapper.crewAppList(crCd);
+			log.info("crewDetail->approvalVOList : {}", approvalVOList);
+			
+			model.addAttribute("approvalVOList", approvalVOList);
+		}
+		
+		List<CrewVO> crewPersonnelList = this.crewService.crewPersonnel(crCd);
+		
+		model.addAttribute("crewPersonnelList", crewPersonnelList);
+		
+		model.addAttribute("crewVO", crewVO);
+		
+		return "student/crew/crewDetail";
+	}
+
+	//동아리 가입 신청
+	@PostMapping("/crewJoin")
+	public String crewJoin(String stuCd, String crCd, String crLeader, CrewPersonnelVO crewPersonnelVO) {
+		
+		log.info("crewJoin->stuCd : {}", stuCd);
+		log.info("crewJoin->crCd : {}", crCd);
+		log.info("crewJoin->crLeader : {}", crLeader);
+		crewPersonnelVO.setStuCd(stuCd);
+		crewPersonnelVO.setCrCd(crCd);
+		
+		ApprovalVO appVO = new ApprovalVO();
+		appVO.setUserCd(stuCd);
+		appVO.setAppTarget(crLeader);
+		appVO.setComdCd("APPR03");
+		
+		int result = this.approvalMapper.insert(appVO);
+		crewPersonnelVO.setAppCd(appVO.getAppCd());
+		log.info("crewJoin->appVO : {}", appVO);
+		
+//		result += this.crewService.crewJoin(crewPersonnelVO);
+		
+		if(result > 0) {
+			return "redirect:/student/crew/crewList";
+		}else {
+			return null;
+		}
+	}
+	
+	@GetMapping("/crewJoinApp")
+	public String crewJoinApp(String appYn, String stuCd, String crCd) {
+		
+		log.info("crewJoinApp->stuCd : {}", stuCd);
+		log.info("crewJoinApp->appYn : {}", appYn);
+		log.info("crewJoinApp->crCd : {}", crCd);
+		
+		return "";
+	}
+	
+	//동아리 수정
+	@GetMapping("/crewUpdate")
+	public String crewUpdate(String crCd, Model model) {
+		
+		CrewVO crewVO = this.crewService.crewDetail(crCd);
+		log.info("crewUpdate->crewVO : {}", crewVO);
+		
+		model.addAttribute("crewVO", crewVO);
+		
+		List<CrewVO> crewPersonnelList = this.crewService.crewPersonnel(crCd);
+		
+		model.addAttribute("crewPersonnelList", crewPersonnelList);
+		
+		return "student/crew/crewUpdate";
+	}
+	
+	@PostMapping("/crewUpdatePost")
+	public String crewUpdatePost(String crCd, CrewVO crewVO, Model model) {
+		log.info("crewUpdatePost->crCd : {}", crCd);
+		
+		int result = this.crewService.crewUpdate(crewVO);
+		log.info("crewUpdatePost->crewVO : {}", crewVO);
+		
+		model.addAttribute("crewVO", crewVO);
+		
+		return "redirect:/student/crew/myCrew";
+	}
+	
+	//동아리 탈퇴
+	@PostMapping("/crewQuit")
+	public String crewQuit(String stuCd, String crCd) {
+		log.info("crewQuit->stuCd : {}", stuCd);
+		log.info("crewQuit->crCd : {}", crCd);
+		
+		int result = this.crewService.crewQuit(stuCd, crCd);
+		if(result > 0) {
+			return "student/crew/myCrew";
+		}else {
+			return null;
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

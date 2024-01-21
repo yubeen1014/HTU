@@ -1,0 +1,35 @@
+package kr.or.ddit.service.student.impl;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.AcademicAdminMapper;
+import kr.or.ddit.service.student.AcademicAdminService;
+import kr.or.ddit.vo.LectureGradeVO;
+import kr.or.ddit.vo.StudentVO;
+import kr.or.ddit.vo.UserVO;
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class AcademicAdminServiceImpl implements AcademicAdminService{
+
+	private final AcademicAdminMapper academicAdminMapper;
+	
+	@Override
+	public List<LectureGradeVO> getLecList(String stuCd) {
+		return this.academicAdminMapper.getLecList(stuCd);
+	}
+
+	@Override
+	public StudentVO recordApp(String userCd) {
+		return this.academicAdminMapper.recordApp(userCd);
+	}
+
+	@Override
+	public List<LectureGradeVO> getGrade(StudentVO studentVO) {
+		return this.academicAdminMapper.getGrade(studentVO);
+	}
+
+}

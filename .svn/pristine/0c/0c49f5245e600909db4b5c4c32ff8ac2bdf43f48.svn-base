@@ -1,0 +1,16 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.vo.UserVO;
+
+public interface MyPageMapper {
+
+	public UserVO profile(String userCd);
+
+	//상세(수정할 수 있는 화면)
+	public UserVO profileEdit(String userCd);
+	//수정 실행
+	public int profileEditPost(UserVO userVO);
+
+}

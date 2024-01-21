@@ -1,0 +1,27 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="/resources/js/jquery.min.js"></script>
+<script type="text/javascript" src="/resources/ckeditor/ckeditor.js"></script>
+${univMailVO.filesDetailVOList[0]}
+<script>
+$(function(){
+
+});
+</script>
+<iframe id="ifrm" src="" style="display: none;"></iframe>
+	<p>${univMailVO.umlTitle}</p>
+	<p>보낸 사람</p>
+	<p>${univMailVO.userVO.userNm}</p>
+	<p><fmt:formatDate pattern="yyyy년 MM월 dd일 HH:mm" value="${univMailVO.umlReg}"/></p>
+	<p>첨부파일</p>
+	<a href="/resources/upload/${univMailVO.filesDetailVOList[0].fileSvnm}" download="${univMailVO.filesDetailVOList[0].fileOrnm}">다운로드</a>
+<%-- 	<img src="/resources/upload/${univMailVO.filesDetailVOList[0].fileSvnm}"/> --%>
+	<p>내용</p>
+	<p>${univMailVO.umlCon}</p>
+	<div>
+		<button id="btnList" style="border:none; border-radius:5px; margin-top:15px; background-color:#7e1717; color:#ffffff; font-weight:300; padding:5px 10px; display:inline-block;">목록</button>
+	</div>
+	<sec:csrfInput />

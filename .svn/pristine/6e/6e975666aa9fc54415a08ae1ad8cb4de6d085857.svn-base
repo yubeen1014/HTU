@@ -1,0 +1,126 @@
+package kr.or.ddit.controller.employee;
+
+import java.security.Principal;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import kr.or.ddit.service.employee.StuAdminService;
+import kr.or.ddit.vo.DepartmentVO;
+import kr.or.ddit.vo.OrganizationChartVO;
+import kr.or.ddit.vo.StudentVO;
+import kr.or.ddit.vo.UserVO;
+import lombok.extern.slf4j.Slf4j;
+
+
+/**
+ * 학사관리자가 학생을 관리하는 메소드
+ * @author user
+ *
+ */
+@Slf4j
+@Controller
+@RequestMapping("/employee/stuadmin")
+public class StuAdminController {
+	
+	@Autowired
+	StuAdminService stuAdminService;
+	
+	//학생관리 리스트 출력
+	@GetMapping("/stuinfo")
+	public String stuinfolist(Model model) {
+		ObjectMapper objectMapper = new ObjectMapper();
+		
+		List<StudentVO> data = this.stuAdminService.stuinfolist();
+		model.addAttribute("data", data);
+		
+		List<DepartmentVO> deptList= this.stuAdminService.deptList();
+		
+		String jsonDepartmentList = "";
+		try {
+			jsonDepartmentList = objectMapper.writeValueAsString(deptList);
+		} catch (JsonProcessingException e) {
+			log.error(e.getMessage());
+		}
+		
+		model.addAttribute("deptList", deptList);
+		model.addAttribute("jsonDepartmentList", jsonDepartmentList);
+		
+		log.info("deptList => {}", deptList);
+		log.info("stuinfo->vo : {}", data);
+		
+		return "employee/stuadmin/stuinfo";
+	}
+	
+	@GetMapping
+	public void tree(Model model) {
+		List<OrganizationChartVO> chartList = this.stuAdminService.chartList();
+		model.addAttribute("chartList", chartList);
+		
+	}
+	
+// renderTree()의 ajax의 url
+	@GetMapping("/list")
+	@ResponseBody
+	public List<OrganizationChartVO> list() {
+		List<OrganizationChartVO> chartList = this.stuAdminService.chartList();
+		
+		log.info("chartList => {}", chartList);
+		return chartList;
+	}
+	
+	@GetMapping("/{nodeName}")
+	public String create(@PathVariable String nodeName, Model model) {
+		model.addAttribute("nodeName", nodeName);
+		return "tree";
+	}
+	
+	// 노드가 선택될 때 ajax방식으로 db에서 해당 노드에 대한 상세정보를 가져옴 
+	@GetMapping("/detail")
+	@ResponseBody
+	public List<StudentVO> detail(String organizationCode, Model model) {
+		List<StudentVO> studentList = null;
+		log.info("organizationCode ==> {}, length ==> {}", organizationCode, organizationCode.length());
+		if (organizationCode.length() == 6) {
+			studentList = this.stuAdminService.coldetail(organizationCode);
+			
+		} else if (organizationCode.length() > 6) {
+			
+			studentList = this.stuAdminService.deptdetail(organizationCode);
+		} else {
+			studentList = this.stuAdminService.stuinfolist();
+			log.info("studentList-> {}",studentList);
+		}
+		log.info("studentList =>{}",studentList);
+		return studentList;
+	}
+	
+	@ResponseBody
+	@PostMapping("/update")
+	public int update(@RequestBody UserVO userVO) {
+		log.info(" update=>{}", userVO);
+		int result = this.stuAdminService.update(userVO);
+		log.info(" update result : =>{}", result);
+		return result;
+		
+	}
+	
+	//학생 디테일 리스트
+//	@GetMapping("/stuinfodetail")
+//	public String stuinfodetail(Model model, String stuCd) {
+//		StudentVO studentVO=this.stuAdminService.stuinfodetail(stuCd);
+//		model.addAttribute("studentVO", studentVO);
+//		return "employee/stuadmin/stuinfodetail";
+//	}
+}

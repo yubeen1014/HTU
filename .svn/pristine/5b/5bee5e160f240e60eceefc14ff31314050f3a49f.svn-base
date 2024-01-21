@@ -1,0 +1,24 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="/resources/js/jquery.min.js"></script>
+${crewList}
+<table>
+	<tr class="table_title">
+		<td>동아리명</td>
+		<td>동아리장</td>
+		<td>담당교수</td>
+		<td>위치</td>
+	</tr>
+	<c:forEach var="crewVO" items="${crewList}">
+	<tr>
+		<td>${crewVO.crNm}</td>
+		<td>${crewVO.stuNm}</td>
+		<td>${crewVO.proNm}</td>
+		<td>${crewVO.roomCd}</td>
+	</tr>
+	</c:forEach>
+	
+</table>

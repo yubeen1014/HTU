@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.CommonMapper">
+
+
+	<resultMap type="commonVO" id="commonMap">
+		<result column="COM_CD" property="comCd"/>
+		<result column="COM_NM" property="comNm"/>
+		<result column="COM_DESC" property="comDesc"/>
+	</resultMap>
+	
+	<resultMap type="commonDetailVO" id="commonDetailMap">
+		<result property="comdCd" column="COMD_CD"/>
+		<result property="comCd" column="COM_CD"/>
+		<result property="comdNm" column="COMD_NM"/>
+		<result property="comdDesc" column="COMD_DESC"/>
+		<association property="commonVO" resultMap="commonMap"/>
+	</resultMap>
+	
+	<insert id="insert" parameterType="commonVO">
+		INSERT INTO COMMON
+		VALUES (#{comCd}, #{comNm}, #{comDesc})	
+	</insert>
+	
+	<select id="getCommonDetailList" resultMap="commonDetailMap">
+		SELECT COMD_CD, COMMON_DETAIL.COM_CD, COMD_NM, COMD_DESC, COM_NM, COM_DESC
+		FROM COMMON_DETAIL, COMMON
+		WHERE COMMON.COM_CD = COMMON_DETAIL.COM_CD
+	</select>
+	
+	<select id="getCommonDetails" resultMap="commonDetailMap" parameterType="String">
+		SELECT * FROM COMMON_DETAIL WHERE COM_CD = #{comdCd}
+	</select>	
+	
+</mapper>

@@ -1,0 +1,77 @@
+package kr.or.ddit.service.professor.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import kr.or.ddit.mapper.LectureMapper;
+import kr.or.ddit.mapper.LectureNoticeMapper;
+import kr.or.ddit.service.professor.LectureNoticeService;
+import kr.or.ddit.util.FileUtil;
+import kr.or.ddit.vo.LectureNoticeVO;
+import kr.or.ddit.vo.LectureVO;
+
+@Service
+public class LectureNoticeServiceImpl implements LectureNoticeService{
+
+	@Autowired
+	LectureMapper lectureMapper;
+	
+	@Autowired
+	LectureNoticeMapper lectureNoticeMapper;
+	
+	@Autowired
+	FileUtil fileUtil;
+	
+	@Override
+	/** 강의목록 */
+	public List<LectureVO> lectureList() {
+		return this.lectureMapper.lectureList();
+	}
+	
+	@Override
+	/** 강의상세 */
+	public LectureVO lectureDetail(String lecCd) {
+		return this.lectureMapper.lectureDetail(lecCd);
+	}
+	
+	@Transactional
+	@Override
+	/** 강의공지사항 작성*/
+	public int lectureNoticeCreatePost(LectureNoticeVO lectureNoticeVO) {
+		
+		LectureVO lectureVO = new LectureVO();
+		
+		lectureNoticeVO.setLectureVO(lectureVO);
+		
+		int result = this.lectureNoticeMapper.lectureNoticeCreatePost(lectureNoticeVO);
+		
+		result += this.fileUtil.uploadFile(lectureNoticeVO.getUploadFiles(), lectureNoticeVO.getLecnCd());
+		
+		return result;
+	}
+
+	@Override
+	public List<LectureNoticeVO> lectureNoticeList(Map<String, Object> map) {
+		return this.lectureNoticeMapper.lectureNoticeList(map);
+	}
+
+	@Override
+	public int getTotal(Map<String, Object> map) {
+		return this.lectureNoticeMapper.getTotal(map);
+	}
+
+	@Override
+	public LectureNoticeVO lectureNoticeDetail(String lecnCd) {
+		return this.lectureNoticeMapper.lectureNoticeDetail(lecnCd);
+	}
+
+	@Override
+	public int lectureNoticeUpdate(LectureNoticeVO lectureNoticeVO) {
+		return 0;
+	}
+
+}

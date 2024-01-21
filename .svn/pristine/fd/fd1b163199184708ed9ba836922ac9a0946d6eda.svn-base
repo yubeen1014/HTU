@@ -1,0 +1,138 @@
+package kr.or.ddit.controller.common;
+
+import java.security.Principal;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.service.common.NoticeBoardService;
+import kr.or.ddit.vo.NoticeBoardVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@RequestMapping("/common/board/notice")
+@Controller
+public class NoticeBoardController {
+	
+	@Autowired
+	NoticeBoardService noticeBoardService;
+	
+	@GetMapping(value="/list")
+	public String list(Model model) {
+
+		List<NoticeBoardVO> list = this.noticeBoardService.list();
+		log.info("list : " + list);
+		
+		model.addAttribute("list",list);
+		
+		return "board/noticeboard/list";
+		
+	}
+	
+	@GetMapping("/detail")
+	public String detail(Model model, String nbCd) {
+		log.info("nbCd : " + nbCd);
+		NoticeBoardVO noticeBoardVO = this.noticeBoardService.detail(nbCd);
+		
+		log.info("NoticeBoardVO : "+ noticeBoardVO);
+		
+		model.addAttribute("noticeBoardVO", noticeBoardVO);
+		
+		return "board/noticeboard/detail";
+	}
+	
+	@GetMapping("/count")
+	@ResponseBody
+	public int count(String nbCd) {
+		
+		int cnt = this.noticeBoardService.count(nbCd);
+		
+		return cnt;
+	}
+	
+	@GetMapping("/create")
+	public String create() {
+		//forwarding : jsp
+		return "board/noticeboard/create";
+	}
+	
+	@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
+	@ResponseBody
+	@PostMapping("/createPost")
+	public NoticeBoardVO createPost(@RequestBody NoticeBoardVO noticeBoardVO,
+			Principal principal) {
+	    //NoticeBoardVO(nbCd=null, empCd=null, fileCd=null, nbTitle=2, nbCon=3
+		//, nbReg=null, nbUdt=null, nbCnt=0, userNm=이상민, filesDetailVOList=null
+		//		, employeeVO=null, employeeVOList=null)
+		//로그인한 아이디
+		String empCd = principal.getName();
+		noticeBoardVO.setEmpCd(empCd);
+		
+	    log.info("create->noticeBoardVO : " + noticeBoardVO);
+	    
+	    int result = this.noticeBoardService.create(noticeBoardVO);
+	    log.info("result :" + result );
+
+//	    if (result > 0) {
+//	        // 게시물 생성 성공, 리다이렉트 URL을 반환
+//	        return "redirect:/board/noticeboard/list";
+//	    } else {
+//	        // 게시물 생성 실패 처리
+//	        return "error"; // 실패했을 경우에 대한 처리를 추가하세요
+//	    }
+	    
+	    return noticeBoardVO;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

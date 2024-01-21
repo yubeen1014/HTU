@@ -1,0 +1,188 @@
+	package kr.or.ddit.controller.student;
+
+import java.security.Principal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.service.professor.LectureDataService;
+import kr.or.ddit.service.professor.LectureNoticeService;
+import kr.or.ddit.service.student.LectureService;
+import kr.or.ddit.util.ParamArticlePage;
+import kr.or.ddit.vo.EnrolmentVO;
+import kr.or.ddit.vo.LectureDataVO;
+import kr.or.ddit.vo.LectureNoticeVO;
+import kr.or.ddit.vo.TaskSubmitVO;
+import kr.or.ddit.vo.TaskVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@Slf4j
+@RequestMapping("/student")
+public class LectureSynthesisController {
+		
+	@Autowired
+	LectureService lectureService;
+//	@GetMapping("lecture/list")
+//	/** 로그인한 학생이 수강신청한 강의 목록 */
+//	public String getLecture(Model model, Principal principal) {
+//		
+//		String stuCd = principal.getName(); 
+//		
+//		List<EnrolmentVO> enrolmentVOList =  this.lectureService.getEnrolmentLecture(stuCd);
+//		
+//		model.addAttribute("enrolmentVOList", enrolmentVOList);
+//		
+//		return "student/lecture/list";
+//	}
+//	
+	@ModelAttribute
+	public void emrolmentLecture(Model model, Principal principal) {
+		
+		String stuCd = principal.getName();
+		
+		List<EnrolmentVO> enrolmentVOList = this.lectureService.getEnrolmentLecture(stuCd);
+		
+		model.addAttribute("enrolmentVOList", enrolmentVOList);
+		
+	}
+	
+	@GetMapping("/lecturenotice/list")
+	public String stuLectureNoticeList(Model model,  @RequestParam(value = "keyword", required = false) String keyword,
+			@RequestParam(value = "currentPage", required = false, defaultValue = "1") int currentPage,
+			@RequestParam(name = "lecCd") String lecCd , Principal principal) {
+		
+		String stuCd = principal.getName();
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("keyword", keyword);
+		map.put("currentPage", currentPage);
+		map.put("stuCd", stuCd);
+		map.put("lecCd", lecCd);
+		
+		int total = this.lectureService.getTotal(map);
+		
+		List<LectureNoticeVO> lectureNoticeVOList = this.lectureService.stuLectureNoticeList(map);
+		
+		ParamArticlePage<LectureNoticeVO> articlePage = new ParamArticlePage<LectureNoticeVO>(total, currentPage, 10, lectureNoticeVOList);
+		articlePage.setUrl("/student/lecturenotice/list?lecCd=" + lecCd);
+		
+		model.addAttribute("data", articlePage);
+		model.addAttribute("lectureNoticeVOList", lectureNoticeVOList);
+		
+		return "student/lecture/detail/stulecturenoticelist";
+	}
+	
+	@GetMapping("/lecturenotice/detail")
+	public String stuLectureNoticeDetail(Model model, String lecnCd) {
+		
+		LectureNoticeVO lectureNoticeVO = this.lectureService.stuLectureNoticeDetail(lecnCd);
+		
+		model.addAttribute("lectureNoticeVO", lectureNoticeVO);
+		
+		return "student/lecture/detail/stulecturenoticedetail";
+	}
+	@GetMapping("/count")
+	@ResponseBody
+	public int count(String lecnCd) {
+		
+		int cnt = this.lectureService.count(lecnCd);
+		
+		return cnt;
+	}
+	
+	@GetMapping("/lecturedata/list")
+	public String stuLectureDataList(Model model, @RequestParam(value = "keyword", required = false) String keyword,
+			@RequestParam(value = "currentPage", required = false, defaultValue = "1") int currentPage,
+			@RequestParam(name = "lecCd") String lecCd, Principal principal) {
+		
+		String stuCd = principal.getName();
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("keyword", keyword);
+		map.put("currentPage", currentPage);
+		map.put("lecCd", lecCd);
+		map.put("stuCd", stuCd);
+		
+//		ParamArticlePage<LectureDataVO> articlePage = new ParamArticlePage<LectureDataVO>(total, currentPage, 10, lectureDataVOList);
+		List<LectureDataVO> lectureDataVOList = this.lectureService.stuLectureDataList(map);
+//		articlePage.setUrl("/professor/lecturedata/list?lecCd=" + lecCd);
+		
+		model.addAttribute("lectureDataVOList", lectureDataVOList);
+		
+		
+		return "student/lecture/detail/stulecturedatalist";
+	}
+	
+	@GetMapping("/lecturedata/detail")
+	public String stuLectureDataDetail(Model model, String lecdCd) {
+		
+		LectureDataVO lectureDataVO = this.lectureService.stuLectureDataDetail(lecdCd);
+		
+		model.addAttribute("lectureDataVO", lectureDataVO);
+		
+		return "student/lecture/detail/stulecturedatadetail";
+	}
+	
+	@GetMapping("/task/list")
+	public String stuTaskList(Model model, @RequestParam(value = "keyword", required = false) String keyword,
+			@RequestParam(value = "currentPage", required = false, defaultValue = "1") int currentPage,
+			@RequestParam(name = "lecCd") String lecCd, Principal principal) {
+		
+		String stuCd = principal.getName();
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("keyword", keyword);
+		map.put("currentPage", currentPage);
+		map.put("lecCd", lecCd);
+		map.put("stuCd", stuCd);
+		
+		List<TaskVO> taskVOList = this.lectureService.taskList(map);
+		List<TaskVO> edTaskVOList = this.lectureService.edTaskList(map);
+		
+		model.addAttribute("taskVOList",taskVOList);
+		model.addAttribute("edTaskVOList",edTaskVOList);
+		
+		return "student/lecture/detail/stutasklist";
+	}
+	
+	@GetMapping("/task/detail")
+	public String stuTaskDetail(Model model, String taskCd, Principal principal) {
+		
+		String stuCd = principal.getName();
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("taskCd", taskCd);
+		map.put("stuCd", stuCd);
+		
+		TaskVO taskVO = this.lectureService.taskDetail(map);
+		TaskSubmitVO taskSubmitVO = this.lectureService.submitTask(map);
+		
+		model.addAttribute("taskVO", taskVO);
+		model.addAttribute("taskSubmitVO", taskSubmitVO);
+		
+		return "";
+	}
+	
+}
+
+
+
+
+
+
+
+
+
+

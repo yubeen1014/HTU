@@ -1,0 +1,16 @@
+package kr.or.ddit.service.professor;
+
+import java.util.List;
+
+import kr.or.ddit.vo.LectureVO;
+import kr.or.ddit.vo.WeekplanVO;
+
+public interface WeekplanService {
+
+	List<LectureVO> lectureList();
+
+	LectureVO lectureDetail(String lecCd);
+
+	int weekplanCreatePost(List<WeekplanVO> weekplanVOList);
+
+}

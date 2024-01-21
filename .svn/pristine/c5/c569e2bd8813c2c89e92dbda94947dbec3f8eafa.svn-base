@@ -1,0 +1,32 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+
+<style>
+	.sub_menu b:hover{color:#333333;}
+	.sub_menu_b{display:block; padding:10px 0 0px 10px; font-size:14px;}
+	.sub_menu_c{display:block; padding:6px 0 6px 20px; font-size:14px;}
+	.submenu_menu ul{border-bottom:1px solid #ebebeb; margin-bottom:20px;}
+	.sub_title2{font-size:16px; color:#333333; margin-bottom:5px;}
+</style>
+
+<sec:authentication property="principal.userVO" var="vo"/>
+<div class="sub_menu">
+  <div class="sub_title"><a href="/student/academicAdmin/recordList">학사행정</a></div>
+  
+  <div class="submenu_menu">
+   <ul>
+      	<div class="sub_title2">학적관리</div>
+		<a class="sub_menu_b" href="#none;">학적변동신청</a>
+			<a class="sub_menu_c" href="/student/academicAdmin/recordApp">휴학신청</a>
+			<a class="sub_menu_c" href="/student/academicAdmin/recordApp2">복학신청</a>
+			<a class="sub_menu_c" href="/student/academicAdmin/recordApp3">자퇴신청</a>
+		<a href="/student/academicAdmin/recordList" class="sub_menu_b">학적변경조회</a>
+   </ul>
+   <ul>
+      	<div class="sub_title2">등록/장학</div>
+		<a href="/student/academicAdmin/recordList" class="sub_menu_b">등록장학</a>
+   </ul>
+<!-- 	<a href="#none" class="sub_menu_a">수강신청</a> -->
+  </div>
+</div>

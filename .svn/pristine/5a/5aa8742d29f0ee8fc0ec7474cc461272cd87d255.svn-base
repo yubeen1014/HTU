@@ -1,0 +1,28 @@
+package kr.or.ddit.service.employee.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.StuAdminMapper;
+import kr.or.ddit.service.employee.StuAdminService;
+import kr.or.ddit.vo.StudentVO;
+
+@Service
+public class StuAdminServiceImpl implements StuAdminService {
+
+	@Autowired
+	StuAdminMapper stuAdminMapper;
+	
+	@Override
+	public List<StudentVO> stuinfolist() {
+		return this.stuAdminMapper.stuinfolist();
+	}
+
+	@Override
+	public StudentVO stuinfodetail(String stuCd) {
+		return this.stuAdminMapper.stuinfodetail(stuCd);
+	}
+
+}

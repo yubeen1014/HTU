@@ -1,0 +1,54 @@
+package kr.or.ddit.service.common.impl;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.AnonymousBoardMapper;
+import kr.or.ddit.service.common.AnonymousBoardService;
+import kr.or.ddit.util.FileUtil;
+import kr.or.ddit.vo.BoardVO;
+import lombok.RequiredArgsConstructor;
+
+
+@Service
+@RequiredArgsConstructor
+public class AnonymousBoardServiceImpl implements AnonymousBoardService{
+	
+	private final AnonymousBoardMapper anonyBoardMapper;
+	
+	private final FileUtil fileUtil;
+	
+	@Override
+	public List<BoardVO> list() {
+		return this.anonyBoardMapper.list();
+		
+	}
+
+	@Override
+	public BoardVO detail(String bdCd) {
+		return this.anonyBoardMapper.detail(bdCd);
+	}
+
+	@Override
+	public int count(String bdCd) {
+		BoardVO boardVO = new BoardVO();
+		boardVO.setBdCd(bdCd);
+		return this.anonyBoardMapper.count(boardVO);
+	}
+
+	@Override
+	public int create(BoardVO boardVO) {
+		
+		this.fileUtil.uploadFile(boardVO.getUploadFiles(), "1234");
+		
+		
+		return 0;
+		
+		
+	}
+	
+	
+	
+	
+}

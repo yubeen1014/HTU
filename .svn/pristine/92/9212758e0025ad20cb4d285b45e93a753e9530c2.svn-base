@@ -1,0 +1,24 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.vo.BoardVO;
+import kr.or.ddit.vo.CommentVO;
+
+public interface AnonymousBoardMapper {
+
+	public List<BoardVO> list();
+
+	public BoardVO detail(String bdCd);
+
+	public int count(BoardVO boardVO);
+
+	public List<CommentVO> getCommentList(String bdCd);
+
+	public int insert(BoardVO boardVO);
+
+	public int delete(String bdCd);
+
+	public int update(BoardVO boardVO);
+
+}

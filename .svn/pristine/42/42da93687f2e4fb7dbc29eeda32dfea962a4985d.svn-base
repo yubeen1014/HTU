@@ -1,0 +1,135 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles" %>
+<link rel="stylesheet" href="/resources/css/resMap.css">
+<script src="/resources/js/jquery.min.js"></script>
+
+<div class="container" style="border: 1px solid red;">
+  <h1 class="text-lg-center mb-5">시설 예약 현황</h1>
+  <div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-3">
+      <select class="form-select form-select-sm" id="building">
+        <option value="">예약 건물 선택</option>
+        <c:forEach items="${buldCommonList}" var="vo">
+          <option value="${vo.comdCd}">${vo.comdNm}</option>
+        </c:forEach>
+      </select>
+    </div>
+    <div class="col-md-3" style="margin-left: 5px;">
+      <select class="form-select form-select-sm" id="floor">
+        <option value="">층수 선택</option>
+      </select>
+    </div>
+    <div class="col-md-3"></div>
+  </div>
+  <div class="row">
+    <div class="floor mt-5" style="display: none;">
+      <a href="#none" class="ho">101</a>
+      <a href="#none" class="ho">102</a>
+      <a href="#none" class="ho">103</a>
+      <span class="ho">계단</span>
+      <span class="ho">화장실</span>
+      <a href="#none" class="ho">104</a>
+      <a href="#none" class="ho">105</a>
+      <a href="#none" class="ho">106</a>
+      <a href="#none" class="ho">107</a>
+      <a href="#none" class="ho">108</a>
+      <a href="#none" class="ho">109</a>
+      <a href="#none" class="ho">110</a>
+      <span class="ho">계단</span>
+      <span class="ho">화장실</span>
+      <a href="#none" class="ho">111</a>
+      <a href="#none" class="ho">112</a>
+      <a href="#none" class="ho">113</a>
+      <a href="#none" class="ho">114</a>
+    </div>
+  </div>
+</div>
+
+<!-- <ul class="nav">
+  <li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="#">Active</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">Link</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">Link</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+  </li>
+</ul> -->
+
+
+<script>
+  
+  $("#building").on("change", function(event) {
+    const building = $(event.target).val();
+    const floorSet = new Set();
+    $.ajax({
+      url: "/reservation/getRoomListByComdCd?comdCd=" + building,
+      type: "get",
+      success: res => {
+        res.forEach(room => {
+          floorSet.add(room.roomCd.substr(6,1))
+        })
+        console.log(floorSet);
+        let txt = '';
+        floorSet.forEach((key, value) => {
+          txt += `<option value="\${value}">\${value}층</option>`
+        })
+        $("#floor").html('');
+        $("#floor").append('<option value="">층수 선택</option>');
+        $("#floor").append(txt);
+        
+        $("#floor").on("change", function(event) {
+          
+          const floor = $(event.target).val();
+          roomList = [];
+          res.forEach(room => {
+            if (room.roomCd.substr(6,1) == floor) {
+              roomList.push(room);
+            }
+          });
+          $(".floor").removeAttr("style");
+          let txt = "";
+          roomList.forEach((room, i) => {
+            let roomNo = room.roomCd.substr(6);
+            if (i == 3 || i == 10) {
+              txt += `<span class="ho">계단</span><span class="ho">화장실</span>`
+            }
+            txt += `<a href="#none" onclick="getResInfo('\${room.roomCd}')" class="ho">\${roomNo}호</a>`
+          });
+          $(".floor").html(txt);
+        })
+      }
+    })
+  })
+  
+  getResInfo = function(roomCd) {
+    
+    console.log(roomCd);
+    
+    $.ajax({
+      
+      url: "/reservation/getResListByRoomCd?"
+      
+    })
+    
+    
+    
+  }
+  
+</script>
+
+
+
+
+
+
+

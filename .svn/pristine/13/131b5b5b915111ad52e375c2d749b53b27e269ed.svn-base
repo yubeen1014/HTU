@@ -1,0 +1,35 @@
+package kr.or.ddit.controller.student;
+
+import java.security.Principal;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.service.student.StudentService;
+import kr.or.ddit.vo.StudentVO;
+import lombok.RequiredArgsConstructor;
+
+@Controller
+@RequestMapping("/student")
+@RequiredArgsConstructor
+public class StudentController {
+	
+	private final StudentService studentServic;
+	
+	
+	@GetMapping("/mypage")
+	public String myPage(Model model, Principal principal) {
+		
+		String userCd = principal.getName();
+		
+		StudentVO stuVO = this.studentServic.getStudent(userCd);
+		
+		model.addAttribute("studentVO", stuVO);
+		
+		return "stu_home";
+	}
+	
+	
+}

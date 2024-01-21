@@ -1,0 +1,143 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="/resources/js/jquery.min.js"></script>
+<sec:authentication property="principal.userVO" var="userVO"/>
+<input id="crCd" value="${crewVO.crCd}" hidden />
+${crewVO}<br>
+${crewPersonnelList}<br>
+${approvalVOList}
+<div>
+	<table>
+		<tr>
+			<td>동아리명</td>
+			<td>${crewVO.crNm}</td>
+		</tr>
+		<tr>
+			<td>동아리장</td>
+			<td>${crewVO.ldrNm}</td>
+		</tr>
+		<tr>
+			<td>동아리실 위치</td>
+			<td>${crewVO.roomCd}</td>
+		</tr>
+		<tr>
+			<td>첨부파일</td>
+			<td>
+				<c:forEach var="fileDetail" items="${crewVO.filesDetailVOList}">
+	        		<a href="/resources/upload/${fileDetail.fileSvnm}" download="${fileDetail.fileOrnm}">${fileDetail.fileOrnm}</a><br>
+	    		</c:forEach>
+	    	</td>
+		</tr>
+		<c:if test="${crewVO.crLeader eq userVO.userCd}">
+			<tr>
+				<td><a href="/student/crew/crewUpdate?crCd=${crewVO.crCd}">동아리 수정</a></td>
+			</tr>
+			<tr>
+				<td>동아리 가입 신청</td>
+			</tr>
+			<c:forEach var="approvalVO" items="${approvalVOList}">
+			<tr>
+<%-- 				<td>${stat.count}</td> --%>
+				<td>${approvalVO.stuNm}</td>
+				<td><button type="button" data-app-yn="1" class="btnApp">승인</button></td>
+				<td><button type="button" data-app-yn="2" class="btnRtn">반려</button></td>
+			</tr>
+			</c:forEach>
+		</c:if>
+	</table>
+	<div>
+<%-- 		<c:forEach var="crewPerson" items="${crewPersonnelList}"> --%>
+<%-- 			<c:if test="${userVO.userCd eq crewPerson.stuCd}"> --%>
+				<button type="button" id="btnQuit" class="btn-two red mini">탈퇴</button>
+<%-- 			</c:if> --%>
+<%-- 		</c:forEach> --%>
+<%-- 			<c:if test="${userVO.userCd ne crewPerson.stuCd}"> --%>
+				<button type="button" id="btnApply" data-stu-cd="${crewVO.stuCd}" class="btn-two red mini">가입</button>
+<%-- 			</c:if> --%>
+	</div>
+</div>
+<script>
+$(function(){
+	
+	//승인 버튼 클릭 시
+	$(".btnApp").on("click", function(){
+		let appYn = $(this).data("appYn");
+		let stuCd = "${approvalVO.stuNm}";
+		console.log("appYn : " + appYn);
+		console.log("stuCd : " + stuCd);
+		
+// 		$.ajax({
+// 			url:"/student/crew/crewJoinApp?umlCd="+umlCd,
+// 			data:umlCd,
+// 			type:"post",
+// 			beforeSend:function(xhr){
+// 				xhr.setRequestHeader("${_csrf.headerName}","${_csrf.token}");
+// 			},
+// 			success:function(res){
+// 				alert("삭제 완료");
+// 				location.reload();
+// 			}
+// 		});
+	});
+	
+	$("#btnApply").on("click", function(){
+		let stuCd = "${userVO.userCd}";
+		let crCd = $("#crCd").val();
+		let crLeader = "${crewVO.crLeader}";
+		
+		console.log("stuCd : " + stuCd);
+		console.log("crCd : " + crCd);
+		console.log("crLeader : " + crLeader);
+// 		console.log("crewVO : " + crewVO);
+		
+		if(confirm("가입하시겠습니까?")){
+			
+			$.ajax({
+				url:"/student/crew/crewJoin",
+				data:{
+					stuCd: stuCd,
+					crCd: crCd,
+					crLeader: crLeader
+				},
+				type:"post",
+				beforeSend:function(xhr){
+					xhr.setRequestHeader("${_csrf.headerName}","${_csrf.token}");
+				},
+				success:function(res){
+					console.log("성공!!");
+				}
+			});
+		}
+	});
+	
+	$("#btnQuit").on("click", function(){
+		let stuCd = "${userVO.userCd}";
+		let crCd = $("#crCd").val();
+		
+		console.log("stuCd : " + stuCd);
+		console.log("crCd : " + crCd);
+		
+		if(confirm("탈퇴하시겠습니까?")){
+			
+			$.ajax({
+				url:"/student/crew/crewQuit",
+				data:{
+					stuCd:stuCd,
+					crCd:crCd
+				},
+				type:"post",
+				beforeSend:function(xhr){
+					xhr.setRequestHeader("${_csrf.headerName}","${_csrf.token}");
+				},
+				success:function(res){
+					alert("탈퇴 완료");
+					location.href = "/student/crew/myCrew";
+				}
+			});
+		}
+	});
+});
+</script>

@@ -1,0 +1,31 @@
+package kr.or.ddit.service.student.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.EnrolmentMapper;
+import kr.or.ddit.service.student.LectureService;
+import kr.or.ddit.vo.EnrolmentVO;
+import kr.or.ddit.vo.LectureVO;
+import kr.or.ddit.vo.UserVO;
+
+@Service
+public class LectureServiceImpl implements LectureService{
+	
+	@Autowired
+	EnrolmentMapper enrolmentMapper;
+	
+	@Override
+	public List<EnrolmentVO> getEnrolmentLecture(String stuCd) {
+		return this.enrolmentMapper.getEnrolmentLecture(stuCd);
+	}
+
+	@Override
+	public LectureVO enrolmentLectureDetail(String lecCd) {
+		return this.enrolmentMapper.enrolmentLectureDetail(lecCd);
+	}
+
+
+}

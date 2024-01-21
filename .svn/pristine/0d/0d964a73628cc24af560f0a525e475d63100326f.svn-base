@@ -1,0 +1,49 @@
+
+let socket = null;
+
+$(function() {
+  connectWS();
+});
+
+// 소켓
+connectWS = function() {
+  let ws = new SockJS("http://localhost/echo");
+  socket = ws;
+  
+  ws.onopen = function(userCd) {
+    console.log("연결 완료");
+    sendMessageToServer("로그인사용자");
+  }
+  
+  ws.onmessage = function(event) {
+    const alarmList = JSON.parse(event.data);
+    console.log(alarmList);
+    
+    $.ajax({
+      url: "/getCommonDetail?comCd=NTF",
+      type: "get",
+      beforeSend:function(xhr){
+				xhr.setRequestHeader("${_csrf.headerName}","${_csrf.token}");
+			},
+      success: (res) => {
+        console.log("zxcvzxcv");
+        console.log(res);
+      }
+      
+      
+    })
+    
+    
+    
+    
+  };
+  
+  ws.onclose = function() {
+    console.log("close");
+  };
+};
+
+
+function sendMessageToServer(message) {
+  socket.send(message);
+};

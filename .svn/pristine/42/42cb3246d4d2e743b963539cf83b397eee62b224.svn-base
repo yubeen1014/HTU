@@ -1,0 +1,47 @@
+package kr.or.ddit.service.student;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.vo.ApprovalVO;
+import kr.or.ddit.vo.CrewActivityVO;
+import kr.or.ddit.vo.CrewPersonnelVO;
+import kr.or.ddit.vo.CrewVO;
+import kr.or.ddit.vo.FilesDetailVO;
+
+public interface CrewService {
+
+	public List<CrewVO> crewList(Map<String, Object> map);
+
+	public int crewApply(CrewVO crewVO);
+
+	public int crewJoinApp(CrewPersonnelVO crewPersonnelVO);
+
+	public List<CrewVO> myCrew(String stuCd);
+
+	public CrewVO crewDetail(String crCd);
+
+	public int crewUpdate(CrewVO crewVO);
+
+	public List<CrewVO> crewPersonnel(String crCd);
+
+	public int crewQuit(String stuCd, String crCd);
+
+	public List<CrewVO> myAppList(String userCd);
+
+	public List<CrewVO> myJoinAppList(String userCd);
+
+	public CrewPersonnelVO crewJoinCheck(String crCd, String userCd);
+
+	public CrewVO joinAppCheck(String stuCd, String crCd);
+
+	public List<CrewActivityVO> activityList(String crCd);
+
+	public int deleteFileUpdate(FilesDetailVO filesDetailVO);
+
+	public ApprovalVO appRetReason(String appCd);
+
+	public int addCrewActivity(CrewActivityVO crewActivityVO);
+
+
+}

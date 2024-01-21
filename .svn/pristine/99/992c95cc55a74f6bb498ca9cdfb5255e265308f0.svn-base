@@ -1,0 +1,20 @@
+package kr.or.ddit.service.common;
+
+import java.util.List;
+
+import kr.or.ddit.vo.BoardVO;
+
+public interface PublicizeBoardService {
+
+	//사업장 목록
+		public List<BoardVO> list();
+
+		public int getTotal();
+
+		public BoardVO detail(String bdCd);
+
+		public int count(String bdCd);
+
+		public int create(BoardVO boardVO);
+
+	}

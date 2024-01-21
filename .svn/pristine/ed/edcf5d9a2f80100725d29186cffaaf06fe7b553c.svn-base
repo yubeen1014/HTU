@@ -1,0 +1,30 @@
+package kr.or.ddit.service.student.impl;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.EnrolmentMapper;
+import kr.or.ddit.service.student.EnrolmentService;
+import kr.or.ddit.vo.LectureVO;
+import kr.or.ddit.vo.StudentVO;
+import kr.or.ddit.vo.UserVO;
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class EnrolmentServiceImpl implements EnrolmentService{
+	
+	private final EnrolmentMapper enrolmentMapper;
+
+	@Override
+	public List<LectureVO> list(StudentVO studentVO) {
+		return this.enrolmentMapper.list(studentVO);
+	}
+
+	@Override
+	public String getColNm(String userCd) {
+		return this.enrolmentMapper.getColNm(userCd);
+	}
+	
+}

@@ -1,0 +1,79 @@
+package kr.or.ddit.controller.student;
+
+import java.security.Principal;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.mapper.StudentMapper;
+import kr.or.ddit.mapper.UserMapper;
+import kr.or.ddit.service.student.CrewService;
+import kr.or.ddit.vo.CrewVO;
+import kr.or.ddit.vo.UnivMailVO;
+import kr.or.ddit.vo.UserVO;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 동아리 컨트롤러
+ * @author 전유빈
+ *
+ */
+@Slf4j
+@Controller
+@RequestMapping("/student/crew")
+public class CrewController {
+
+	@Autowired
+	CrewService crewService; 
+	
+	@Autowired
+	UserMapper userMapper;
+	
+	@ModelAttribute
+	public void userList(Model model) {
+		List<UserVO> userVOList = this.userMapper.userList();
+		model.addAttribute("userVOList", userVOList);
+	}
+	
+	//동아리 조회
+	@GetMapping("/crewList")
+	public String crewList(Model model) {
+		List<CrewVO> crewList = this.crewService.crewList();
+		log.info("crewList : {}", crewList);
+		
+		model.addAttribute("crewList", crewList);
+		
+		return "student/crew/crewList";
+	}
+	
+	@GetMapping("/crewApply")
+	public String crewApply() {
+		return "student/crew/crewApply";
+	}
+	
+	@PostMapping("/crewApplyPost")
+	public String crewApplyPost(CrewVO crewVO, Principal principal) {
+	
+		String stuCd = principal.getName();
+		log.info("stuCd : " + stuCd);
+		
+		crewVO.setStuCd(stuCd);
+	
+		int result = this.crewService.crewApply(crewVO);
+		log.info("crewApplyPost->crewVO : {}", crewVO);
+		
+		log.info("result : {}", result);
+		
+		if(result > 0) {
+			return "redirect:/student/crew/crewList";
+		}else {
+			return null;
+		}
+	}
+}

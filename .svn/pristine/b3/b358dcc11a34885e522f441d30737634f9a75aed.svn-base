@@ -1,0 +1,11 @@
+package kr.or.ddit.mapper;
+
+import kr.or.ddit.vo.StudentVO;
+
+public interface StudentMapper {
+
+	public StudentVO getStudent(String userCd);
+
+	public StudentVO getCredit(String userCd);
+
+}

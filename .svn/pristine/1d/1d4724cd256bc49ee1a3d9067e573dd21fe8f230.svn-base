@@ -1,0 +1,100 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+<link rel="stylesheet" href="/resources/css/bootstrap.min.css">
+<script src="/resources/js/jquery.min.js"></script>
+
+<sec:authorize access="isAuthenticated()">
+	<sec:authentication property="principal.userVO" var="userVO" />
+</sec:authorize>
+
+<div class="row" style="margin-bottom:20px; margin-left:1px;">
+ <div class="col-lg-12">
+  <h1 class="page-header">글쓰기</h1>
+ </div>
+</div>
+<div class="panel" style="margin-left:1px;">
+ <div id="contAreaBox">
+  <div class="panel">
+   <div class="panel-body">
+    <form role="form" id="boardForm">
+     <div class="table-responsive" style="text-align:center;">
+      <table id="datatable-scroller" class="table table-bordered tbl_Form">
+       <caption></caption>
+       <colgroup>
+        <col width="250px" />
+        <col />
+       </colgroup>
+       <tbody>
+        <tr>
+         <th class="active">작성자</th>
+         <td class="form-inline">
+          <input type="text" id="userCd" name="userCd" value="${userVO.userCd}" readonly class="form-control" style="width: 200px" />
+         </td>
+        </tr>
+        <tr>
+         <th class="active">제목</th>
+         <td class="form-inline">
+          <input type="text" id="bdTitle" name="bdTitle" class="form-control" style="width: 840px" />
+         </td>
+        </tr>
+        <tr>
+         <th class="active">내용</th>
+         <td class="form-inline">
+          <textarea id="bdCon" name="bdCon" cols="100" rows="10" class="form-control"></textarea>
+         </td>
+        </tr>
+       </tbody>
+      </table>
+     </div>
+     <div style="margin-left:1px;">
+      <button type="button" class="btn btn-primary" onclick="submitForm()">등록</button>
+      <a href="/common/board/publicize/list" class="btn btn-danger">취소</a>
+     </div>
+    </form>
+   </div>
+  </div>
+ </div>
+</div>
+
+
+<script type="text/javascript">
+	// 등록 버튼 클릭 시 실행
+	function submitForm() {
+		let data = {
+			"userCd": $("#userCd").val(),
+			"bdTitle": $("#bdTitle").val(),
+			"bdCon": $("#bdCon").val()
+		};
+
+		$.ajax({
+			url: "/common/board/free/createPost",
+			contentType: "application/json;charset=utf-8",
+			data: JSON.stringify(data),
+			type: "post",
+			dataType: "json",
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader("${_csrf.headerName}", "${_csrf.token}");
+			},
+			success: function (result) {
+				// 성공적으로 제출되었을 때의 로직을 처리합니다. 예: 리다이렉트 또는 메시지 표시
+				console.log("result", result);
+
+				if (result && result.success) {
+					// 성공적으로 등록되었을 때
+					alert("등록이 완료되었습니다.");
+					location.href = "/common/board/free/list";
+				} else {
+					// 등록 실패 시 처리 로직 추가
+					alert("등록에 실패하였습니다. 다시 시도해주세요.");
+				}
+			}
+		});
+	}
+	// 화면이 모두 로딩되면 자동 실행
+	$(function () {
+		// 추가 초기화 로직이 있다면 여기에 작성
+	});
+</script>

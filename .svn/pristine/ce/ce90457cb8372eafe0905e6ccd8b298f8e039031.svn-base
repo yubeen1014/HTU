@@ -1,0 +1,25 @@
+package kr.or.ddit.service.professor;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.vo.LectureNoticeVO;
+import kr.or.ddit.vo.LectureVO;
+
+public interface LectureNoticeService {
+
+	List<LectureVO> lectureList();
+
+	LectureVO lectureDetail(String lecCd);
+
+	int lectureNoticeCreatePost(LectureNoticeVO lectureNoticeVO);
+
+	List<LectureNoticeVO> lectureNoticeList(Map<String, Object> map);
+
+	int getTotal(Map<String, Object> map);
+
+	LectureNoticeVO lectureNoticeDetail(String lecnCd);
+
+	int lectureNoticeUpdate(LectureNoticeVO lectureNoticeVO);
+
+}

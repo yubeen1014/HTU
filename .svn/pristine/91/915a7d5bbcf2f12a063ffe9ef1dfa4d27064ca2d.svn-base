@@ -1,0 +1,37 @@
+package kr.or.ddit.controller.student;
+
+import java.security.Principal;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.service.common.CertificateService;
+import kr.or.ddit.vo.StudentVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@Slf4j
+@RequestMapping("/student")
+public class StudentCertificateController {
+	
+	@Autowired
+	CertificateService certificateService;
+	
+	@GetMapping("/certificate/issued")
+	public String getStuPrivacyInfo(Model model, Principal principal) {
+		
+		String stuCd = principal.getName();
+		
+		StudentVO stuPrivacyInfoVO = this.certificateService.stuPrivacyInfo(stuCd);
+		
+		model.addAttribute("stuPrivacyInfoVO", stuPrivacyInfoVO);
+		
+		return "student/certificate/certificate";
+		
+	}
+	
+}

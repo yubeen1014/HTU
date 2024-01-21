@@ -1,0 +1,249 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
+<link rel="stylesheet" href="/resources/css/bootstrap.min.css">
+<script src="/resources/js/jquery.min.js"></script>
+<link rel="stylesheet" href="/resources/css/reset.css">
+<link rel="stylesheet" href="/resources/css/main.css">
+<style>
+.form-inline {
+	width: 250px;
+}
+.form-inline-sec {
+	width: 150px;
+}
+.form-inline-thr {
+	width: 150px;
+}
+.active {
+	padding-left: 10px;   /* 좌측 여백 설정 */
+  	padding-right: 10px;  /* 우측 여백 설정 */
+}
+</style>
+<sec:authorize access="isAuthenticated()">
+	<sec:authentication property="principal.userVO" var="userVO" />
+</sec:authorize>
+
+<div class="row" style="margin-bottom: 20px; margin-left: 1px;">
+	<div class="col-lg-12">
+		<h1 class="page-header">강의계획신청서</h1>
+	</div>
+</div>
+<div class="panel" style="margin-left: 1px;"> 
+	<div id="contAreaBox">
+		<div class="panel">
+			<div class="panel-body">
+				<form role="form" id="lecFrm" action="/employee/approval/lectureapply?${_csrf.parameterName}=${_csrf.token}" method="post">
+					<input type="hidden" name="lecaCd" id="lecaCd" value="${lectureApplyVO.lecaCd}" />
+					<input type="hidden" name="proCd" id="proCd" value="${lectureApplyVO.proCd}" />
+					<input type="hidden" name="appCd" id="appCd" value="${lectureApplyVO.appCd}" />
+					<input type="hidden" name="depCd" id="depCd" value="${lectureApplyVO.depCd}" />
+					<input type="hidden" name="roomCd" id="roomCd" value="${lectureApplyVO.roomCd}" />
+					<input type="hidden" name="lecaYear" id="lecaYear" value="${lectureApplyVO.lecaYear}" />
+					<input type="hidden" name="lecaSem" id="lecaSem" value="${lectureApplyVO.lecaSem}" />
+					<input type="hidden" name="lecaNm" id="lecaNm" value="${lectureApplyVO.lecaNm}" />
+					<input type="hidden" name="lecaCon" id="lecaCon" value="${lectureApplyVO.lecaCon}" />
+					<input type="hidden" name="lecaTrg" id="lecaTrg" value="${lectureApplyVO.lecaTrg}" />
+					<input type="hidden" name="lecaCrd" id="lecaCrd" value="${lectureApplyVO.lecaCrd}" />
+					<input type="hidden" name="lecaPer" id="lecaPer" value="${lectureApplyVO.lecaPer}" />
+					<input type="hidden" name="lecaCap" id="lecaCap" value="${lectureApplyVO.lecaCap}" />
+					<input type="hidden" name="lecaSche" id="lecaSche" value="${lectureApplyVO.lecaSche}" />
+					<input type="hidden" name="lecaBook" id="lecaBook" value="${lectureApplyVO.lecaBook}" />
+					<input type="hidden" name="lecaNote" id="lecaNote" value="${lectureApplyVO.lecaNote}" />
+					<input type="hidden" name="lecaEva" id="lecaEva" value="${lectureApplyVO.lecaEva}" />
+					<input type="hidden" name="lecaStdt" id="lecaStdt" value="${lectureApplyVO.lecaStdt}" />
+					<input type="hidden" name="lecaEddt" id="lecaEddt" value="${lectureApplyVO.lecaEddt}" />
+
+					<input type="hidden" name="approvalVO.appYn" id="appYn" value="" />
+					<input type="hidden" name="approvalVO.appRet" value="" />
+					<div class="table-responsive" style="text-align: center;">
+						<table id="datatable-scroller"
+							class="table table-bordered tbl_Form">
+							<caption></caption>
+							<colgroup>
+								<col width="250px" />
+								<col />
+							</colgroup>
+							<tbody class="lectbody">
+								<tr class="tr1">
+									<th class="active">강의명</th>
+<%-- 									<td class="form-inline">${lectureApplyVO.lecaNm}</td> --%>
+									<td class="form-inline">${lectureApplyVO.lecaNm}</td>
+									<th class="active">작성자</th>
+									<td class="form-inline-sec">${lectureApplyVO.professorVO.userVO.userNm}</td>
+									<th class="active">개설학년</th>
+									<td class="form-inline-thr">${lectureApplyVO.lecaTrg}</td>
+								</tr>
+								<tr>
+									<th class="active">년도</th>
+									<td class="form-inline">${lectureApplyVO.lecaYear}</td>
+									<th class="active">학기</th>
+									<td class="form-inline-sec">${lectureApplyVO.lecaSem}</td>
+									<th class="active">강의대상학과</th>
+									<td class="form-inline-thr">${lectureApplyVO.departmentVO.depNm}</td>
+
+								</tr>
+								<tr>
+									<th class="active">희망일정</th>
+									<td class="form-inline">${lectureApplyVO.lecaSche}</td>
+									<th class="active">강의시작시간</th>
+									<td class="form-inline-sec">${lectureApplyVO.lecaStdt}</td>
+									<th class="active">강의종료시간</th>
+									<td class="form-inline-thr">${lectureApplyVO.lecaEddt}</td>
+								</tr>
+								<tr>
+									<th class="active">학점</th>
+									<td class="form-inline">${lectureApplyVO.lecaCrd}</td>
+									<th class="active">강의시수</th>
+									<td class="form-inline-sec">${lectureApplyVO.lecaPer}</td>
+									<th class="active">정원</th>
+									<td class="form-inline-thr">${lectureApplyVO.lecaCap}</td>
+								</tr>
+								<tr>
+									<th class="active">평가구분</th>
+									<c:if test="${lectureApplyVO.lecaEva == 0 }"><td class="form-inline">상대평가</td></c:if>
+									<c:if test="${lectureApplyVO.lecaEva == 1 }"><td class="form-inline">절대평가</td></c:if>
+									<th class="active">전공구분</th>
+									<c:if test="${lectureApplyVO.lecaType == 0 }"><td class="form-inline">전공필수</td></c:if>
+									<c:if test="${lectureApplyVO.lecaType == 1 }"><td class="form-inline">전공선택</td></c:if>
+									<c:if test="${lectureApplyVO.lecaType == 2 }"><td class="form-inline">교양필수</td></c:if>
+									<c:if test="${lectureApplyVO.lecaType == 3 }"><td class="form-inline">교양선택</td></c:if>
+									<th class="active">강의실정보</th>
+									<td class="form-inline-thr" colspan="">${lectureApplyVO.roomCd}호</td>
+								</tr>
+								<tr>
+									<th class="active">교재 및 참고서</th>
+									<td class="form-inline" colspan="5">${lectureApplyVO.lecaBook}</td>
+								</tr>
+								<tr>
+									<th class="active">교과목 개요</th>
+									<td class="form-inline" colspan="5"><textarea 
+ 											cols="100" rows="5" class="form-control" readonly="readonly">${lectureApplyVO.lecaCon}</textarea></td>
+								</tr>
+								<tr>
+									<th class="active">비고</th>
+									<td class="form-inline" colspan="5"><textarea 
+ 											cols="100" rows="5" class="form-control" readonly="readonly">${lectureApplyVO.lecaNote}</textarea></td>
+								</tr>
+			
+							</tbody>
+						</table>
+					</div>
+					<div style="margin-left: 1px;">
+						<button type="button" class="btn btn-primary" 
+						<c:if test="${lectureApplyVO.approvalVO.appYn == 1 or lectureApplyVO.approvalVO.appYn == 2}">disabled</c:if>
+							id="realSubmitForm">승인</button>
+						<button type="button" class="btn btn-primary" 
+						<c:if test="${lectureApplyVO.approvalVO.appYn == 1 or lectureApplyVO.approvalVO.appYn == 2}">disabled</c:if>
+							id="notSubmitForm">반려</button>
+						<button type="button" class="btn btn-danger"
+							id="cancleSubmit">취소</button>
+					</div>
+					<sec:csrfInput />
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+	
+	<!-- 모달 창 -->
+<!-- <div id="myModal" class="modal"> -->
+<!--   <div class="modal-content"> -->
+<!--     <span class="close">&times;</span> -->
+<!--     <p>반려사유</p> -->
+<!--     반려 사유 입력을 위한 textarea -->
+    
+<!--     <button id="confirmReject">확인</button> -->
+<!--     <button id="cancelReject">취소</button> -->
+<!--   </div> -->
+<!-- </div> -->
+	
+	<!-- 모달 창 -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="reportModalLabel" aria-hidden="true" >
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reportModalLabel">반려사유</h5>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+				    <label for="reportReason">반려 사유</label>
+				<textarea class="form-control" id="appRet" rows="3" placeholder="반려 사유를 입력하세요" name="approvalVO.appRet"></textarea>
+				</div>
+      
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="confirmReject">확인</button>
+    			<button type="button" class="btn btn-primary" id="cancelReject">취소</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+logout = function() {
+	$("#logoutForm").submit();
+}
+	
+<!-- // <button onclick="alertSuccess('메세지')">zz</button> -->
+// <button onclick="alertError('메세지')">ㅇㅇ</button>
+$(function(){
+    $("#realSubmitForm").on("click", function(){
+        console.log("dhktek");
+    	// realSubmitForm 버튼을 클릭했을 때
+        $("#appYn").val("1"); // value를 1로 설정
+        // 폼을 서버로 제출
+    	alertSuccess('결재완료');
+    	setTimeout(() =>  $("#lecFrm").submit(), 500);
+    });
+
+    $("#notSubmitForm").on("click", function(){
+    	console.log("@1");
+        $("#myModal").modal("show");
+//         $("#myModal").css("display", "block");
+    });
+
+    // 모달 창의 닫기 버튼을 클릭했을 때 모달 창을 숨김
+    $(".close").on("click", function(){
+        $("#myModal").css("display", "none");
+    });
+
+    // 취소 버튼을 클릭했을 때 모달 창을 숨김
+    $("#cancelReject").on("click", function(){
+        $("#myModal").modal("hide");
+    });
+
+    // 확인 버튼을 클릭했을 때 폼을 서버로 제출
+    $("#confirmReject").on("click", function(){
+        // 반려 사유 가져오기
+        var appRetValue = $("#appRet").val();
+        
+        // 로깅을 통해 값 확인
+        console.log("appRet : " + appRetValue);
+
+        // 숨겨진 input 요소에 반려 사유를 설정
+        $("#lecFrm input[name='approvalVO.appRet']").val(appRetValue);
+
+        // 반려 사유를 확인하여 서버로 제출
+        $("#appYn").val("2"); // value를 2로 설정
+    	alertSuccess('반려');
+//         $("#myModal").modal("hide");
+    	setTimeout(() =>  $("#lecFrm").submit(), 500);
+    });
+    $("#cancleSubmit").on("click", function(){
+    	
+    	alertError('결재취소');
+    	setTimeout(() => location.href = "/employee/lectureapproval/list", 500);
+    });
+	
+});	
+
+</script>
+
+
+

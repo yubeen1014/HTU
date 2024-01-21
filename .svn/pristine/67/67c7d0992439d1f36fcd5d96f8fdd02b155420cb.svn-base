@@ -1,0 +1,22 @@
+package kr.or.ddit.vo;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@ToString
+public class ConsentDetailVO {
+	private int condSn;		// 승인코드 순번
+	private String conCd;	// 승인코드(승인코드의 PK)
+	
+	// 승인테이블의 정보를 가져오기위한 필드
+	private ConsentVO consentVO;
+	
+// resultMap
+//	<result property="condSn" column="COND_SN"/>
+//	<result property="conCd" column="CON_CD"/>
+}

@@ -1,0 +1,36 @@
+package kr.or.ddit.vo;
+
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+public class ReservationVO {
+	
+	private String resCd;
+	
+	private String roomCd;
+	
+	private String userCd;
+	
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date resStdt;
+	
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date resEddt;
+	
+	private String resRsn;
+	
+	private UserVO userVO;
+	
+	private RoomVO roomVO;
+	
+}

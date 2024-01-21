@@ -1,0 +1,20 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.vo.ApprovalVO;
+import kr.or.ddit.vo.DormitoryVO;
+
+public interface DormitoryMapper {
+
+	public int createApplyDormitoryConsent(ApprovalVO approvalVO);
+	
+	public int createApplyDormitory(DormitoryVO dormitoryVO);
+
+	public List<DormitoryVO> list(String stuCd);
+
+	public DormitoryVO dormitoryDetail(String domCd);
+	
+	int updateDormitoryApplyConCd(DormitoryVO dormitoryVO);
+
+}

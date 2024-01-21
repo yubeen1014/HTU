@@ -1,0 +1,20 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.vo.ApprovalVO;
+import kr.or.ddit.vo.LectureApplyVO;
+
+public interface ApprovalMapper {
+
+	public int insert(ApprovalVO appVO);
+	
+	// 강의계획결재리스트
+	public List<LectureApplyVO> getLectureApplyList(Map<String, Object> map);
+
+	public int updateApprovalYn(ApprovalVO approvalVO);
+
+	public int getTotal(Map<String, Object> map);
+
+}

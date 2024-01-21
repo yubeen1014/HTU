@@ -1,0 +1,109 @@
+package kr.or.ddit.controller.professor;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.mapper.CommonMapper;
+import kr.or.ddit.mapper.StudentMapper;
+import kr.or.ddit.service.professor.ScholarshipRecommendService;
+import kr.or.ddit.vo.DepartmentVO;
+import kr.or.ddit.vo.LectureApplyVO;
+import kr.or.ddit.vo.RoomVO;
+import kr.or.ddit.vo.ScholarshipRecommendVO;
+import kr.or.ddit.vo.StudentVO;
+import kr.or.ddit.vo.UserVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@PreAuthorize("hasRole('ROLE_PROFESSOR')")
+@RequestMapping("/professor")
+/** 강의계획신청 컨트롤러 */
+public class ScholarshipRecommendController {
+
+	@Autowired
+	ScholarshipRecommendService scholarshipRecommendService;
+	
+	@Autowired
+	CommonMapper commonMapper;
+	@Autowired
+	StudentMapper StudentMapper;
+
+	@ModelAttribute
+	/** 승인받을 관리자 목록의 정보 */
+	public void getEmployee(Model model) {
+
+		List<UserVO> userVOList = this.scholarshipRecommendService.getEmployee();
+
+		model.addAttribute("employeeList", userVOList);
+	}
+	
+	@ModelAttribute
+	/** 교수가 조회/추천하는 학생의 정보 */
+	public void getStudent(Model model) {
+		
+		List<StudentVO> studentVOList = this.scholarshipRecommendService.getStudent();
+		
+		model.addAttribute("studentList", studentVOList);
+	}
+	
+	@GetMapping("/scholarshipRecommend/list")
+	/**교수추천장학금신청 페이지로 이동*/
+	public String create() {
+		
+		return "professor/scholarshipRecommend/list";
+	}
+	
+	
+	@PostMapping("/scholarshipRecommend/list")
+	/**결재 데이터 생성 -> 교수추천장학금신청데이터생성*/
+	public String createScholarshipRecommendApproval(ScholarshipRecommendVO scholarshipRecommendVO) {
+		
+		log.info("lecture ==> {}", scholarshipRecommendVO);
+		
+		int result = this.scholarshipRecommendService.createScholarshipRecommendApproval(scholarshipRecommendVO);
+		
+		return "redirect:/professor/mypage";
+	}
+	
+	/** 학생 검색 */
+	@ResponseBody
+	@PostMapping("/getStudentListAjax")
+	public List<StudentVO> getStudentListAjax(@RequestBody StudentVO studentVO) {
+		//StudentVO(stuCd=null, depCd=COLE0401, comdCd=null, stuYear=3, stuSem=2, stuMrc=0, stuMoc=0, stuCrc=0, stuCoc=0, stuAddt=null, formAddt=null, stuGrdt=null, formGrdt=null, userVO=null, departmentVO=null, filesDetailVO=null, commonDetailVO=null, organizationChartVO=null, attendanceList=null, wishLectureList=null, enrolmentList=null)
+		log.info("getStudentListAjax->studentVO : " + studentVO);
+		List<StudentVO> studentVOList = this.scholarshipRecommendService.getStudentListAjax(studentVO);
+		log.info("getStudentListAjax : " + studentVOList);
+		
+		return studentVOList;
+	}
+	
+	/**학과 검색
+	 *{"colCd":"COLE02"}
+	 * */
+	@ResponseBody
+	@PostMapping("/getDepCdListAjax")
+	public List<DepartmentVO> getDepCdListAjax(@RequestBody DepartmentVO departmentVO){
+		
+		List<DepartmentVO> departmentVOList = this.scholarshipRecommendService.getDepCdListAjax(departmentVO);
+		log.info("departmentVOList : " + departmentVOList);
+		
+		return departmentVOList;
+	}
+}
+
+
+
+
+
+

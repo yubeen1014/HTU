@@ -1,0 +1,10 @@
+package kr.or.ddit.service.employee.impl;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.service.employee.CrewEmpService;
+
+@Service
+public class CrewEmpServiceImpl implements CrewEmpService {
+
+}

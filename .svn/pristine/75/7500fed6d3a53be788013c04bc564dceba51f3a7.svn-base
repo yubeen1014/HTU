@@ -1,0 +1,16 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+
+
+<sec:authentication property="principal.userVO" var="vo"/>
+   <div class="sub_menu">
+    <div class="sub_title">학사 일정</div>
+    <button class="sub_button">
+      <div class="sub_text" onclick="">등록하기</div>
+    </button>
+    <div class="submenu_menu">
+      <a href="/academicCalendar/list" class="sub_menu_a">학사 일정 조회</a>
+  </div>
+  </div>
+  

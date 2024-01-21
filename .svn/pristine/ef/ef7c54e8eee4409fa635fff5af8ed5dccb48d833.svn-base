@@ -1,0 +1,13 @@
+package kr.or.ddit.service.professor;
+
+import java.util.List;
+
+import kr.or.ddit.vo.TestVO;
+
+public interface TestService {
+
+	public List<TestVO> testList(String lecCd);
+
+	public int testCreatePost(TestVO testVO);
+
+}

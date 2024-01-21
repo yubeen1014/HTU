@@ -1,0 +1,135 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+<link rel="stylesheet" href="/resources/css/bootstrap.min.css">
+<script src="/resources/js/jquery.min.js"></script>
+<style> 
+nav.page.navigation { 
+	display: flex; justify-content: center; 
+} 
+</style>
+<div class="tab-content">
+	<div role="tabpanel" id="react-aria-97-tabpane-design"
+		aria-labelledby="react-aria-97-tab-design"
+		class="fade pb-4 p-4 tab-pane active show">
+		
+		<!-- 검색기능 -->
+		<form id="searchForm" action="/common/board/notice/list" method="get">
+			<select name="type">
+				<option value=""
+					<c:out value='${pageMaker.cri.type == null? "selected": ""}'/>>--</option>
+				<option value="T"
+					<c:out value='${pageMaker.cri.type eq "T"?"selected": "" }'/>>제목</option>
+				<option value="C"
+					<c:out value='${pageMaker.cri.type eq "C"?"selected": "" }'/>>내용</option>
+				<option value="W"
+					<c:out value='${pageMaker.cri.type eq "W"?"selected": "" }'/>>작성자</option>
+			</select> 
+			<input type="text" name="keyword" value="<c:out value='${pageMaker.cri.keyword}'/>"> 
+			<input type="hidden" name="pageNum" value="<c:out value='${pageMaker.cri.pageNum}'/>"> 
+			<input type="hidden" name="amount" value="<c:out value='${pageMaker.cri.amount}' />">
+			<button class="btn btn-default">검색</button>
+		</form>
+		
+		<table class="text-nowrap table">
+			<thead>
+				<tr>
+					<th scope="col">글번호</th>
+					<th scope="col">제목</th>
+					<th scope="col">작성자</th>
+					<th scope="col">작성일</th>
+					<th scope="col">수정일</th>
+					<th scope="col">조회수</th>
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach items="${list}" var="vo" varStatus="vs">
+					<tr>
+						<th scope="row">${vo.rn}</th>
+						<td><a href="/common/board/notice/detail?nbCd=${vo.nbCd}">${vo.nbTitle}</a></td>
+						<td>${vo.userNm}</td>
+						<td><fmt:formatDate value="${vo.nbReg}" pattern="yyyy-MM-dd"/></td>
+						<td><fmt:formatDate value="${vo.nbUdt}" pattern="yyyy-MM-dd"/></td>
+						<td>${vo.nbCnt}</td>
+					</tr>
+				</c:forEach>
+			</tbody>
+		</table>
+	</div>
+</div>
+<a href="/common/board/notice/create" class="btn btn-primary">글쓰기</a></br>
+   <!-- Paging --> 
+	<nav class="page navigation"> 
+	    <ul class="pagination"> 
+	        <c:if test="${pageMaker.prev}"> 
+	            <li class="paginate_button previous">
+	                <a class="page-link" href="${pageMaker.startPage - 1}">이전</a>
+	            </li> 
+	        </c:if> 
+	        <c:forEach var="num" begin="${pageMaker.startPage }" end="${pageMaker.endPage }"> 
+	            <li class="paginate_button">
+	                <a class="page-link" href="${num}">${num}</a> 
+	            </li>
+	        </c:forEach>
+	        <c:if test="${pageMaker.next}"> 
+	            <li class="paginate_button next">
+	                <a class="page-link" href="${pageMaker.endPage + 1}">다음</a>
+	            </li>
+	        </c:if> 
+	    </ul> 
+	</nav> 
+	
+	<!-- /.page -->
+	<!-- 기존에 페이지 이동을 하는 경우에 사용했던 actionForm에서 pageNum, amount 외에도 type과 keyword를 hidden속성으로 지정하여 현재 값을 전달해준다. -->
+	<form id='actionForm' action="/common/board/notice/list" method="get"> 
+		<input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum}"> 
+		<input type="hidden" name="amount" value="${pageMaker.cri.amount}"> 
+		<input type="hidden" name="type" value="<c:out value='${pageMaker.cri.type}'/>"> 
+	    <input type="hidden" name="keyword" value="<c:out value='${pageMaker.cri.keyword}'/>">
+	</form>	
+<script>
+	
+	$(".detail").on("click", function (event) {
+		
+		const nbCd = $(this).data("NoticeBoardCode")
+		
+		$.ajax({
+			
+			url: "/common/board/notice/count?nbCd="+nbCd,
+			type: "get",
+			beforeSend:function(xhr){
+				xhr.setRequestHeader("${_csrf.headerName}","${_csrf.token}");
+			},
+			success: (res) => {
+				if (res != null) {
+					location.href = "/common/board/notice/detail?nbCd="+nbCd;
+				}
+			}
+		});
+		
+	})
+	let actionForm = $('#actionForm'); 
+	
+	$('.paginate_button a').on('click', function(e) { e.preventDefault(); 
+	//걸어둔 링크로 이동하는 것을 일단 막음 
+	actionForm.find('input[name="pageNum"]').val($(this).attr('href')); 
+	actionForm.submit(); 
+	});
+	
+	let searchForm = $('#searchForm');
+	$('#searchForm button').on('click', function(e) {
+		if (!searchForm.find('option:selected').val()) {
+			alert('검색종류를 선택하세요');
+			return false;
+		}
+		if (!searchForm.find('input[name="keyword"]').val()) {
+			alert('키워드를 입력하세요');
+			return false;
+		}
+		e.preventDefault();
+		searchForm.find('input[name="pageNum"]').val('1');
+		searchForm.submit();
+	});
+</script>

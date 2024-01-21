@@ -1,0 +1,25 @@
+package kr.or.ddit.service.professor.impl;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.ObjectionMapper;
+import kr.or.ddit.service.professor.LectureObjectionService;
+import kr.or.ddit.vo.ObjectionVO;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class LectureObjectionServiceImpl implements LectureObjectionService{
+	
+	private final ObjectionMapper objectionMapper;
+
+	@Override
+	public List<ObjectionVO> list(String lecCd) {
+		return this.objectionMapper.list(lecCd);
+	}
+	
+}
